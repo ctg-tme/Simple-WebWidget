@@ -11,28 +11,28 @@
   </head>
   <body>
     <main class="widget-shell">
-      <article class="widget" aria-live="polite" aria-label="Room information">
-        <header class="widget__header">
-          <h1 id="heading">Information</h1>
-          <div class="conditions" aria-label="Local weather and time">
-            <span id="weather" class="conditions__weather" aria-hidden="true">☀️</span>
-            <span id="temperature">72°</span>
-            <span class="conditions__divider" aria-hidden="true">·</span>
+      <article class="widget" aria-live="polite" aria-label="Room information" hidden>
+        <header id="header" class="widget__header" hidden>
+          <h1 id="heading" hidden></h1>
+          <div id="conditions" class="conditions" aria-label="Local weather and time" hidden>
+            <span id="weather" class="conditions__weather" aria-hidden="true" hidden></span>
+            <span id="temperature" hidden></span>
+            <span id="conditions-divider" class="conditions__divider" aria-hidden="true" hidden>·</span>
             <time id="local-time"></time>
           </div>
         </header>
 
-        <section id="info-1" class="info-block">Info Block 1</section>
-        <section id="info-2" class="info-block">Hello world</section>
+        <section id="info-1" class="info-block" hidden></section>
+        <section id="info-2" class="info-block" hidden></section>
 
-        <section class="info-block info-block--brandable">
-          <span id="info-3">Info Block 3</span>
+        <section id="brandable-block" class="info-block info-block--brandable" hidden>
+          <span id="info-3" hidden></span>
           <span id="brand" class="brand" hidden>
             <img id="brand-image" alt="Branding" />
           </span>
         </section>
 
-        <footer id="footer" class="widget__footer">Footer</footer>
+        <footer id="footer" class="widget__footer" hidden></footer>
       </article>
     </main>
     <script type="module" src="/src/main.js"></script>

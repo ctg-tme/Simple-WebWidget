@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite. The widget is a fixed 600 × 600 CSS pixels at normal RoomOS display sizes, so it keeps the same scale on 1080p and 4K screens.
+Open the local URL printed by Vite. With no hash parameters the page is blank. When content is provided, the widget is a fixed 600 × 600 CSS pixels at normal RoomOS display sizes, so it keeps the same scale on 1080p and 4K screens.
 
 ## Hash parameters
 
@@ -18,9 +18,11 @@ Widget data is supplied through URL hash parameters so it remains entirely in th
 | Parameter | Content |
 | --- | --- |
 | `heading` | Information heading |
-| `weather` | Compact weather symbol, such as `☀️` |
+| `weather` | Set to `true` to show weather |
+| `weatherSymbol` | Compact weather symbol, such as `☀️` |
 | `temp` | Local temperature |
-| `time` | Optional time override; otherwise the browser's local time is used |
+| `time` | Set to `true` to show a 24-hour clock |
+| `timeZone` | Optional IANA timezone, such as `America/New_York`; otherwise the browser timezone is used |
 | `info1` | First information block |
 | `info2` | Second information block |
 | `info3` | Third information block |
@@ -30,7 +32,7 @@ Widget data is supplied through URL hash parameters so it remains entirely in th
 Example:
 
 ```text
-http://localhost:5173/#heading=Welcome&weather=%E2%98%80%EF%B8%8F&temp=72%C2%B0&info1=Meeting%20room%20available&info2=Hello%20RoomOS&info3=Third%20message&footer=Have%20a%20great%20day
+http://localhost:5173/#heading=Welcome&weather=true&weatherSymbol=%E2%98%80%EF%B8%8F&temp=72%C2%B0&time=true&timeZone=America%2FNew_York&info1=Meeting%20room%20available&info2=Hello%20RoomOS&info3=Third%20message&footer=Have%20a%20great%20day
 ```
 
 The original `message` parameter remains supported as an alias for `info2`.
