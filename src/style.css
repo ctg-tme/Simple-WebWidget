@@ -208,6 +208,16 @@ body {
   margin: 0;
 }
 
+html {
+  background: var(--widget-app-end);
+}
+
+body {
+  background:
+    radial-gradient(circle at 85% 8%, var(--widget-app-glow), transparent 42%),
+    linear-gradient(155deg, var(--widget-app-start), var(--widget-app-end));
+}
+
 .widget-shell {
   display: grid;
   width: 100%;
@@ -223,11 +233,8 @@ body {
   width: min(600px, calc(100vw - 2rem));
   height: min(600px, calc(100vh - 2rem));
   min-height: 480px;
-  overflow: hidden;
-  border-radius: 18px;
-  background:
-    radial-gradient(circle at 85% 8%, var(--widget-app-glow), transparent 42%),
-    linear-gradient(155deg, var(--widget-app-start), var(--widget-app-end));
+  overflow: visible;
+  background: transparent;
   text-align: center;
 }
 
