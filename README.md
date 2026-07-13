@@ -17,6 +17,7 @@ Widget data is supplied exclusively through URL hash parameters (everything afte
 
 | Parameter | Content |
 | --- | --- |
+| `theme` | RoomOS theme name; defaults to `EveningFjord` |
 | `heading` | Information heading |
 | `weather` | Set to `true` to show the Momentum Design weather icon |
 | `temp` | Local temperature |
@@ -34,6 +35,14 @@ http://localhost:5173/#heading=Welcome&weather=true&temp=72%C2%B0&time=true&time
 ```
 
 The original `message` parameter remains supported as an alias for `info2`.
+
+### RoomOS themes
+
+The `theme` hash parameter accepts the endpoint values exactly as written:
+
+`ArcticNight`, `Auto`, `CarbonBlack`, `ChiliPlum`, `CrystalMist`, `EveningFjord`, `FirstLight`, `FoggyMoor`, `Light`, `MeadowStone`, `Night`, `PebbleShoal`, `PoppyBreeze`, `SandShoal`, and `SmokedRose`.
+
+Missing or unrecognized values use `EveningFjord`. `Light` uses the `FirstLight` palette, `Night` uses the `CarbonBlack` palette, and `Auto` follows the browser's light or dark color-scheme preference.
 
 Information blocks support line breaks in any of these forms:
 

@@ -1,6 +1,7 @@
 import "@momentum-design/tokens/dist/css/theme/webex/light-stable.css";
 import "@momentum-design/tokens/dist/css/typography/complete.css";
 import weatherIconUrl from "@momentum-design/icons/dist/svg/temperature-regular.svg";
+import { resolveTheme } from "./themes.js";
 import "./style.css";
 
 const elements = {
@@ -74,6 +75,8 @@ function updateTime() {
 
 function renderFromHash() {
   const params = new URLSearchParams(window.location.hash.slice(1));
+  document.documentElement.dataset.theme = resolveTheme(readText(params, "theme"));
+
   const legacyMessage = readMultilineText(params, "message");
   const iconUrl = readText(params, "iconUrl");
   const showHeading = setText(elements.heading, readText(params, "heading"));
