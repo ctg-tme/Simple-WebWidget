@@ -9,6 +9,7 @@
     "preview": "vite preview --host 127.0.0.1"
   },
   "dependencies": {
+    "@momentum-design/icons": "^0.59.0",
     "@momentum-design/tokens": "^0.10.4"
   },
   "devDependencies": {

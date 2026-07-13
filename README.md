@@ -18,8 +18,7 @@ Widget data is supplied through URL hash parameters so it remains entirely in th
 | Parameter | Content |
 | --- | --- |
 | `heading` | Information heading |
-| `weather` | Set to `true` to show weather |
-| `weatherSymbol` | Compact weather symbol, such as `☀️` |
+| `weather` | Set to `true` to show the Momentum Design weather icon |
 | `temp` | Local temperature |
 | `time` | Set to `true` to show a 24-hour clock |
 | `timeZone` | Optional IANA timezone, such as `America/New_York`; otherwise the browser timezone is used |
@@ -31,7 +30,7 @@ Widget data is supplied through URL hash parameters so it remains entirely in th
 Example:
 
 ```text
-http://localhost:5173/#heading=Welcome&weather=true&weatherSymbol=%E2%98%80%EF%B8%8F&temp=72%C2%B0&time=true&timeZone=America%2FNew_York&info1=Meeting%20room%20available&info2=Hello%20RoomOS&info3=Third%20message
+http://localhost:5173/#heading=Welcome&weather=true&temp=72%C2%B0&time=true&timeZone=America%2FNew_York&info1=Meeting%20room%20available&info2=Hello%20RoomOS&info3=Third%20message
 ```
 
 The original `message` parameter remains supported as an alias for `info2`.

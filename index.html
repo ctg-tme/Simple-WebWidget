@@ -15,7 +15,7 @@
         <header id="header" class="widget__header" hidden>
           <h1 id="heading" hidden></h1>
           <div id="conditions" class="conditions" aria-label="Local weather and time" hidden>
-            <span id="weather" class="conditions__weather" aria-hidden="true" hidden></span>
+            <img id="weather-icon" class="conditions__weather" alt="Weather" hidden />
             <span id="temperature" hidden></span>
             <span id="conditions-divider" class="conditions__divider" aria-hidden="true" hidden>·</span>
             <time id="local-time"></time>
@@ -37,7 +37,9 @@
         </section>
 
         <footer id="footer" class="widget__footer">
-          © <span id="footer-year"></span> Cisco Systems, Inc. || Created by the Collaboration TME team
+          <span class="widget__footer-text">
+            © <span id="footer-year"></span> Cisco Systems, Inc. || Created by the Collaboration TME team
+          </span>
         </footer>
       </article>
     </main>

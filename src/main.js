@@ -1,12 +1,14 @@
 import "@momentum-design/tokens/dist/css/theme/webex/light-stable.css";
 import "@momentum-design/tokens/dist/css/typography/complete.css";
+import "@momentum-design/tokens/dist/css/elevation/complete.css";
+import weatherIconUrl from "@momentum-design/icons/dist/svg/temperature-regular.svg";
 import "./style.css";
 
 const elements = {
   header: document.querySelector("#header"),
   heading: document.querySelector("#heading"),
   conditions: document.querySelector("#conditions"),
-  weather: document.querySelector("#weather"),
+  weatherIcon: document.querySelector("#weather-icon"),
   temperature: document.querySelector("#temperature"),
   conditionsDivider: document.querySelector("#conditions-divider"),
   localTime: document.querySelector("#local-time"),
@@ -73,15 +75,12 @@ function renderFromHash() {
   const showWeather = readBoolean(params, "weather");
   const showTime = readBoolean(params, "time");
 
-  const showWeatherSymbol = setText(
-    elements.weather,
-    showWeather ? readText(params, "weatherSymbol") : "",
-  );
+  elements.weatherIcon.hidden = !showWeather;
   const showTemperature = setText(
     elements.temperature,
     showWeather ? readText(params, "temp") : "",
   );
-  const hasWeatherContent = showWeatherSymbol || showTemperature;
+  const hasWeatherContent = showWeather || showTemperature;
 
   timeFormatter = showTime ? createTimeFormatter(readText(params, "timeZone")) : null;
   elements.localTime.hidden = !showTime;
@@ -117,6 +116,7 @@ function renderFromHash() {
   elements.configurationMessage.hidden = hasContent;
 }
 
+elements.weatherIcon.src = weatherIconUrl;
 elements.footerYear.textContent = new Date().getFullYear();
 renderFromHash();
 window.addEventListener("hashchange", renderFromHash);

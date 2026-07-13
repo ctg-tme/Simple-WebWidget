@@ -43,7 +43,7 @@ body {
   overflow: hidden;
   background: var(--mds-color-theme-background-solid-primary-normal, #f7f7f7);
   border-radius: 22px;
-  box-shadow: var(--mds-elevation-3, 0 10px 30px rgb(0 0 0 / 20%));
+  filter: var(--mds-elevation-3, drop-shadow(0 10px 30px rgb(0 0 0 / 20%)));
   text-align: center;
 }
 
@@ -87,6 +87,9 @@ body {
 }
 
 .conditions__weather {
+  display: block;
+  width: 24px;
+  height: 24px;
   font-size: 24px;
   line-height: 1;
 }
@@ -145,8 +148,16 @@ body {
   place-items: center;
   padding: 8px 16px;
   overflow: hidden;
-  font-size: 20px;
-  line-height: 1.15;
+  font-family: var(--mds-font-apps-body-midsize-regular-font-family);
+  font-size: var(--mds-font-apps-body-midsize-regular-font-size, 0.875rem);
+  font-weight: var(--mds-font-apps-body-midsize-regular-font-weight, 400);
+  line-height: var(--mds-font-apps-body-midsize-regular-line-height, 1.25rem);
+}
+
+.widget__footer-text {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -174,8 +185,7 @@ body {
     font-size: 23px;
   }
 
-  .conditions,
-  .widget__footer {
+  .conditions {
     font-size: 17px;
   }
 
