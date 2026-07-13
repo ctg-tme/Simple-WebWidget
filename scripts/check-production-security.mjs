@@ -18,10 +18,22 @@ assert.ok(
   "Production HTML must contain the expected Content Security Policy",
 );
 assert.doesNotMatch(html, /unsafe-inline|unsafe-eval/);
+assert.doesNotMatch(
+  html,
+  /src="\/src\//,
+  "Production HTML must reference bundled assets, not Vite source files",
+);
+assert.match(
+  html,
+  /src="\.\/assets\/[^\"]+\.js"/,
+  "Production scripts must use a repository-relative asset path",
+);
 assert.match(
   html,
   /<img\s+id="brand-image"\s+alt="Branding"\s+referrerpolicy="no-referrer"\s*\/?>/,
   "The branding image must suppress referrer information",
 );
+
+await readFile(new URL("../dist/configure-widget.png", import.meta.url));
 
 console.log("Production browser security policy verified.");

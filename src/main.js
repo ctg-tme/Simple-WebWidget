@@ -26,6 +26,8 @@ const elements = {
   brandableBlock: document.querySelector("#brandable-block"),
   info3: document.querySelector("#info-3"),
   configurationMessage: document.querySelector("#configuration-message"),
+  configurationGuide: document.querySelector("#configuration-guide"),
+  configurationError: document.querySelector("#configuration-error"),
   footer: document.querySelector("#footer"),
   footerYear: document.querySelector("#footer-year"),
   brand: document.querySelector("#brand"),
@@ -35,9 +37,6 @@ const elements = {
 let timeFormatter = null;
 let weatherConfiguration = null;
 let weatherRequestVersion = 0;
-const UNCONFIGURED_MESSAGE = "Widget is not configured";
-const INVALID_CONFIGURATION_MESSAGE = "Widget configuration is invalid";
-
 function setText(element, value) {
   element.textContent = value;
   element.hidden = value.length === 0;
@@ -93,7 +92,8 @@ function syncVisibility() {
   elements.configurationMessage.hidden = hasContent;
 
   if (!hasContent) {
-    elements.configurationMessage.textContent = UNCONFIGURED_MESSAGE;
+    elements.configurationGuide.hidden = false;
+    elements.configurationError.hidden = true;
   }
 }
 
@@ -117,7 +117,8 @@ function resetRenderedConfiguration() {
   elements.brandableBlock.hidden = true;
   elements.brandableBlock.classList.remove("info-block--branding");
   elements.brandImage.removeAttribute("src");
-  elements.configurationMessage.textContent = UNCONFIGURED_MESSAGE;
+  elements.configurationGuide.hidden = false;
+  elements.configurationError.hidden = true;
   elements.configurationMessage.hidden = false;
 }
 
@@ -125,7 +126,8 @@ function renderInvalidConfiguration() {
   document.documentElement.dataset.theme = resolveTheme("");
   elements.header.hidden = true;
   elements.conditions.hidden = true;
-  elements.configurationMessage.textContent = INVALID_CONFIGURATION_MESSAGE;
+  elements.configurationGuide.hidden = true;
+  elements.configurationError.hidden = false;
   elements.configurationMessage.hidden = false;
 }
 

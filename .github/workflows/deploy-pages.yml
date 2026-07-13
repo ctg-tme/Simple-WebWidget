@@ -52,3 +52,14 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+      - name: Verify deployed production bundle
+        env:
+          DEPLOYED_URL: ${{ steps.deployment.outputs.page_url }}
+          DEPLOYMENT_SHA: ${{ github.sha }}
+        run: |
+          html="$(curl --fail --silent --show-error --retry 5 --retry-delay 5 "${DEPLOYED_URL}?deployment=${DEPLOYMENT_SHA}")"
+          grep --fixed-strings 'Content-Security-Policy' <<< "${html}"
+          if grep --fixed-strings 'src="/src/main.js"' <<< "${html}"; then
+            echo "GitHub Pages served the unbuilt Vite source instead of dist/."
+            exit 1
+          fi

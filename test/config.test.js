@@ -35,12 +35,12 @@ test("parses valid bounded widget configuration", () => {
   );
 });
 
-test("accepts the supplied GitHub branding URL and weather symbol", () => {
+test("accepts a GitHub branding URL and weather symbol", () => {
   const configuration = parseWidgetConfiguration(
-    "#heading=Custom%20Companion%202026&weather=true" +
+    "#heading=Visitor%20Information&weather=true" +
       "&weatherSymbol=%E2%9B%85&temp=82%C2%B0F&time=true" +
       "&timeZone=America%2FNew_York" +
-      "&info1=Currently%20Paired%20to%20Room:%3Cbr%3E%20Codec%20EQ%20A%20-%20Bobby%20Home%20Lab" +
+      "&info1=Welcome%20to%20the%20collaboration%20space" +
       "&iconUrl=https%3A%2F%2Fgithub.com%2FWebexSamples.png%3Fsize%3D256" +
       "&theme=ChiliPlum",
     {

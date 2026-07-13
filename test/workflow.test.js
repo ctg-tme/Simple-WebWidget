@@ -35,6 +35,15 @@ test("isolates build permissions from deployment credentials", () => {
   assert.doesNotMatch(deployJob, /npm ci|npm run build/);
 });
 
+test("deploys the built artifact and verifies the published bundle", () => {
+  const deployJob = workflow.slice(workflow.indexOf("  deploy:"));
+
+  assert.match(deployJob, /uses: actions\/deploy-pages@/);
+  assert.match(deployJob, /steps\.deployment\.outputs\.page_url/);
+  assert.match(deployJob, /Content-Security-Policy/);
+  assert.match(deployJob, /src="\/src\/main\.js"/);
+});
+
 test("configures Dependabot for npm and GitHub Actions", async () => {
   const dependabot = await readFile(
     new URL("../.github/dependabot.yml", import.meta.url),
