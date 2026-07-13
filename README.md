@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite. With no hash parameters the page is blank. When content is provided, the widget is a fixed 600 × 600 CSS pixels at normal RoomOS display sizes, so it keeps the same scale on 1080p and 4K screens.
+Open the local URL printed by Vite. The widget is a fixed 600 × 600 CSS pixels at normal RoomOS display sizes, so it keeps the same scale on 1080p and 4K screens. With no configured content it displays **Widget is not configured** above the permanent footer.
 
 ## Hash parameters
 
@@ -36,7 +36,7 @@ http://localhost:5173/#heading=Welcome&weather=true&weatherSymbol=%E2%98%80%EF%B
 
 The original `message` parameter remains supported as an alias for `info2`.
 
-Every non-empty widget includes a fixed footer: `© {YEAR} Cisco Systems, Inc. || Created by the Collaboration TME team`. The year is generated in the browser and is not configurable.
+The widget always includes a fixed footer: `© {YEAR} Cisco Systems, Inc. || Created by the Collaboration TME team`. The year is generated in the browser and is not configurable.
 
 ## Production build
 

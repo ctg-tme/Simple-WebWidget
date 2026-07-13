@@ -11,7 +11,7 @@
   </head>
   <body>
     <main class="widget-shell">
-      <article class="widget" aria-live="polite" aria-label="Room information" hidden>
+      <article class="widget" aria-live="polite" aria-label="Room information">
         <header id="header" class="widget__header" hidden>
           <h1 id="heading" hidden></h1>
           <div id="conditions" class="conditions" aria-label="Local weather and time" hidden>
@@ -32,7 +32,11 @@
           </span>
         </section>
 
-        <footer id="footer" class="widget__footer" hidden>
+        <section id="configuration-message" class="configuration-message">
+          Widget is not configured
+        </section>
+
+        <footer id="footer" class="widget__footer">
           © <span id="footer-year"></span> Cisco Systems, Inc. || Created by the Collaboration TME team
         </footer>
       </article>

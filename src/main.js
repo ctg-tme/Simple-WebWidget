@@ -3,7 +3,6 @@ import "@momentum-design/tokens/dist/css/typography/complete.css";
 import "./style.css";
 
 const elements = {
-  widget: document.querySelector(".widget"),
   header: document.querySelector("#header"),
   heading: document.querySelector("#heading"),
   conditions: document.querySelector("#conditions"),
@@ -15,6 +14,7 @@ const elements = {
   info2: document.querySelector("#info-2"),
   brandableBlock: document.querySelector("#brandable-block"),
   info3: document.querySelector("#info-3"),
+  configurationMessage: document.querySelector("#configuration-message"),
   footer: document.querySelector("#footer"),
   footerYear: document.querySelector("#footer-year"),
   brand: document.querySelector("#brand"),
@@ -114,8 +114,7 @@ function renderFromHash() {
     showInfo3 ||
     hasBrand;
 
-  elements.footer.hidden = !hasContent;
-  elements.widget.hidden = !hasContent;
+  elements.configurationMessage.hidden = hasContent;
 }
 
 elements.footerYear.textContent = new Date().getFullYear();
