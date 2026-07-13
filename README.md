@@ -8,15 +8,15 @@ The widget uses a fixed 600 × 600 CSS-pixel canvas at normal RoomOS display siz
 
 Add configuration after the `#` in the GitHub Pages URL. Only the sections represented by supplied parameters are shown.
 
-![Numbered map showing where each URL parameter appears in the RoomOS WebWidget](docs/images/user-guide/widget-parameter-map.png)
+![Configured RoomOS WebWidget showing the header, conditions, and three information blocks](docs/images/user-guide/widget-parameter-map.png)
 
-| Label | Parameters | Effect |
-| ---: | --- | --- |
-| 1 | `iconUrl`, `heading` | Optional borderless branding icon and information heading |
-| 2 | `weather`, `latitude`, `longitude`, `temperatureUnit`, `time`, `timeZone` | Compact local weather and time area |
-| 3 | `info1` | First text or iframe information block |
-| 4 | `info2` or `message` | Second text or iframe information block |
-| 5 | `info3` | Third text or iframe information block |
+| Area | Parameters | Effect |
+| --- | --- | --- |
+| Header, left | `iconUrl`, `heading` | Optional borderless branding icon and information heading |
+| Header, right | `weather`, `latitude`, `longitude`, `temperatureUnit`, `time`, `timeZone` | Compact local weather and time area |
+| First block | `info1` | First text or iframe information block |
+| Second block | `info2` or `message` | Second text or iframe information block |
+| Third block | `info3` | Third text or iframe information block |
 
 <table>
   <tr>
