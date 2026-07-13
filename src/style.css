@@ -1,12 +1,15 @@
 :root {
   --widget-text: #fff7f8;
   --widget-text-secondary: #d8dce8;
-  --widget-surface-start: rgb(27 37 70 / 95%);
-  --widget-surface-end: rgb(12 22 45 / 95%);
-  --widget-outline: rgb(239 157 165 / 45%);
-  --widget-highlight: rgb(255 255 255 / 12%);
+  --widget-app-start: #293454;
+  --widget-app-end: #121a31;
+  --widget-app-glow: rgb(228 137 145 / 22%);
+  --widget-surface-start: rgb(77 89 126 / 54%);
+  --widget-surface-end: rgb(21 31 57 / 44%);
+  --widget-outline: rgb(230 139 147 / 76%);
+  --widget-highlight: rgb(255 255 255 / 22%);
+  --widget-shadow: rgb(4 10 25 / 24%);
   --widget-icon-filter: invert(1);
-  --widget-brand-surface: rgb(255 255 255 / 96%);
   color: var(--widget-text);
   background: transparent;
   font-family: var(
@@ -23,10 +26,14 @@
 :root[data-theme="ChiliPlum"] {
   --widget-text: #fff5f1;
   --widget-text-secondary: #edc8c0;
-  --widget-surface-start: rgb(67 35 45 / 95%);
-  --widget-surface-end: rgb(39 22 30 / 95%);
-  --widget-outline: rgb(225 112 88 / 48%);
-  --widget-highlight: rgb(255 220 208 / 13%);
+  --widget-app-start: #4f2c38;
+  --widget-app-end: #271820;
+  --widget-app-glow: rgb(232 112 79 / 24%);
+  --widget-surface-start: rgb(112 65 76 / 52%);
+  --widget-surface-end: rgb(48 25 34 / 42%);
+  --widget-outline: rgb(232 116 84 / 78%);
+  --widget-highlight: rgb(255 220 208 / 20%);
+  --widget-shadow: rgb(22 7 12 / 25%);
   --widget-icon-filter: invert(1);
 }
 
@@ -34,70 +41,98 @@
 :root[data-theme="Night"] {
   --widget-text: #f7f8f9;
   --widget-text-secondary: #c7cacf;
-  --widget-surface-start: rgb(35 37 39 / 96%);
-  --widget-surface-end: rgb(15 16 17 / 96%);
-  --widget-outline: rgb(255 255 255 / 24%);
-  --widget-highlight: rgb(255 255 255 / 10%);
+  --widget-app-start: #242628;
+  --widget-app-end: #0b0c0d;
+  --widget-app-glow: rgb(151 155 160 / 17%);
+  --widget-surface-start: rgb(93 97 101 / 45%);
+  --widget-surface-end: rgb(24 26 28 / 42%);
+  --widget-outline: rgb(144 149 154 / 72%);
+  --widget-highlight: rgb(255 255 255 / 18%);
+  --widget-shadow: rgb(0 0 0 / 30%);
   --widget-icon-filter: invert(1);
 }
 
 :root[data-theme="ArcticNight"] {
   --widget-text: #f3fbff;
   --widget-text-secondary: #c4e5ef;
-  --widget-surface-start: rgb(25 55 80 / 95%);
-  --widget-surface-end: rgb(10 31 55 / 95%);
-  --widget-outline: rgb(132 216 239 / 46%);
-  --widget-highlight: rgb(212 247 255 / 14%);
+  --widget-app-start: #214767;
+  --widget-app-end: #0b2038;
+  --widget-app-glow: rgb(132 216 239 / 24%);
+  --widget-surface-start: rgb(70 128 157 / 50%);
+  --widget-surface-end: rgb(12 44 72 / 43%);
+  --widget-outline: rgb(132 216 239 / 78%);
+  --widget-highlight: rgb(212 247 255 / 23%);
+  --widget-shadow: rgb(4 20 38 / 26%);
   --widget-icon-filter: invert(1);
 }
 
 :root[data-theme="CrystalMist"] {
   --widget-text: #f3fbfb;
   --widget-text-secondary: #c3dddd;
-  --widget-surface-start: rgb(43 80 85 / 95%);
-  --widget-surface-end: rgb(23 55 61 / 95%);
-  --widget-outline: rgb(155 216 217 / 43%);
-  --widget-highlight: rgb(220 255 255 / 12%);
+  --widget-app-start: #365f63;
+  --widget-app-end: #183a40;
+  --widget-app-glow: rgb(142 203 203 / 22%);
+  --widget-surface-start: rgb(100 151 154 / 49%);
+  --widget-surface-end: rgb(27 68 74 / 42%);
+  --widget-outline: rgb(142 203 203 / 76%);
+  --widget-highlight: rgb(220 255 255 / 20%);
+  --widget-shadow: rgb(7 28 31 / 25%);
   --widget-icon-filter: invert(1);
 }
 
 :root[data-theme="FoggyMoor"] {
   --widget-text: #f7faf6;
   --widget-text-secondary: #d0dbce;
-  --widget-surface-start: rgb(64 83 79 / 95%);
-  --widget-surface-end: rgb(43 62 58 / 95%);
-  --widget-outline: rgb(199 215 196 / 42%);
-  --widget-highlight: rgb(239 255 235 / 11%);
+  --widget-app-start: #536760;
+  --widget-app-end: #2d423d;
+  --widget-app-glow: rgb(183 199 178 / 20%);
+  --widget-surface-start: rgb(126 149 140 / 49%);
+  --widget-surface-end: rgb(47 75 68 / 42%);
+  --widget-outline: rgb(183 199 178 / 75%);
+  --widget-highlight: rgb(239 255 235 / 19%);
+  --widget-shadow: rgb(12 32 27 / 24%);
   --widget-icon-filter: invert(1);
 }
 
 :root[data-theme="MeadowStone"] {
   --widget-text: #fff9e9;
   --widget-text-secondary: #e6d9b0;
-  --widget-surface-start: rgb(76 76 71 / 96%);
-  --widget-surface-end: rgb(47 48 45 / 96%);
-  --widget-outline: rgb(229 197 104 / 48%);
-  --widget-highlight: rgb(255 239 191 / 12%);
+  --widget-app-start: #5b5a52;
+  --widget-app-end: #333430;
+  --widget-app-glow: rgb(230 196 92 / 22%);
+  --widget-surface-start: rgb(126 123 105 / 49%);
+  --widget-surface-end: rgb(55 57 51 / 42%);
+  --widget-outline: rgb(230 196 92 / 78%);
+  --widget-highlight: rgb(255 239 191 / 21%);
+  --widget-shadow: rgb(22 22 18 / 25%);
   --widget-icon-filter: invert(1);
 }
 
 :root[data-theme="PoppyBreeze"] {
   --widget-text: #f7feff;
   --widget-text-secondary: #c7f3f7;
-  --widget-surface-start: rgb(11 91 108 / 95%);
-  --widget-surface-end: rgb(5 55 70 / 95%);
-  --widget-outline: rgb(238 137 116 / 56%);
-  --widget-highlight: rgb(211 252 255 / 14%);
+  --widget-app-start: #168fa6;
+  --widget-app-end: #075267;
+  --widget-app-glow: rgb(236 128 105 / 24%);
+  --widget-surface-start: rgb(19 93 113 / 56%);
+  --widget-surface-end: rgb(4 48 63 / 48%);
+  --widget-outline: rgb(236 128 105 / 82%);
+  --widget-highlight: rgb(211 252 255 / 24%);
+  --widget-shadow: rgb(1 38 49 / 28%);
   --widget-icon-filter: invert(1);
 }
 
 :root[data-theme="SmokedRose"] {
   --widget-text: #fff6f1;
   --widget-text-secondary: #e8c6b8;
-  --widget-surface-start: rgb(86 43 36 / 96%);
-  --widget-surface-end: rgb(52 26 24 / 96%);
-  --widget-outline: rgb(218 146 120 / 49%);
-  --widget-highlight: rgb(255 222 207 / 12%);
+  --widget-app-start: #66362d;
+  --widget-app-end: #351d1b;
+  --widget-app-glow: rgb(207 135 108 / 23%);
+  --widget-surface-start: rgb(129 73 61 / 51%);
+  --widget-surface-end: rgb(58 31 28 / 43%);
+  --widget-outline: rgb(207 135 108 / 78%);
+  --widget-highlight: rgb(255 222 207 / 20%);
+  --widget-shadow: rgb(30 9 7 / 26%);
   --widget-icon-filter: invert(1);
 }
 
@@ -106,30 +141,42 @@
 :root[data-theme="Auto"] {
   --widget-text: #202327;
   --widget-text-secondary: #51575e;
-  --widget-surface-start: rgb(255 255 255 / 96%);
-  --widget-surface-end: rgb(239 242 245 / 96%);
-  --widget-outline: rgb(48 55 63 / 23%);
-  --widget-highlight: rgb(255 255 255 / 72%);
+  --widget-app-start: #d5d9de;
+  --widget-app-end: #b7bdc4;
+  --widget-app-glow: rgb(255 255 255 / 34%);
+  --widget-surface-start: rgb(255 255 255 / 48%);
+  --widget-surface-end: rgb(235 239 243 / 32%);
+  --widget-outline: rgb(132 141 151 / 74%);
+  --widget-highlight: rgb(255 255 255 / 75%);
+  --widget-shadow: rgb(55 63 72 / 18%);
   --widget-icon-filter: none;
 }
 
 :root[data-theme="SandShoal"] {
   --widget-text: #332820;
   --widget-text-secondary: #655344;
-  --widget-surface-start: rgb(255 248 239 / 96%);
-  --widget-surface-end: rgb(237 223 208 / 96%);
-  --widget-outline: rgb(135 104 80 / 36%);
-  --widget-highlight: rgb(255 255 255 / 56%);
+  --widget-app-start: #d4c0ab;
+  --widget-app-end: #b49a82;
+  --widget-app-glow: rgb(255 239 219 / 32%);
+  --widget-surface-start: rgb(255 248 239 / 48%);
+  --widget-surface-end: rgb(222 203 184 / 32%);
+  --widget-outline: rgb(130 102 79 / 74%);
+  --widget-highlight: rgb(255 255 255 / 65%);
+  --widget-shadow: rgb(84 61 44 / 18%);
   --widget-icon-filter: none;
 }
 
 :root[data-theme="PebbleShoal"] {
   --widget-text: #292724;
   --widget-text-secondary: #5e5952;
-  --widget-surface-start: rgb(249 247 244 / 96%);
-  --widget-surface-end: rgb(228 224 218 / 96%);
-  --widget-outline: rgb(95 87 77 / 34%);
-  --widget-highlight: rgb(255 255 255 / 60%);
+  --widget-app-start: #cbc7c0;
+  --widget-app-end: #a9a399;
+  --widget-app-glow: rgb(255 255 255 / 29%);
+  --widget-surface-start: rgb(252 250 247 / 46%);
+  --widget-surface-end: rgb(215 210 203 / 31%);
+  --widget-outline: rgb(92 85 76 / 72%);
+  --widget-highlight: rgb(255 255 255 / 66%);
+  --widget-shadow: rgb(64 59 53 / 17%);
   --widget-icon-filter: none;
 }
 
@@ -137,10 +184,14 @@
   :root[data-theme="Auto"] {
     --widget-text: #f7f8f9;
     --widget-text-secondary: #c7cacf;
-    --widget-surface-start: rgb(35 37 39 / 96%);
-    --widget-surface-end: rgb(15 16 17 / 96%);
-    --widget-outline: rgb(255 255 255 / 24%);
-    --widget-highlight: rgb(255 255 255 / 10%);
+    --widget-app-start: #242628;
+    --widget-app-end: #0b0c0d;
+    --widget-app-glow: rgb(151 155 160 / 17%);
+    --widget-surface-start: rgb(93 97 101 / 45%);
+    --widget-surface-end: rgb(24 26 28 / 42%);
+    --widget-outline: rgb(144 149 154 / 72%);
+    --widget-highlight: rgb(255 255 255 / 18%);
+    --widget-shadow: rgb(0 0 0 / 30%);
     --widget-icon-filter: invert(1);
   }
 }
@@ -172,8 +223,11 @@ body {
   width: min(600px, calc(100vw - 2rem));
   height: min(600px, calc(100vh - 2rem));
   min-height: 480px;
-  overflow: visible;
-  background: transparent;
+  overflow: hidden;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 85% 8%, var(--widget-app-glow), transparent 42%),
+    linear-gradient(155deg, var(--widget-app-start), var(--widget-app-end));
   text-align: center;
 }
 
@@ -189,7 +243,11 @@ body {
     var(--widget-surface-start),
     var(--widget-surface-end)
   );
-  box-shadow: inset 0 1px 0 var(--widget-highlight);
+  box-shadow:
+    inset 0 1px 0 var(--widget-highlight),
+    0 8px 24px var(--widget-shadow);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  backdrop-filter: blur(18px) saturate(135%);
 }
 
 .widget__header {
@@ -276,7 +334,16 @@ body {
   overflow: hidden;
   border: 1px solid var(--widget-outline);
   border-radius: 16px;
-  background: var(--widget-brand-surface);
+  background: linear-gradient(
+    145deg,
+    var(--widget-surface-start),
+    var(--widget-surface-end)
+  );
+  box-shadow:
+    inset 0 1px 0 var(--widget-highlight),
+    0 8px 24px var(--widget-shadow);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  backdrop-filter: blur(18px) saturate(135%);
 }
 
 .brand img {

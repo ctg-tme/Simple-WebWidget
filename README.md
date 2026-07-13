@@ -44,6 +44,8 @@ The `theme` hash parameter accepts the endpoint values exactly as written:
 
 Missing or unrecognized values use `EveningFjord`. `Light` uses the `FirstLight` palette, `Night` uses the `CarbonBlack` palette, and `Auto` follows the browser's light or dark color-scheme preference.
 
+Each palette covers the complete widget surface. Content sections use translucent glass backgrounds with blur and a leaf-derived outline color selected to complement the corresponding RoomOS wallpaper while preserving readable contrast.
+
 Information blocks support line breaks in any of these forms:
 
 - URL-encoded newline: `%0A`
