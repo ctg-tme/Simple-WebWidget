@@ -22,6 +22,7 @@ Widget configuration is supplied exclusively through URL hash parameters (everyt
 | `theme` | RoomOS theme name; defaults to `EveningFjord` |
 | `heading` | Information heading |
 | `weather` | Set to `true` to show live current weather |
+| `weatherSymbol` | Optional weather symbol shown when live coordinates are not supplied, and used as a fallback if live weather cannot be retrieved |
 | `latitude` | Latitude used to retrieve current weather; requires `weather=true` |
 | `longitude` | Longitude used to retrieve current weather; requires `weather=true` |
 | `temperatureUnit` | `fahrenheit` (default) or `celsius` |
@@ -52,6 +53,7 @@ The widget validates the complete fragment before displaying any supplied conten
 | Complete fragment, before decoding and excluding `#` | 8,192 |
 | `heading` | 80 |
 | `temp` | 16 |
+| `weatherSymbol` | 16 |
 | `timeZone` | 64 |
 | Each of `info1`, `info2`, `info3`, and `message` | 400 |
 | `iconUrl` | 2,048 |
@@ -64,12 +66,13 @@ Malformed percent encoding, incomplete or invalid coordinates, an excessive frag
 
 ### Branding image policy
 
-Branding images may use a same-origin HTTPS URL or a relative URL hosted with the widget. During `npm run dev`, same-origin HTTP images are also allowed from `localhost` or the private LAN address serving the widget. Approved cross-origin images must use HTTPS and currently may originate only from:
+Branding images may use any cross-origin HTTPS URL, a same-origin HTTPS URL, or a relative URL hosted with the widget. During `npm run dev`, same-origin HTTP images are also allowed from `localhost` or the private LAN address serving the widget.
 
-- `https://www.cisco.com`
-- `https://www.webex.com`
+URLs with credentials, unsupported schemes such as `javascript:`, `file:`, or `data:`, malformed URLs, and loopback or private literal targets are rejected. Private or loopback same-origin HTTP is allowed only in local development. Validation deliberately does not attempt DNS-based private-network detection, so administrators should use trusted image hosts where possible. Branding image requests use a `no-referrer` policy.
 
-URLs with credentials, unsupported schemes such as `javascript:`, `file:`, or `data:`, malformed URLs, unapproved origins, and loopback or private literal targets are rejected. Private or loopback same-origin HTTP is allowed only in local development. Validation deliberately does not attempt DNS-based private-network detection; the exact HTTPS origin allowlist is the cross-origin boundary. Branding image requests use a `no-referrer` policy.
+### Console diagnostics
+
+Invalid configuration, invalid time-zone fallback, weather retrieval failure, and branding image load failure are reported in the browser console with a `[Simple-WebWidget]` prefix and a stable issue code. Configuration values and the complete fragment are not logged. For example, a rejected scheme reports `icon-url-unsupported-scheme`, while a failed image request reports `branding-image-load-failed`.
 
 ### RoomOS themes
 
@@ -99,7 +102,7 @@ npm run build
 
 The static output is written to `dist/` and can be hosted with GitHub Pages.
 
-Production builds include a restrictive Content Security Policy and an explicit `no-referrer` policy. The CSP permits same-origin scripts, styles, fonts, and images; the two approved branding origins above; data images required by bundled assets; and the Open-Meteo weather API as the only outbound connection. Development builds omit the CSP meta tag so Vite hot-module replacement continues to work.
+Production builds include a restrictive Content Security Policy and an explicit `no-referrer` policy. The CSP permits same-origin scripts, styles, and fonts; same-origin, data, and HTTPS images; and the Open-Meteo weather API as the only outbound connection. Development builds omit the CSP meta tag so Vite hot-module replacement continues to work.
 
 Pushes to `main` run the included GitHub Pages deployment workflow. In the repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions** once.
 

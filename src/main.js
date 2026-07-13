@@ -1,6 +1,10 @@
 import "@momentum-design/tokens/dist/css/theme/webex/light-stable.css";
 import "@momentum-design/tokens/dist/css/typography/complete.css";
 import { parseWidgetConfiguration } from "./config.js";
+import {
+  logConfigurationError,
+  logRuntimeWarning,
+} from "./logger.js";
 import { resolveTheme } from "./themes.js";
 import {
   fetchCurrentWeather,
@@ -54,6 +58,10 @@ function createTimeFormatter(timeZone) {
   try {
     return new Intl.DateTimeFormat(undefined, options);
   } catch {
+    logRuntimeWarning(
+      "invalid-time-zone",
+      "The configured time zone is invalid; using the device time zone.",
+    );
     return new Intl.DateTimeFormat(undefined, {
       hour: "2-digit",
       minute: "2-digit",
@@ -150,12 +158,25 @@ async function updateWeather() {
       `${weather.temperature}${weather.temperatureUnit}`,
     );
     syncVisibility();
-  } catch {
+  } catch (error) {
+    logRuntimeWarning(
+      "weather-update-failed",
+      "Current weather could not be loaded.",
+      error,
+    );
+
     if (
       requestVersion === weatherRequestVersion &&
       elements.weatherSource.dataset.state === "loading"
     ) {
-      elements.weatherSource.hidden = true;
+      if (configuration.fallbackSymbol) {
+        elements.weatherSource.dataset.state = "ready";
+        elements.weatherSource.ariaLabel = "Current weather";
+        elements.weatherSource.title = elements.weatherSource.ariaLabel;
+      } else {
+        elements.weatherSource.hidden = true;
+      }
+
       syncVisibility();
     }
   }
@@ -172,7 +193,8 @@ function renderFromHash() {
       baseUrl: window.location.href,
       isDevelopment: import.meta.env.DEV,
     });
-  } catch {
+  } catch (error) {
+    logConfigurationError(error);
     renderInvalidConfiguration();
     return;
   }
@@ -184,15 +206,27 @@ function renderFromHash() {
     configuration.weather &&
     configuration.latitude !== null &&
     configuration.longitude !== null;
+  const hasWeatherSymbol =
+    configuration.weather && configuration.weatherSymbol.length > 0;
 
-  elements.weatherSource.hidden = !canLoadWeather;
-  elements.weatherSource.dataset.state = canLoadWeather ? "loading" : "idle";
+  elements.weatherSource.hidden = !(canLoadWeather || hasWeatherSymbol);
+  elements.weatherSource.dataset.state = canLoadWeather
+    ? "loading"
+    : hasWeatherSymbol
+      ? "ready"
+      : "idle";
   elements.weatherSource.removeAttribute("href");
   elements.weatherSource.ariaLabel = canLoadWeather
     ? "Loading current weather"
-    : "";
+    : hasWeatherSymbol
+      ? "Current weather"
+      : "";
   elements.weatherSource.title = elements.weatherSource.ariaLabel;
-  elements.weatherIcon.textContent = canLoadWeather ? "…" : "";
+  elements.weatherIcon.textContent = hasWeatherSymbol
+    ? configuration.weatherSymbol
+    : canLoadWeather
+      ? "…"
+      : "";
   setText(
     elements.temperature,
     configuration.weather ? configuration.temperature : "",
@@ -205,6 +239,7 @@ function renderFromHash() {
       temperatureUnit: normalizeTemperatureUnit(
         configuration.temperatureUnit,
       ),
+      fallbackSymbol: configuration.weatherSymbol,
     };
   }
 
@@ -231,6 +266,15 @@ function renderFromHash() {
   syncVisibility();
   void updateWeather();
 }
+
+elements.brandImage.addEventListener("error", () => {
+  if (elements.brandImage.hasAttribute("src")) {
+    logRuntimeWarning(
+      "branding-image-load-failed",
+      "The branding image could not be loaded.",
+    );
+  }
+});
 
 elements.footerYear.textContent = new Date().getFullYear();
 renderFromHash();

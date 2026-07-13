@@ -35,6 +35,27 @@ test("parses valid bounded widget configuration", () => {
   );
 });
 
+test("accepts the supplied GitHub branding URL and weather symbol", () => {
+  const configuration = parseWidgetConfiguration(
+    "#heading=Custom%20Companion%202026&weather=true" +
+      "&weatherSymbol=%E2%9B%85&temp=82%C2%B0F&time=true" +
+      "&timeZone=America%2FNew_York" +
+      "&info1=Currently%20Paired%20to%20Room:%3Cbr%3E%20Codec%20EQ%20A%20-%20Bobby%20Home%20Lab" +
+      "&iconUrl=https%3A%2F%2Fgithub.com%2FWebexSamples.png%3Fsize%3D256" +
+      "&theme=ChiliPlum",
+    {
+      baseUrl: "http://10.0.0.25:5173/",
+      isDevelopment: true,
+    },
+  );
+
+  assert.equal(configuration.weatherSymbol, "⛅");
+  assert.equal(
+    configuration.iconUrl,
+    "https://github.com/WebexSamples.png?size=256",
+  );
+});
+
 test("rejects the fragment before parsing when the total limit is exceeded", () => {
   assertInvalid("#" + "a".repeat(1_000_000), "fragment-too-long");
 });
@@ -51,6 +72,10 @@ test("rejects oversized text fields", () => {
   assertInvalid(
     "#temp=" + "a".repeat(INPUT_LIMITS.temperature + 1),
     "temp-too-long",
+  );
+  assertInvalid(
+    "#weatherSymbol=" + "a".repeat(INPUT_LIMITS.weatherSymbol + 1),
+    "weatherSymbol-too-long",
   );
   assertInvalid(
     "#timeZone=" + "a".repeat(INPUT_LIMITS.timeZone + 1),

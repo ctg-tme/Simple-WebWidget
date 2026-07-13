@@ -15,12 +15,16 @@ test("allows same-origin HTTPS image URLs", () => {
   });
 });
 
-test("allows approved cross-origin HTTPS image URLs", () => {
-  const result = validateIconUrl("https://www.cisco.com/logo.png", {
-    baseUrl: productionPage,
-  });
+test("allows arbitrary cross-origin HTTPS image URLs", () => {
+  const result = validateIconUrl(
+    "https://github.com/WebexSamples.png?size=256",
+    { baseUrl: productionPage },
+  );
 
-  assert.equal(result.ok, true);
+  assert.deepEqual(result, {
+    ok: true,
+    url: "https://github.com/WebexSamples.png?size=256",
+  });
 });
 
 test("allows same-origin HTTP only for local development", () => {
@@ -72,22 +76,9 @@ test("rejects credentials, unsupported schemes, malformed URLs, and oversized va
   );
 });
 
-test("rejects unapproved origins and private or loopback literal hosts", () => {
-  const options = {
-    baseUrl: productionPage,
-    approvedOrigins: [
-      "https://evil.example",
-      "https://127.0.0.1",
-      "https://10.0.0.1",
-      "https://[::1]",
-      "https://[::ffff:7f00:1]",
-    ],
-  };
+test("rejects private or loopback literal hosts", () => {
+  const options = { baseUrl: productionPage };
 
-  assert.equal(
-    validateIconUrl("https://unapproved.example/logo.png", options).reason,
-    "unapproved-origin",
-  );
   assert.equal(
     validateIconUrl("https://127.0.0.1/logo.png", options).reason,
     "private-host",
@@ -110,7 +101,7 @@ test("rejects unapproved origins and private or loopback literal hosts", () => {
   );
 });
 
-test("requires HTTPS for approved cross-origin images", () => {
+test("requires HTTPS for cross-origin images", () => {
   const result = validateIconUrl("http://www.cisco.com/logo.png", {
     baseUrl: productionPage,
   });

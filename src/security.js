@@ -1,8 +1,3 @@
-export const APPROVED_IMAGE_ORIGINS = Object.freeze([
-  "https://www.cisco.com",
-  "https://www.webex.com",
-]);
-
 export const APPROVED_CONNECT_ORIGINS = Object.freeze([
   "https://api.open-meteo.com",
 ]);
@@ -14,7 +9,7 @@ export const CONTENT_SECURITY_POLICY = [
   "script-src 'self'",
   "style-src 'self'",
   "font-src 'self'",
-  `img-src 'self' data: ${APPROVED_IMAGE_ORIGINS.join(" ")}`,
+  "img-src 'self' data: https:",
   `connect-src ${APPROVED_CONNECT_ORIGINS.join(" ")}`,
   "object-src 'none'",
   "base-uri 'none'",
@@ -155,7 +150,6 @@ export function validateIconUrl(
   {
     baseUrl,
     isDevelopment = false,
-    approvedOrigins = APPROVED_IMAGE_ORIGINS,
     maximumLength = ICON_URL_MAX_LENGTH,
   } = {},
 ) {
@@ -210,11 +204,5 @@ export function validateIconUrl(
     return rejection("insecure-cross-origin");
   }
 
-  const normalizedApprovedOrigins = new Set(
-    approvedOrigins.map((origin) => new URL(origin).origin),
-  );
-
-  return normalizedApprovedOrigins.has(iconUrl.origin)
-    ? { ok: true, url: iconUrl.href }
-    : rejection("unapproved-origin");
+  return { ok: true, url: iconUrl.href };
 }
