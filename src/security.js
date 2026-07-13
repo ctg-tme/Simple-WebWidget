@@ -10,6 +10,7 @@ export const CONTENT_SECURITY_POLICY = [
   "style-src 'self'",
   "font-src 'self'",
   "img-src 'self' data: https:",
+  "frame-src 'self' https:",
   `connect-src ${APPROVED_CONNECT_ORIGINS.join(" ")}`,
   "object-src 'none'",
   "base-uri 'none'",
@@ -145,7 +146,7 @@ function rejection(reason) {
   return { ok: false, reason };
 }
 
-export function validateIconUrl(
+function validateRemoteResourceUrl(
   value,
   {
     baseUrl,
@@ -205,4 +206,12 @@ export function validateIconUrl(
   }
 
   return { ok: true, url: iconUrl.href };
+}
+
+export function validateIconUrl(value, options) {
+  return validateRemoteResourceUrl(value, options);
+}
+
+export function validateFrameUrl(value, options) {
+  return validateRemoteResourceUrl(value, options);
 }

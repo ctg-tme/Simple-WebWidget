@@ -1,10 +1,12 @@
-import { ICON_URL_MAX_LENGTH, validateIconUrl } from "./security.js";
+import {
+  ICON_URL_MAX_LENGTH,
+  validateFrameUrl,
+  validateIconUrl,
+} from "./security.js";
 
 export const INPUT_LIMITS = Object.freeze({
   fragment: 8192,
   heading: 80,
-  temperature: 16,
-  weatherSymbol: 16,
   timeZone: 64,
   information: 400,
   iconUrl: ICON_URL_MAX_LENGTH,
@@ -40,6 +42,28 @@ function readMultilineText(params, name) {
   return readLimitedText(params, name, INPUT_LIMITS.information)
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/\\n/g, "\n");
+}
+
+const INFORMATION_URL_PATTERN = /^(?:https?:|javascript:|data:|file:|\.{0,2}\/)/i;
+
+function readInformation(params, name, { baseUrl, isDevelopment }) {
+  const value = readMultilineText(params, name);
+
+  if (!value || !INFORMATION_URL_PATTERN.test(value)) {
+    return { value, url: "" };
+  }
+
+  const validation = validateFrameUrl(value, {
+    baseUrl,
+    isDevelopment,
+    maximumLength: INPUT_LIMITS.information,
+  });
+
+  if (!validation.ok) {
+    invalid(`${name}-url-${validation.reason}`);
+  }
+
+  return { value, url: validation.url };
 }
 
 function readBoolean(params, name) {
@@ -104,6 +128,7 @@ export function parseWidgetConfiguration(
     iconUrl = validation.url;
   }
 
+  const weather = readBoolean(params, "weather");
   const latitude = readCoordinate(params, "latitude", -90, 90);
   const longitude = readCoordinate(params, "longitude", -180, 180);
 
@@ -111,16 +136,20 @@ export function parseWidgetConfiguration(
     invalid("incomplete-coordinates");
   }
 
+  if (weather && latitude === null) {
+    invalid("weather-coordinates-required");
+  }
+
+  const informationOptions = { baseUrl, isDevelopment };
+  const info1 = readInformation(params, "info1", informationOptions);
+  const info2 = readInformation(params, "info2", informationOptions);
+  const info3 = readInformation(params, "info3", informationOptions);
+  const message = readInformation(params, "message", informationOptions);
+
   return Object.freeze({
     theme: readLimitedText(params, "theme", INPUT_LIMITS.theme),
     heading: readLimitedText(params, "heading", INPUT_LIMITS.heading),
-    weather: readBoolean(params, "weather"),
-    weatherSymbol: readLimitedText(
-      params,
-      "weatherSymbol",
-      INPUT_LIMITS.weatherSymbol,
-    ),
-    temperature: readLimitedText(params, "temp", INPUT_LIMITS.temperature),
+    weather,
     latitude,
     longitude,
     temperatureUnit: readLimitedText(
@@ -130,10 +159,14 @@ export function parseWidgetConfiguration(
     ),
     time: readBoolean(params, "time"),
     timeZone: readLimitedText(params, "timeZone", INPUT_LIMITS.timeZone),
-    info1: readMultilineText(params, "info1"),
-    info2: readMultilineText(params, "info2"),
-    info3: readMultilineText(params, "info3"),
-    message: readMultilineText(params, "message"),
+    info1: info1.value,
+    info1Url: info1.url,
+    info2: info2.value,
+    info2Url: info2.url,
+    info3: info3.value,
+    info3Url: info3.url,
+    message: message.value,
+    messageUrl: message.url,
     iconUrl,
   });
 }

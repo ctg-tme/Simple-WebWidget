@@ -23,7 +23,6 @@ const elements = {
   localTime: document.querySelector("#local-time"),
   info1: document.querySelector("#info-1"),
   info2: document.querySelector("#info-2"),
-  brandableBlock: document.querySelector("#brandable-block"),
   info3: document.querySelector("#info-3"),
   configurationMessage: document.querySelector("#configuration-message"),
   configurationGuide: document.querySelector("#configuration-guide"),
@@ -37,10 +36,94 @@ const elements = {
 let timeFormatter = null;
 let weatherConfiguration = null;
 let weatherRequestVersion = 0;
+const frameLoadTimers = new WeakMap();
+const FRAME_LOAD_TIMEOUT_MS = 15_000;
+
 function setText(element, value) {
   element.textContent = value;
   element.hidden = value.length === 0;
   return !element.hidden;
+}
+
+function clearInformationBlock(element) {
+  const frame = element.querySelector("iframe");
+
+  if (frame) {
+    window.clearTimeout(frameLoadTimers.get(frame));
+    frameLoadTimers.delete(frame);
+    frame.removeAttribute("src");
+  }
+
+  element.replaceChildren();
+  element.classList.remove("info-block--frame");
+  element.hidden = true;
+}
+
+function hideFailedInformationFrame(element, frame, code, message) {
+  if (!element.contains(frame)) {
+    return;
+  }
+
+  clearInformationBlock(element);
+  logRuntimeWarning(code, message);
+  syncVisibility();
+}
+
+function renderInformationBlock(element, value, frameUrl, position) {
+  clearInformationBlock(element);
+
+  if (!value) {
+    return false;
+  }
+
+  if (!frameUrl) {
+    element.textContent = value;
+    element.hidden = false;
+    return true;
+  }
+
+  const frame = document.createElement("iframe");
+  frame.title = `Information block ${position}`;
+  frame.referrerPolicy = "no-referrer";
+  frame.loading = "eager";
+  frame.setAttribute("sandbox", "allow-forms allow-popups allow-scripts");
+  frame.addEventListener(
+    "load",
+    () => {
+      window.clearTimeout(frameLoadTimers.get(frame));
+      frameLoadTimers.delete(frame);
+    },
+    { once: true },
+  );
+  frame.addEventListener(
+    "error",
+    () => {
+      hideFailedInformationFrame(
+        element,
+        frame,
+        "information-frame-load-failed",
+        `Information block ${position} could not be loaded.`,
+      );
+    },
+    { once: true },
+  );
+
+  element.classList.add("info-block--frame");
+  element.append(frame);
+  element.hidden = false;
+  frameLoadTimers.set(
+    frame,
+    window.setTimeout(() => {
+      hideFailedInformationFrame(
+        element,
+        frame,
+        "information-frame-load-timeout",
+        `Information block ${position} did not finish loading.`,
+      );
+    }, FRAME_LOAD_TIMEOUT_MS),
+  );
+  frame.src = frameUrl;
+  return true;
 }
 
 function createTimeFormatter(timeZone) {
@@ -81,13 +164,14 @@ function syncVisibility() {
 
   elements.conditionsDivider.hidden = !(hasWeather && hasTime);
   elements.conditions.hidden = !(hasWeather || hasTime);
-  elements.header.hidden = elements.heading.hidden && elements.conditions.hidden;
+  elements.header.hidden =
+    elements.brand.hidden && elements.heading.hidden && elements.conditions.hidden;
 
   const hasContent =
     !elements.header.hidden ||
     !elements.info1.hidden ||
     !elements.info2.hidden ||
-    !elements.brandableBlock.hidden;
+    !elements.info3.hidden;
 
   elements.configurationMessage.hidden = hasContent;
 
@@ -110,12 +194,10 @@ function resetRenderedConfiguration() {
   setText(elements.temperature, "");
   elements.localTime.hidden = true;
   elements.localTime.textContent = "";
-  setText(elements.info1, "");
-  setText(elements.info2, "");
-  setText(elements.info3, "");
+  clearInformationBlock(elements.info1);
+  clearInformationBlock(elements.info2);
+  clearInformationBlock(elements.info3);
   elements.brand.hidden = true;
-  elements.brandableBlock.hidden = true;
-  elements.brandableBlock.classList.remove("info-block--branding");
   elements.brandImage.removeAttribute("src");
   elements.configurationGuide.hidden = false;
   elements.configurationError.hidden = true;
@@ -171,14 +253,8 @@ async function updateWeather() {
       requestVersion === weatherRequestVersion &&
       elements.weatherSource.dataset.state === "loading"
     ) {
-      if (configuration.fallbackSymbol) {
-        elements.weatherSource.dataset.state = "ready";
-        elements.weatherSource.ariaLabel = "Current weather";
-        elements.weatherSource.title = elements.weatherSource.ariaLabel;
-      } else {
-        elements.weatherSource.hidden = true;
-      }
-
+      elements.weatherSource.hidden = true;
+      setText(elements.temperature, "");
       syncVisibility();
     }
   }
@@ -204,35 +280,17 @@ function renderFromHash() {
   document.documentElement.dataset.theme = resolveTheme(configuration.theme);
   setText(elements.heading, configuration.heading);
 
-  const canLoadWeather =
-    configuration.weather &&
-    configuration.latitude !== null &&
-    configuration.longitude !== null;
-  const hasWeatherSymbol =
-    configuration.weather && configuration.weatherSymbol.length > 0;
+  const canLoadWeather = configuration.weather;
 
-  elements.weatherSource.hidden = !(canLoadWeather || hasWeatherSymbol);
-  elements.weatherSource.dataset.state = canLoadWeather
-    ? "loading"
-    : hasWeatherSymbol
-      ? "ready"
-      : "idle";
+  elements.weatherSource.hidden = !canLoadWeather;
+  elements.weatherSource.dataset.state = canLoadWeather ? "loading" : "idle";
   elements.weatherSource.removeAttribute("href");
   elements.weatherSource.ariaLabel = canLoadWeather
     ? "Loading current weather"
-    : hasWeatherSymbol
-      ? "Current weather"
-      : "";
+    : "";
   elements.weatherSource.title = elements.weatherSource.ariaLabel;
-  elements.weatherIcon.textContent = hasWeatherSymbol
-    ? configuration.weatherSymbol
-    : canLoadWeather
-      ? "…"
-      : "";
-  setText(
-    elements.temperature,
-    configuration.weather ? configuration.temperature : "",
-  );
+  elements.weatherIcon.textContent = canLoadWeather ? "…" : "";
+  setText(elements.temperature, "");
 
   if (canLoadWeather) {
     weatherConfiguration = {
@@ -241,7 +299,6 @@ function renderFromHash() {
       temperatureUnit: normalizeTemperatureUnit(
         configuration.temperatureUnit,
       ),
-      fallbackSymbol: configuration.weatherSymbol,
     };
   }
 
@@ -251,15 +308,28 @@ function renderFromHash() {
   elements.localTime.hidden = !configuration.time;
   updateTime();
 
-  setText(elements.info1, configuration.info1);
-  setText(elements.info2, configuration.info2 || configuration.message);
-  const showInfo3 = setText(elements.info3, configuration.info3);
+  renderInformationBlock(
+    elements.info1,
+    configuration.info1,
+    configuration.info1Url,
+    1,
+  );
+  const info2UsesAlias = !configuration.info2 && configuration.message;
+  renderInformationBlock(
+    elements.info2,
+    configuration.info2 || configuration.message,
+    info2UsesAlias ? configuration.messageUrl : configuration.info2Url,
+    2,
+  );
+  renderInformationBlock(
+    elements.info3,
+    configuration.info3,
+    configuration.info3Url,
+    3,
+  );
 
   const hasBrand = configuration.iconUrl.length > 0;
-  elements.info3.hidden = hasBrand;
-  elements.brand.hidden = !hasBrand;
-  elements.brandableBlock.hidden = !(hasBrand || showInfo3);
-  elements.brandableBlock.classList.toggle("info-block--branding", hasBrand);
+  elements.brand.hidden = true;
 
   if (hasBrand) {
     elements.brandImage.src = configuration.iconUrl;
@@ -269,12 +339,22 @@ function renderFromHash() {
   void updateWeather();
 }
 
+elements.brandImage.addEventListener("load", () => {
+  if (elements.brandImage.hasAttribute("src")) {
+    elements.brand.hidden = false;
+    syncVisibility();
+  }
+});
+
 elements.brandImage.addEventListener("error", () => {
   if (elements.brandImage.hasAttribute("src")) {
     logRuntimeWarning(
       "branding-image-load-failed",
       "The branding image could not be loaded.",
     );
+    elements.brandImage.removeAttribute("src");
+    elements.brand.hidden = true;
+    syncVisibility();
   }
 });
 

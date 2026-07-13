@@ -14,7 +14,12 @@
     <main class="widget-shell">
       <article class="widget" aria-live="polite" aria-label="Room information">
         <header id="header" class="widget__header" hidden>
-          <h1 id="heading" hidden></h1>
+          <div class="widget__identity">
+            <span id="brand" class="brand" hidden>
+              <img id="brand-image" alt="Branding" referrerpolicy="no-referrer" />
+            </span>
+            <h1 id="heading" hidden></h1>
+          </div>
           <div id="conditions" class="conditions" aria-label="Local weather and time" hidden>
             <a
               id="weather-source"
@@ -33,13 +38,7 @@
 
         <section id="info-1" class="info-block" hidden></section>
         <section id="info-2" class="info-block" hidden></section>
-
-        <section id="brandable-block" class="info-block info-block--brandable" hidden>
-          <span id="info-3" hidden></span>
-          <span id="brand" class="brand" hidden>
-            <img id="brand-image" alt="Branding" referrerpolicy="no-referrer" />
-          </span>
-        </section>
+        <section id="info-3" class="info-block" hidden></section>
 
         <section id="configuration-message" class="configuration-message">
           <a
@@ -54,7 +53,7 @@
               src="./configure-widget.png"
               alt="QR code linking to the Simple WebWidget user guide"
             />
-            <span>Scan to configure this WebWidget</span>
+            <span>Scan to learn how to configure this WebWidget</span>
           </a>
           <span id="configuration-error" hidden>Widget configuration is invalid</span>
         </section>

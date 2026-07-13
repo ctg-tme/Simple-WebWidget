@@ -2,7 +2,7 @@
 
 A lightweight, front-end-only information widget for Cisco RoomOS devices, hosted with GitHub Pages and configured entirely through URL hash parameters.
 
-The widget uses a fixed 600 × 600 CSS-pixel canvas at normal RoomOS display sizes, keeping the same scale on 1080p and 4K screens. With no configured content, it displays a QR code linking back to this guide above the permanent footer.
+The widget uses a fixed 600 × 600 CSS-pixel canvas at normal RoomOS display sizes, keeping the same scale on 1080p and 4K screens. With no configured content, it displays a QR code above the permanent footer with the message **Scan to learn how to configure this WebWidget**.
 
 ## User Guide
 
@@ -12,16 +12,16 @@ Add configuration after the `#` in the GitHub Pages URL. Only the sections repre
 
 | Label | Parameters | Effect |
 | ---: | --- | --- |
-| 1 | `heading` | Top information heading |
-| 2 | `weather`, `weatherSymbol`, `temp`, `latitude`, `longitude`, `temperatureUnit`, `time`, `timeZone` | Compact local weather and time area |
-| 3 | `info1` | First information block |
-| 4 | `info2` or `message` | Second information block |
-| 5 | `info3` | Third information block; hidden when `iconUrl` is supplied |
+| 1 | `iconUrl`, `heading` | Optional borderless branding icon and information heading |
+| 2 | `weather`, `latitude`, `longitude`, `temperatureUnit`, `time`, `timeZone` | Compact local weather and time area |
+| 3 | `info1` | First text or iframe information block |
+| 4 | `info2` or `message` | Second text or iframe information block |
+| 5 | `info3` | Third text or iframe information block |
 
 <table>
   <tr>
-    <td align="center"><img src="docs/images/user-guide/configured-widget.png" width="320" alt="Configured WebWidget with generic text and branding"><br><sub><code>iconUrl</code> replaces <code>info3</code></sub></td>
-    <td align="center"><img src="docs/images/user-guide/unconfigured-widget.png" width="320" alt="Unconfigured WebWidget showing the setup QR code"><br><sub>No hash parameters: setup QR code</sub></td>
+    <td align="center"><img src="docs/images/user-guide/configured-widget.png" width="320" alt="Configured WebWidget with generic text and inline branding"><br><sub><code>iconUrl</code> shares the header; all three information blocks remain available</sub></td>
+    <td align="center"><img src="docs/images/user-guide/unconfigured-widget.png" width="320" alt="Unconfigured WebWidget showing the user-guide QR code"><br><sub>No hash parameters: learn how to configure the widget</sub></td>
   </tr>
 </table>
 
@@ -35,18 +35,26 @@ Each example is a complete URL and can be opened directly or pasted into a RoomO
 
 #### Three information blocks
 
-[Open the three-block example](https://ctg-tme.github.io/Simple-WebWidget/#theme=EveningFjord&heading=Visitor%20Information&weather=true&weatherSymbol=%E2%9B%85&temp=72%C2%B0F&time=true&timeZone=America%2FNew_York&info1=Welcome%20to%20the%20collaboration%20space&info2=Next%20session%20starts%20at%203%3A30%20PM&info3=Please%20leave%20the%20room%20ready%20for%20the%20next%20group)
+[Open the three-block example](https://ctg-tme.github.io/Simple-WebWidget/#theme=EveningFjord&heading=Visitor%20Information&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Primary%20information&info2=Secondary%20information&info3=Additional%20information)
 
 ```text
-https://ctg-tme.github.io/Simple-WebWidget/#theme=EveningFjord&heading=Visitor%20Information&weather=true&weatherSymbol=%E2%9B%85&temp=72%C2%B0F&time=true&timeZone=America%2FNew_York&info1=Welcome%20to%20the%20collaboration%20space&info2=Next%20session%20starts%20at%203%3A30%20PM&info3=Please%20leave%20the%20room%20ready%20for%20the%20next%20group
+https://ctg-tme.github.io/Simple-WebWidget/#theme=EveningFjord&heading=Visitor%20Information&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Primary%20information&info2=Secondary%20information&info3=Additional%20information
 ```
 
-#### Branding image instead of `info3`
+#### Branding image with all three information blocks
 
-[Open the branding example](https://ctg-tme.github.io/Simple-WebWidget/#theme=ChiliPlum&heading=Visitor%20Information&weather=true&weatherSymbol=%E2%9B%85&temp=72%C2%B0F&time=true&timeZone=America%2FNew_York&info1=Welcome%20to%20the%20collaboration%20space&iconUrl=https%3A%2F%2Fgithub.com%2FWebexSamples.png%3Fsize%3D256)
+[Open the branding example](https://ctg-tme.github.io/Simple-WebWidget/#theme=ChiliPlum&heading=Visitor%20Information&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Primary%20information&info2=Secondary%20information&info3=Additional%20information&iconUrl=https%3A%2F%2Fgithub.com%2FWebexSamples.png%3Fsize%3D256)
 
 ```text
-https://ctg-tme.github.io/Simple-WebWidget/#theme=ChiliPlum&heading=Visitor%20Information&weather=true&weatherSymbol=%E2%9B%85&temp=72%C2%B0F&time=true&timeZone=America%2FNew_York&info1=Welcome%20to%20the%20collaboration%20space&iconUrl=https%3A%2F%2Fgithub.com%2FWebexSamples.png%3Fsize%3D256
+https://ctg-tme.github.io/Simple-WebWidget/#theme=ChiliPlum&heading=Visitor%20Information&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Primary%20information&info2=Secondary%20information&info3=Additional%20information&iconUrl=https%3A%2F%2Fgithub.com%2FWebexSamples.png%3Fsize%3D256
+```
+
+#### Iframe information block
+
+[Open the iframe example](https://ctg-tme.github.io/Simple-WebWidget/#theme=CrystalMist&heading=Embedded%20Information&info1=https%3A%2F%2Fexample.com%2F&info2=Reference%20information&info3=Additional%20notes)
+
+```text
+https://ctg-tme.github.io/Simple-WebWidget/#theme=CrystalMist&heading=Embedded%20Information&info1=https%3A%2F%2Fexample.com%2F&info2=Reference%20information&info3=Additional%20notes
 ```
 
 #### Live weather from coordinates
@@ -74,20 +82,18 @@ Widget configuration is supplied exclusively through URL hash parameters—every
 | `theme` | RoomOS 26 theme name; defaults to `EveningFjord` |
 | `heading` | Information heading |
 | `weather` | Set to `true` to show weather |
-| `weatherSymbol` | Optional weather symbol shown without live coordinates and used as a fallback if live weather cannot be retrieved |
-| `latitude` | Latitude used to retrieve current weather; requires `weather=true` |
-| `longitude` | Longitude used to retrieve current weather; requires `weather=true` |
+| `latitude` | Latitude used to retrieve current weather; required with `weather=true` |
+| `longitude` | Longitude used to retrieve current weather; required with `weather=true` |
 | `temperatureUnit` | `fahrenheit` (default) or `celsius` |
-| `temp` | Optional temperature shown without live coordinates or while live weather loads |
 | `time` | Set to `true` to show a 24-hour clock |
 | `timeZone` | Optional IANA timezone, such as `America/New_York`; otherwise the browser or device timezone is used |
-| `info1` | First information block |
-| `info2` | Second information block |
-| `info3` | Third information block |
+| `info1` | First information block; text or a validated HTTPS URL rendered in an iframe |
+| `info2` | Second information block; text or a validated HTTPS URL rendered in an iframe |
+| `info3` | Third information block; text or a validated HTTPS URL rendered in an iframe |
 | `message` | Backward-compatible alias for `info2` |
-| `iconUrl` | Validated square branding image URL; when present, `info3` is hidden |
+| `iconUrl` | Validated square branding image URL displayed borderlessly to the left of the heading |
 
-When coordinates are configured, the widget retrieves current temperature, weather condition, and day/night state directly from Open-Meteo. It refreshes every 15 minutes and converts the current WMO weather code into a recognizable clear, cloudy, fog, rain, snow, or thunderstorm symbol. The weather symbol links to the data provider for attribution. This live feature requires outbound HTTPS access to `api.open-meteo.com` from the RoomOS device.
+When `weather=true` and coordinates are configured, the widget retrieves current temperature, weather condition, and day/night state directly from Open-Meteo. It refreshes every 15 minutes and converts the current WMO weather code into a recognizable clear, cloudy, fog, rain, snow, or thunderstorm symbol. Neither the temperature nor the weather symbol can be overridden by hash parameters. The weather symbol links to the data provider for attribution. This live feature requires outbound HTTPS access to `api.open-meteo.com` from the RoomOS device.
 
 ### Input limits and invalid configuration
 
@@ -97,8 +103,6 @@ The widget validates the complete fragment before displaying supplied content or
 | --- | ---: |
 | Complete fragment, before decoding and excluding `#` | 8,192 |
 | `heading` | 80 |
-| `temp` | 16 |
-| `weatherSymbol` | 16 |
 | `timeZone` | 64 |
 | Each of `info1`, `info2`, `info3`, and `message` | 400 |
 | `iconUrl` | 2,048 |
@@ -107,13 +111,19 @@ The widget validates the complete fragment before displaying supplied content or
 | `temperatureUnit` | 16 |
 | Boolean fields | 5 |
 
-Malformed percent encoding, incomplete or invalid coordinates, an excessive fragment, an oversized field, or an unsafe branding URL causes the complete configuration to be rejected. Existing branding image sources are removed and the widget displays **Widget configuration is invalid**. Values are never truncated silently.
+Malformed percent encoding, incomplete or invalid coordinates, an excessive fragment, an oversized field, or an unsafe branding or iframe URL causes the complete configuration to be rejected. Existing remote sources are removed and the widget displays **Widget configuration is invalid**. Values are never truncated silently.
 
 ### Branding image policy
 
 Branding images may use any cross-origin HTTPS URL, a same-origin HTTPS URL, or a relative URL hosted with the widget. During local development, same-origin HTTP images are also allowed from `localhost` or the private LAN address serving the widget.
 
 URLs with credentials, unsupported schemes such as `javascript:`, `file:`, or `data:`, malformed URLs, and loopback or private literal targets are rejected. Private or loopback same-origin HTTP is allowed only in local development. Validation deliberately does not attempt DNS-based private-network detection, so administrators should use trusted image hosts where possible. Branding image requests use a `no-referrer` policy.
+
+### Iframe content
+
+When the complete value of `info1`, `info2`, `info3`, or `message` is a validated HTTPS URL, the block renders that URL in a sandboxed iframe. Relative same-origin URLs are also supported. Same-origin HTTP is permitted only during local development. Ordinary text, including multiline text, continues to render as escaped text.
+
+Iframe navigation does not use the same CORS permission model as `fetch`. A destination can instead refuse embedding with `X-Frame-Options` or a Content Security Policy `frame-ancestors` directive. Browsers do not reliably expose those refusal details to the parent page, so the widget cannot guarantee automatic detection. Failures delivered through the iframe error event or the 15-second load timeout are logged as `information-frame-load-failed` or `information-frame-load-timeout` and the affected block is hidden. The browser may also report an embedding refusal directly in its console. Confirm that each destination explicitly permits iframe embedding before deployment.
 
 ### Line breaks
 
@@ -127,7 +137,7 @@ The text remains escaped; other HTML is never rendered. Encode the full value of
 
 ### Console diagnostics
 
-Invalid configuration, invalid time-zone fallback, weather retrieval failure, and branding image load failure are reported in the browser console with a `[Simple-WebWidget]` prefix and a stable issue code. Configuration values and the complete fragment are not logged. For example, a rejected scheme reports `icon-url-unsupported-scheme`, while a failed image request reports `branding-image-load-failed`.
+Invalid configuration, invalid time-zone fallback, weather retrieval failure, branding image load failure, and detectable iframe load failure are reported in the browser console with a `[Simple-WebWidget]` prefix and a stable issue code. Configuration values and the complete fragment are not logged. For example, a rejected scheme reports `icon-url-unsupported-scheme`, while a failed image request reports `branding-image-load-failed`.
 
 ## RoomOS 26 Themes
 
@@ -187,7 +197,7 @@ npm run build
 npm run check:production-security
 ```
 
-The static output is written to `dist/`. Production builds include a restrictive Content Security Policy and an explicit `no-referrer` policy. The CSP permits same-origin scripts, styles, and fonts; same-origin, data, and HTTPS images; and the Open-Meteo weather API as the only outbound connection. Development builds omit the CSP meta tag so Vite hot-module replacement continues to work.
+The static output is written to `dist/`. Production builds include a restrictive Content Security Policy and an explicit `no-referrer` policy. The CSP permits same-origin scripts, styles, and fonts; same-origin, data, and HTTPS images; validated same-origin or HTTPS frames; and the Open-Meteo weather API as the only outbound connection. Development builds omit the CSP meta tag so Vite hot-module replacement continues to work.
 
 Pushes to `main` run the included GitHub Pages deployment workflow. In the repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions**. Deploying directly from the `main` branch serves the unbuilt Vite source and will not render the widget correctly.
 

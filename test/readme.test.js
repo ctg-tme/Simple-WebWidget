@@ -40,3 +40,11 @@ test("all README documentation images exist", async () => {
     imagePaths.map((imagePath) => access(new URL(`../${imagePath}`, import.meta.url))),
   );
 });
+
+test("documents independent branding, automatic weather symbols, and iframe limits", () => {
+  assert.doesNotMatch(readme, /iconUrl[^\n]*(?:replaces|hidden when)/i);
+  assert.match(readme, /weather code[^\n]*symbol/i);
+  assert.match(readme, /HTTPS URL[^\n]*iframe/i);
+  assert.match(readme, /X-Frame-Options/);
+  assert.match(readme, /Scan to learn how to configure this WebWidget/);
+});
