@@ -5,14 +5,26 @@ import { readFile } from "node:fs/promises";
 const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
 const main = await readFile(new URL("../src/main.js", import.meta.url), "utf8");
 
-test("links the unconfigured QR code to the README user guide", () => {
+test("guides an unconfigured user to the gear and README", () => {
   assert.match(
     html,
     /href="https:\/\/github\.com\/ctg-tme\/Simple-WebWidget#user-guide"/,
   );
   assert.match(html, /src="\.\/configure-widget\.png"/);
-  assert.match(html, /Scan to learn how to configure this WebWidget/);
+  assert.match(html, /Use the gear in the top-right to configure this WebWidget/);
+  assert.match(html, /Scan to learn more about the Simple WebWidget/);
   assert.match(html, /id="configuration-error" hidden/);
+});
+
+test("provides an accessible settings dialog for every supported content type", () => {
+  assert.match(html, /id="settings-button"[\s\S]*aria-haspopup="dialog"/);
+  assert.match(html, /id="settings-modal"[\s\S]*role="dialog"[\s\S]*aria-modal="true"/);
+  assert.match(html, /type="checkbox"/);
+  assert.match(html, /Not included/);
+  assert.match(html, /Website \/ iframe/);
+  assert.match(html, /H2R countdown/);
+  assert.match(html, /https:\/\/h2r\.graphics\/tools\/countdown\//);
+  assert.match(html, /id="setting-hide-settings"/);
 });
 
 test("places borderless branding inline with the heading and keeps info3 independent", () => {

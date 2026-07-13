@@ -127,13 +127,22 @@ test("rejects invalid or incomplete coordinates", () => {
   assertInvalid("#weather=true", "weather-coordinates-required");
 });
 
-test("ignores legacy manual weather overrides", () => {
+test("accepts hideSettings and strict boolean values", () => {
   const configuration = parseWidgetConfiguration(
-    "#weather=true&latitude=40.7&longitude=-74" +
-      "&weatherSymbol=%E2%9B%85&temp=120%C2%B0F",
+    "#time=false&hideSettings=true",
     options,
   );
 
-  assert.equal("weatherSymbol" in configuration, false);
-  assert.equal("temperature" in configuration, false);
+  assert.equal(configuration.time, false);
+  assert.equal(configuration.hideSettings, true);
+  assertInvalid("#time=yes", "time-invalid");
+  assertInvalid("#hideSettings=1", "hideSettings-invalid");
+});
+
+test("rejects unsupported legacy, unknown, and duplicate parameters", () => {
+  assertInvalid("#message=Legacy", "unsupported-parameter");
+  assertInvalid("#weatherSymbol=%E2%9B%85", "unsupported-parameter");
+  assertInvalid("#temp=82%C2%B0F", "unsupported-parameter");
+  assertInvalid("#heading=One&heading=Two", "duplicate-parameter");
+  assertInvalid("#custom=value", "unsupported-parameter");
 });

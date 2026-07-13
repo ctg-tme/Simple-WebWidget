@@ -16,6 +16,24 @@ export const INPUT_LIMITS = Object.freeze({
   boolean: 5,
 });
 
+export const SUPPORTED_HASH_PARAMETERS = Object.freeze([
+  "theme",
+  "heading",
+  "weather",
+  "latitude",
+  "longitude",
+  "temperatureUnit",
+  "time",
+  "timeZone",
+  "info1",
+  "info2",
+  "info3",
+  "iconUrl",
+  "hideSettings",
+]);
+
+const supportedHashParameterSet = new Set(SUPPORTED_HASH_PARAMETERS);
+
 export class WidgetConfigurationError extends Error {
   constructor(code) {
     super("Widget configuration is invalid");
@@ -67,10 +85,17 @@ function readInformation(params, name, { baseUrl, isDevelopment }) {
 }
 
 function readBoolean(params, name) {
-  return (
-    readLimitedText(params, name, INPUT_LIMITS.boolean).toLowerCase() ===
-    "true"
-  );
+  const value = readLimitedText(params, name, INPUT_LIMITS.boolean).toLowerCase();
+
+  if (!value) {
+    return false;
+  }
+
+  if (value !== "true" && value !== "false") {
+    invalid(`${name}-invalid`);
+  }
+
+  return value === "true";
 }
 
 function readCoordinate(params, name, minimum, maximum) {
@@ -97,6 +122,22 @@ function assertWellFormedEncoding(fragment) {
   }
 }
 
+function assertSupportedParameters(params) {
+  const seen = new Set();
+
+  for (const [name] of params) {
+    if (!supportedHashParameterSet.has(name)) {
+      invalid("unsupported-parameter");
+    }
+
+    if (seen.has(name)) {
+      invalid("duplicate-parameter");
+    }
+
+    seen.add(name);
+  }
+}
+
 export function parseWidgetConfiguration(
   rawFragment,
   { baseUrl, isDevelopment = false } = {},
@@ -111,6 +152,7 @@ export function parseWidgetConfiguration(
   const fragment = prefixLength ? rawValue.slice(1) : rawValue;
   assertWellFormedEncoding(fragment);
   const params = new URLSearchParams(fragment);
+  assertSupportedParameters(params);
   const iconUrlValue = readLimitedText(params, "iconUrl", INPUT_LIMITS.iconUrl);
   let iconUrl = "";
 
@@ -144,7 +186,6 @@ export function parseWidgetConfiguration(
   const info1 = readInformation(params, "info1", informationOptions);
   const info2 = readInformation(params, "info2", informationOptions);
   const info3 = readInformation(params, "info3", informationOptions);
-  const message = readInformation(params, "message", informationOptions);
 
   return Object.freeze({
     theme: readLimitedText(params, "theme", INPUT_LIMITS.theme),
@@ -165,8 +206,7 @@ export function parseWidgetConfiguration(
     info2Url: info2.url,
     info3: info3.value,
     info3Url: info3.url,
-    message: message.value,
-    messageUrl: message.url,
     iconUrl,
+    hideSettings: readBoolean(params, "hideSettings"),
   });
 }

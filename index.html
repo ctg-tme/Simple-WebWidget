@@ -11,6 +11,19 @@
     <title>RoomOS Web Widget</title>
   </head>
   <body>
+    <button
+      id="settings-button"
+      class="settings-button"
+      type="button"
+      aria-label="Configure this WebWidget"
+      aria-haspopup="dialog"
+      aria-controls="settings-modal"
+      title="Configure this WebWidget"
+      hidden
+    >
+      <span aria-hidden="true">⚙︎</span>
+    </button>
+
     <main class="widget-shell">
       <article class="widget" aria-live="polite" aria-label="Room information">
         <header id="header" class="widget__header" hidden>
@@ -41,20 +54,22 @@
         <section id="info-3" class="info-block" hidden></section>
 
         <section id="configuration-message" class="configuration-message">
-          <a
-            id="configuration-guide"
-            class="configuration-guide"
-            href="https://github.com/ctg-tme/Simple-WebWidget#user-guide"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              class="configuration-guide__qr"
-              src="./configure-widget.png"
-              alt="QR code linking to the Simple WebWidget user guide"
-            />
-            <span>Scan to learn how to configure this WebWidget</span>
-          </a>
+          <div id="configuration-guide" class="configuration-empty">
+            <p>Use the gear in the top-right to configure this WebWidget.</p>
+            <a
+              class="configuration-guide"
+              href="https://github.com/ctg-tme/Simple-WebWidget#user-guide"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                class="configuration-guide__qr"
+                src="./configure-widget.png"
+                alt="QR code linking to the Simple WebWidget user guide"
+              />
+              <span>Scan to learn more about the Simple WebWidget</span>
+            </a>
+          </div>
           <span id="configuration-error" hidden>Widget configuration is invalid</span>
         </section>
 
@@ -65,6 +80,222 @@
         </footer>
       </article>
     </main>
+
+    <div id="settings-modal" class="settings-modal" hidden>
+      <section
+        class="settings-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="settings-title"
+        aria-describedby="settings-description"
+      >
+        <header class="settings-panel__header">
+          <div>
+            <h2 id="settings-title">Configure WebWidget</h2>
+            <p id="settings-description">
+              Choose only the content you want to include. Applying replaces the current hash configuration.
+            </p>
+          </div>
+          <button
+            id="settings-close"
+            class="settings-close"
+            type="button"
+            aria-label="Close settings"
+          >
+            ×
+          </button>
+        </header>
+
+        <form id="settings-form" class="settings-form">
+          <fieldset class="settings-group">
+            <legend>Appearance</legend>
+            <label class="settings-field">
+              <span>RoomOS 26 theme</span>
+              <select id="setting-theme" name="theme"></select>
+              <small>Controls the page background, glass surfaces, borders, and text colors. EveningFjord is the default.</small>
+            </label>
+            <label class="settings-field">
+              <span>Information heading</span>
+              <input id="setting-heading" name="heading" type="text" maxlength="80" />
+              <small>Optional title shown in the left side of the header.</small>
+            </label>
+            <label class="settings-field">
+              <span>Branding image URL</span>
+              <input
+                id="setting-icon-url"
+                name="iconUrl"
+                type="text"
+                inputmode="url"
+                maxlength="2048"
+                placeholder="https://example.com/square-logo.png"
+              />
+              <small>Optional HTTPS or same-origin relative URL for a square image displayed beside the heading.</small>
+            </label>
+          </fieldset>
+
+          <fieldset class="settings-group">
+            <legend>Local conditions</legend>
+            <label class="settings-toggle">
+              <input id="setting-weather" name="weather" type="checkbox" />
+              <span class="settings-toggle__track" aria-hidden="true"></span>
+              <span>
+                <strong>Show current weather</strong>
+                <small>Uses coordinates to retrieve current conditions from Open-Meteo.</small>
+              </span>
+            </label>
+            <div id="weather-settings" class="settings-dependent" hidden>
+              <button id="use-device-location" class="settings-secondary" type="button">
+                Use this device’s location
+              </button>
+              <p id="location-status" class="settings-status" role="status"></p>
+              <div class="settings-columns">
+                <label class="settings-field">
+                  <span>Latitude</span>
+                  <input
+                    id="setting-latitude"
+                    name="latitude"
+                    type="number"
+                    inputmode="decimal"
+                    min="-90"
+                    max="90"
+                    step="any"
+                  />
+                  <small>Enter manually if device location is unavailable.</small>
+                </label>
+                <label class="settings-field">
+                  <span>Longitude</span>
+                  <input
+                    id="setting-longitude"
+                    name="longitude"
+                    type="number"
+                    inputmode="decimal"
+                    min="-180"
+                    max="180"
+                    step="any"
+                  />
+                  <small>Enter manually if device location is unavailable.</small>
+                </label>
+              </div>
+              <label class="settings-field">
+                <span>Temperature unit</span>
+                <select id="setting-temperature-unit" name="temperatureUnit">
+                  <option value="fahrenheit">Fahrenheit</option>
+                  <option value="celsius">Celsius</option>
+                </select>
+                <small>Fahrenheit is used when this setting is omitted.</small>
+              </label>
+            </div>
+
+            <label class="settings-toggle">
+              <input id="setting-time" name="time" type="checkbox" />
+              <span class="settings-toggle__track" aria-hidden="true"></span>
+              <span>
+                <strong>Show local time</strong>
+                <small>Displays a compact 24-hour clock in the header.</small>
+              </span>
+            </label>
+            <div id="time-settings" class="settings-dependent" hidden>
+              <label class="settings-field">
+                <span>Time zone</span>
+                <select id="setting-time-zone" name="timeZone"></select>
+                <small>Use the device time zone automatically or choose an IANA time zone.</small>
+              </label>
+            </div>
+          </fieldset>
+
+          <div id="information-settings" class="information-settings"></div>
+
+          <fieldset class="settings-group">
+            <legend>Deployment</legend>
+            <label class="settings-toggle">
+              <input id="setting-hide-settings" name="hideSettings" type="checkbox" />
+              <span class="settings-toggle__track" aria-hidden="true"></span>
+              <span>
+                <strong>Hide the settings gear after applying</strong>
+                <small>Prevents casual changes after deployment. Remove <code>hideSettings=true</code> from the URL to restore it.</small>
+              </span>
+            </label>
+          </fieldset>
+
+          <p id="settings-form-error" class="settings-error" role="alert" hidden></p>
+          <div class="settings-actions">
+            <button id="settings-cancel" class="settings-secondary" type="button">Cancel</button>
+            <button class="settings-primary" type="submit">Apply configuration</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <template id="information-setting-template">
+      <fieldset class="settings-group settings-information">
+        <legend data-information-legend></legend>
+        <label class="settings-field">
+          <span>Content type</span>
+          <select data-information-type>
+            <option value="none">Not included</option>
+            <option value="text">Text</option>
+            <option value="iframe">Website / iframe</option>
+            <option value="countdown">H2R countdown</option>
+          </select>
+          <small>Choose text, a general embeddable website, or a guided H2R countdown.</small>
+        </label>
+        <div data-information-panel="text" hidden>
+          <label class="settings-field">
+            <span>Text</span>
+            <textarea data-information-text maxlength="400" rows="3"></textarea>
+            <small>Plain text only. Line breaks are preserved.</small>
+          </label>
+        </div>
+        <div data-information-panel="iframe" hidden>
+          <label class="settings-field">
+            <span>Website URL</span>
+            <input
+              data-information-url
+              type="text"
+              inputmode="url"
+              maxlength="400"
+              placeholder="https://example.com/embeddable-page"
+            />
+            <small>The destination must permit HTTPS iframe embedding.</small>
+          </label>
+        </div>
+        <div data-information-panel="countdown" class="settings-countdown" hidden>
+          <p>
+            This embeds the external
+            <a
+              href="https://h2r.graphics/tools/countdown/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >H2R Graphics Countdown Timer</a>. H2R availability and terms are controlled by Barker Technologies AB.
+          </p>
+          <label class="settings-field">
+            <span>Target date and time</span>
+            <input data-countdown-target type="datetime-local" />
+            <small>The date and time used by the H2R countdown.</small>
+          </label>
+          <label class="settings-field">
+            <span>Countdown title</span>
+            <input data-countdown-title type="text" maxlength="80" placeholder="Event starts in…" />
+            <small>Optional message displayed above the countdown.</small>
+          </label>
+          <label class="settings-field">
+            <span>Message when complete</span>
+            <input data-countdown-end type="text" maxlength="80" placeholder="LIVE" />
+            <small>Optional message shown after the target time.</small>
+          </label>
+          <label class="settings-field">
+            <span>H2R color theme</span>
+            <select data-countdown-theme>
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+              <option value="green">Green</option>
+              <option value="orange">Orange</option>
+            </select>
+            <small>This controls the iframe content and is separate from the RoomOS theme.</small>
+          </label>
+        </div>
+      </fieldset>
+    </template>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

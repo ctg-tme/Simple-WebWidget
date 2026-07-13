@@ -6,6 +6,7 @@ import {
   logRuntimeWarning,
 } from "./logger.js";
 import { getInformationFrameSandbox } from "./security.js";
+import { createSettingsController } from "./settings-ui.js";
 import { resolveTheme } from "./themes.js";
 import {
   fetchCurrentWeather,
@@ -32,11 +33,13 @@ const elements = {
   footerYear: document.querySelector("#footer-year"),
   brand: document.querySelector("#brand"),
   brandImage: document.querySelector("#brand-image"),
+  settingsButton: document.querySelector("#settings-button"),
 };
 
 let timeFormatter = null;
 let weatherConfiguration = null;
 let weatherRequestVersion = 0;
+let currentConfiguration = null;
 
 function setText(element, value) {
   element.textContent = value;
@@ -183,6 +186,7 @@ function resetRenderedConfiguration() {
   elements.configurationGuide.hidden = false;
   elements.configurationError.hidden = true;
   elements.configurationMessage.hidden = false;
+  elements.settingsButton.hidden = false;
 }
 
 function renderInvalidConfiguration() {
@@ -243,6 +247,7 @@ async function updateWeather() {
 
 function renderFromHash() {
   weatherRequestVersion += 1;
+  currentConfiguration = null;
   resetRenderedConfiguration();
 
   let configuration;
@@ -258,7 +263,9 @@ function renderFromHash() {
     return;
   }
 
+  currentConfiguration = configuration;
   document.documentElement.dataset.theme = resolveTheme(configuration.theme);
+  elements.settingsButton.hidden = configuration.hideSettings;
   setText(elements.heading, configuration.heading);
 
   const canLoadWeather = configuration.weather;
@@ -295,11 +302,10 @@ function renderFromHash() {
     configuration.info1Url,
     1,
   );
-  const info2UsesAlias = !configuration.info2 && configuration.message;
   renderInformationBlock(
     elements.info2,
-    configuration.info2 || configuration.message,
-    info2UsesAlias ? configuration.messageUrl : configuration.info2Url,
+    configuration.info2,
+    configuration.info2Url,
     2,
   );
   renderInformationBlock(
@@ -340,6 +346,27 @@ elements.brandImage.addEventListener("error", () => {
 });
 
 elements.footerYear.textContent = new Date().getFullYear();
+createSettingsController({
+  getConfiguration: () => currentConfiguration,
+  onApply: (fragment) => {
+    if (fragment === window.location.hash) {
+      renderFromHash();
+      return;
+    }
+
+    if (fragment) {
+      window.location.hash = fragment;
+      return;
+    }
+
+    window.history.replaceState(
+      null,
+      "",
+      `${window.location.pathname}${window.location.search}`,
+    );
+    renderFromHash();
+  },
+});
 renderFromHash();
 window.addEventListener("hashchange", renderFromHash);
 window.setInterval(updateTime, 30_000);
