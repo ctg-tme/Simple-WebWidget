@@ -13,7 +13,7 @@ Open the local URL printed by Vite. The widget is a fixed 600 × 600 CSS pixels 
 
 ## Hash parameters
 
-Widget data is supplied through URL hash parameters so it remains entirely in the browser.
+Widget data is supplied exclusively through URL hash parameters (everything after `#`) so it remains entirely in the browser. URL query parameters are ignored.
 
 | Parameter | Content |
 | --- | --- |
@@ -34,6 +34,14 @@ http://localhost:5173/#heading=Welcome&weather=true&temp=72%C2%B0&time=true&time
 ```
 
 The original `message` parameter remains supported as an alias for `info2`.
+
+Information blocks support line breaks in any of these forms:
+
+- URL-encoded newline: `%0A`
+- Literal escaped newline: `\n`
+- HTML-style break text: `<br>` or `<br/>`
+
+The text remains escaped; other HTML is never rendered. Encode the full value of `iconUrl`, especially when the image URL contains its own `?` or `&` characters.
 
 The widget always includes a fixed footer: `© {YEAR} Cisco Systems, Inc. || Created by the Collaboration TME team`. The year is generated in the browser and is not configurable.
 

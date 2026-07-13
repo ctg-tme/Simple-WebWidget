@@ -1,6 +1,5 @@
 import "@momentum-design/tokens/dist/css/theme/webex/light-stable.css";
 import "@momentum-design/tokens/dist/css/typography/complete.css";
-import "@momentum-design/tokens/dist/css/elevation/complete.css";
 import weatherIconUrl from "@momentum-design/icons/dist/svg/temperature-regular.svg";
 import "./style.css";
 
@@ -31,6 +30,12 @@ function readText(params, name) {
 
 function readBoolean(params, name) {
   return readText(params, name).toLowerCase() === "true";
+}
+
+function readMultilineText(params, name) {
+  return readText(params, name)
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/\\n/g, "\n");
 }
 
 function setText(element, value) {
@@ -69,7 +74,7 @@ function updateTime() {
 
 function renderFromHash() {
   const params = new URLSearchParams(window.location.hash.slice(1));
-  const legacyMessage = readText(params, "message");
+  const legacyMessage = readMultilineText(params, "message");
   const iconUrl = readText(params, "iconUrl");
   const showHeading = setText(elements.heading, readText(params, "heading"));
   const showWeather = readBoolean(params, "weather");
@@ -89,14 +94,18 @@ function renderFromHash() {
   elements.header.hidden = !(showHeading || hasWeatherContent || showTime);
   updateTime();
 
-  const showInfo1 = setText(elements.info1, readText(params, "info1"));
-  const showInfo2 = setText(elements.info2, readText(params, "info2") || legacyMessage);
-  const showInfo3 = setText(elements.info3, readText(params, "info3"));
+  const showInfo1 = setText(elements.info1, readMultilineText(params, "info1"));
+  const showInfo2 = setText(
+    elements.info2,
+    readMultilineText(params, "info2") || legacyMessage,
+  );
+  const showInfo3 = setText(elements.info3, readMultilineText(params, "info3"));
 
   const hasBrand = iconUrl.length > 0;
   elements.info3.hidden = hasBrand;
   elements.brand.hidden = !hasBrand;
   elements.brandableBlock.hidden = !(hasBrand || showInfo3);
+  elements.brandableBlock.classList.toggle("info-block--branding", hasBrand);
 
   if (hasBrand) {
     elements.brandImage.src = iconUrl;
