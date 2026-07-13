@@ -19,8 +19,11 @@ Widget data is supplied exclusively through URL hash parameters (everything afte
 | --- | --- |
 | `theme` | RoomOS theme name; defaults to `EveningFjord` |
 | `heading` | Information heading |
-| `weather` | Set to `true` to show the Momentum Design weather icon |
-| `temp` | Local temperature |
+| `weather` | Set to `true` to show live current weather |
+| `latitude` | Latitude used to retrieve current weather; requires `weather=true` |
+| `longitude` | Longitude used to retrieve current weather; requires `weather=true` |
+| `temperatureUnit` | `fahrenheit` (default) or `celsius` |
+| `temp` | Optional temperature shown while live weather loads and retained as a fallback if it cannot be retrieved |
 | `time` | Set to `true` to show a 24-hour clock |
 | `timeZone` | Optional IANA timezone, such as `America/New_York`; otherwise the browser timezone is used |
 | `info1` | First information block |
@@ -31,8 +34,10 @@ Widget data is supplied exclusively through URL hash parameters (everything afte
 Example:
 
 ```text
-http://localhost:5173/#heading=Welcome&weather=true&temp=72%C2%B0&time=true&timeZone=America%2FNew_York&info1=Meeting%20room%20available&info2=Hello%20RoomOS&info3=Third%20message
+http://localhost:5173/#theme=EveningFjord&heading=Welcome&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&temp=72%C2%B0F&time=true&timeZone=America%2FNew_York&info1=Meeting%20room%20available&info2=Hello%20RoomOS&info3=Third%20message
 ```
+
+When coordinates are configured, the widget retrieves current temperature, weather condition, and day/night state directly from Open-Meteo. It refreshes every 15 minutes and converts the current WMO weather code into a recognizable clear, cloudy, fog, rain, snow, or thunderstorm symbol. The weather symbol links to the data provider for attribution. This live feature requires outbound HTTPS access to `api.open-meteo.com` from the RoomOS device.
 
 The original `message` parameter remains supported as an alias for `info2`.
 

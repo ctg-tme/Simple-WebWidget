@@ -9,7 +9,6 @@
   --widget-outline: rgb(230 139 147 / 76%);
   --widget-highlight: rgb(255 255 255 / 22%);
   --widget-shadow: rgb(4 10 25 / 24%);
-  --widget-icon-filter: invert(1);
   color: var(--widget-text);
   background: transparent;
   font-family: var(
@@ -34,7 +33,6 @@
   --widget-outline: rgb(232 116 84 / 78%);
   --widget-highlight: rgb(255 220 208 / 20%);
   --widget-shadow: rgb(22 7 12 / 25%);
-  --widget-icon-filter: invert(1);
 }
 
 :root[data-theme="CarbonBlack"],
@@ -49,7 +47,6 @@
   --widget-outline: rgb(144 149 154 / 72%);
   --widget-highlight: rgb(255 255 255 / 18%);
   --widget-shadow: rgb(0 0 0 / 30%);
-  --widget-icon-filter: invert(1);
 }
 
 :root[data-theme="ArcticNight"] {
@@ -63,7 +60,6 @@
   --widget-outline: rgb(132 216 239 / 78%);
   --widget-highlight: rgb(212 247 255 / 23%);
   --widget-shadow: rgb(4 20 38 / 26%);
-  --widget-icon-filter: invert(1);
 }
 
 :root[data-theme="CrystalMist"] {
@@ -77,7 +73,6 @@
   --widget-outline: rgb(142 203 203 / 76%);
   --widget-highlight: rgb(220 255 255 / 20%);
   --widget-shadow: rgb(7 28 31 / 25%);
-  --widget-icon-filter: invert(1);
 }
 
 :root[data-theme="FoggyMoor"] {
@@ -91,7 +86,6 @@
   --widget-outline: rgb(183 199 178 / 75%);
   --widget-highlight: rgb(239 255 235 / 19%);
   --widget-shadow: rgb(12 32 27 / 24%);
-  --widget-icon-filter: invert(1);
 }
 
 :root[data-theme="MeadowStone"] {
@@ -105,7 +99,6 @@
   --widget-outline: rgb(230 196 92 / 78%);
   --widget-highlight: rgb(255 239 191 / 21%);
   --widget-shadow: rgb(22 22 18 / 25%);
-  --widget-icon-filter: invert(1);
 }
 
 :root[data-theme="PoppyBreeze"] {
@@ -119,7 +112,6 @@
   --widget-outline: rgb(236 128 105 / 82%);
   --widget-highlight: rgb(211 252 255 / 24%);
   --widget-shadow: rgb(1 38 49 / 28%);
-  --widget-icon-filter: invert(1);
 }
 
 :root[data-theme="SmokedRose"] {
@@ -133,7 +125,6 @@
   --widget-outline: rgb(207 135 108 / 78%);
   --widget-highlight: rgb(255 222 207 / 20%);
   --widget-shadow: rgb(30 9 7 / 26%);
-  --widget-icon-filter: invert(1);
 }
 
 :root[data-theme="FirstLight"],
@@ -149,7 +140,6 @@
   --widget-outline: rgb(132 141 151 / 74%);
   --widget-highlight: rgb(255 255 255 / 75%);
   --widget-shadow: rgb(55 63 72 / 18%);
-  --widget-icon-filter: none;
 }
 
 :root[data-theme="SandShoal"] {
@@ -163,7 +153,6 @@
   --widget-outline: rgb(130 102 79 / 74%);
   --widget-highlight: rgb(255 255 255 / 65%);
   --widget-shadow: rgb(84 61 44 / 18%);
-  --widget-icon-filter: none;
 }
 
 :root[data-theme="PebbleShoal"] {
@@ -177,7 +166,6 @@
   --widget-outline: rgb(92 85 76 / 72%);
   --widget-highlight: rgb(255 255 255 / 66%);
   --widget-shadow: rgb(64 59 53 / 17%);
-  --widget-icon-filter: none;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -192,7 +180,6 @@
     --widget-outline: rgb(144 149 154 / 72%);
     --widget-highlight: rgb(255 255 255 / 18%);
     --widget-shadow: rgb(0 0 0 / 30%);
-    --widget-icon-filter: invert(1);
   }
 }
 
@@ -287,12 +274,20 @@ body {
 }
 
 .conditions__weather {
-  display: block;
-  width: 24px;
-  height: 24px;
-  font-size: 24px;
-  filter: var(--widget-icon-filter);
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  color: inherit;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  font-size: 25px;
   line-height: 1;
+  text-decoration: none;
+}
+
+.conditions__weather[data-state="loading"] {
+  color: var(--widget-text-secondary);
+  font-family: inherit;
 }
 
 .conditions__divider {

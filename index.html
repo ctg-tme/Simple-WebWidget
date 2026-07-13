@@ -15,7 +15,15 @@
         <header id="header" class="widget__header" hidden>
           <h1 id="heading" hidden></h1>
           <div id="conditions" class="conditions" aria-label="Local weather and time" hidden>
-            <img id="weather-icon" class="conditions__weather" alt="Weather" hidden />
+            <a
+              id="weather-source"
+              class="conditions__weather"
+              target="_blank"
+              rel="noopener noreferrer"
+              hidden
+            >
+              <span id="weather-icon" aria-hidden="true"></span>
+            </a>
             <span id="temperature" hidden></span>
             <span id="conditions-divider" class="conditions__divider" aria-hidden="true" hidden>·</span>
             <time id="local-time"></time>
