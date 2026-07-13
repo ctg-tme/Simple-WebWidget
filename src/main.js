@@ -16,6 +16,7 @@ const elements = {
   brandableBlock: document.querySelector("#brandable-block"),
   info3: document.querySelector("#info-3"),
   footer: document.querySelector("#footer"),
+  footerYear: document.querySelector("#footer-year"),
   brand: document.querySelector("#brand"),
   brandImage: document.querySelector("#brand-image"),
 };
@@ -92,7 +93,6 @@ function renderFromHash() {
   const showInfo1 = setText(elements.info1, readText(params, "info1"));
   const showInfo2 = setText(elements.info2, readText(params, "info2") || legacyMessage);
   const showInfo3 = setText(elements.info3, readText(params, "info3"));
-  const showFooter = setText(elements.footer, readText(params, "footer"));
 
   const hasBrand = iconUrl.length > 0;
   elements.info3.hidden = hasBrand;
@@ -105,18 +105,20 @@ function renderFromHash() {
     elements.brandImage.removeAttribute("src");
   }
 
-  elements.widget.hidden = !(
+  const hasContent =
     showHeading ||
     hasWeatherContent ||
     showTime ||
     showInfo1 ||
     showInfo2 ||
     showInfo3 ||
-    showFooter ||
-    hasBrand
-  );
+    hasBrand;
+
+  elements.footer.hidden = !hasContent;
+  elements.widget.hidden = !hasContent;
 }
 
+elements.footerYear.textContent = new Date().getFullYear();
 renderFromHash();
 window.addEventListener("hashchange", renderFromHash);
 window.setInterval(updateTime, 30_000);

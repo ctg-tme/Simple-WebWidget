@@ -26,16 +26,17 @@ Widget data is supplied through URL hash parameters so it remains entirely in th
 | `info1` | First information block |
 | `info2` | Second information block |
 | `info3` | Third information block |
-| `footer` | Footer text |
 | `iconUrl` | Square branding image URL; when present, `info3` is hidden |
 
 Example:
 
 ```text
-http://localhost:5173/#heading=Welcome&weather=true&weatherSymbol=%E2%98%80%EF%B8%8F&temp=72%C2%B0&time=true&timeZone=America%2FNew_York&info1=Meeting%20room%20available&info2=Hello%20RoomOS&info3=Third%20message&footer=Have%20a%20great%20day
+http://localhost:5173/#heading=Welcome&weather=true&weatherSymbol=%E2%98%80%EF%B8%8F&temp=72%C2%B0&time=true&timeZone=America%2FNew_York&info1=Meeting%20room%20available&info2=Hello%20RoomOS&info3=Third%20message
 ```
 
 The original `message` parameter remains supported as an alias for `info2`.
+
+Every non-empty widget includes a fixed footer: `© {YEAR} Cisco Systems, Inc. || Created by the Collaboration TME team`. The year is generated in the browser and is not configurable.
 
 ## Production build
 
