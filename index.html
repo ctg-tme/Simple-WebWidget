@@ -10,8 +10,30 @@
     <title>RoomOS Web Widget</title>
   </head>
   <body>
-    <main class="widget" aria-live="polite">
-      <h1 id="message">Hello world</h1>
+    <main class="widget-shell">
+      <article class="widget" aria-live="polite" aria-label="Room information">
+        <header class="widget__header">
+          <h1 id="heading">Information</h1>
+          <div class="conditions" aria-label="Local weather and time">
+            <span id="weather" class="conditions__weather" aria-hidden="true">☀️</span>
+            <span id="temperature">72°</span>
+            <span class="conditions__divider" aria-hidden="true">·</span>
+            <time id="local-time"></time>
+          </div>
+        </header>
+
+        <section id="info-1" class="info-block">Info Block 1</section>
+        <section id="info-2" class="info-block">Hello world</section>
+
+        <section class="info-block info-block--brandable">
+          <span id="info-3">Info Block 3</span>
+          <span id="brand" class="brand" hidden>
+            <img id="brand-image" alt="Branding" />
+          </span>
+        </section>
+
+        <footer id="footer" class="widget__footer">Footer</footer>
+      </article>
     </main>
     <script type="module" src="/src/main.js"></script>
   </body>
