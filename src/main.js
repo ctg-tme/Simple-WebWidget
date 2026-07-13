@@ -1,5 +1,6 @@
 import "@momentum-design/tokens/dist/css/theme/webex/light-stable.css";
 import "@momentum-design/tokens/dist/css/typography/complete.css";
+import { parseWidgetConfiguration } from "./config.js";
 import { resolveTheme } from "./themes.js";
 import {
   fetchCurrentWeather,
@@ -30,38 +31,13 @@ const elements = {
 let timeFormatter = null;
 let weatherConfiguration = null;
 let weatherRequestVersion = 0;
-
-function readText(params, name) {
-  return params.get(name)?.trim() ?? "";
-}
-
-function readBoolean(params, name) {
-  return readText(params, name).toLowerCase() === "true";
-}
-
-function readMultilineText(params, name) {
-  return readText(params, name)
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/\\n/g, "\n");
-}
+const UNCONFIGURED_MESSAGE = "Widget is not configured";
+const INVALID_CONFIGURATION_MESSAGE = "Widget configuration is invalid";
 
 function setText(element, value) {
   element.textContent = value;
   element.hidden = value.length === 0;
   return !element.hidden;
-}
-
-function readCoordinate(params, name, minimum, maximum) {
-  const rawValue = readText(params, name);
-
-  if (!rawValue) {
-    return null;
-  }
-
-  const value = Number(rawValue);
-  return Number.isFinite(value) && value >= minimum && value <= maximum
-    ? value
-    : null;
 }
 
 function createTimeFormatter(timeZone) {
@@ -107,6 +83,42 @@ function syncVisibility() {
     !elements.brandableBlock.hidden;
 
   elements.configurationMessage.hidden = hasContent;
+
+  if (!hasContent) {
+    elements.configurationMessage.textContent = UNCONFIGURED_MESSAGE;
+  }
+}
+
+function resetRenderedConfiguration() {
+  timeFormatter = null;
+  weatherConfiguration = null;
+  setText(elements.heading, "");
+  elements.weatherSource.hidden = true;
+  elements.weatherSource.dataset.state = "idle";
+  elements.weatherSource.removeAttribute("href");
+  elements.weatherSource.removeAttribute("aria-label");
+  elements.weatherSource.removeAttribute("title");
+  elements.weatherIcon.textContent = "";
+  setText(elements.temperature, "");
+  elements.localTime.hidden = true;
+  elements.localTime.textContent = "";
+  setText(elements.info1, "");
+  setText(elements.info2, "");
+  setText(elements.info3, "");
+  elements.brand.hidden = true;
+  elements.brandableBlock.hidden = true;
+  elements.brandableBlock.classList.remove("info-block--branding");
+  elements.brandImage.removeAttribute("src");
+  elements.configurationMessage.textContent = UNCONFIGURED_MESSAGE;
+  elements.configurationMessage.hidden = false;
+}
+
+function renderInvalidConfiguration() {
+  document.documentElement.dataset.theme = resolveTheme("");
+  elements.header.hidden = true;
+  elements.conditions.hidden = true;
+  elements.configurationMessage.textContent = INVALID_CONFIGURATION_MESSAGE;
+  elements.configurationMessage.hidden = false;
 }
 
 async function updateWeather() {
@@ -150,20 +162,28 @@ async function updateWeather() {
 }
 
 function renderFromHash() {
-  const params = new URLSearchParams(window.location.hash.slice(1));
   weatherRequestVersion += 1;
-  weatherConfiguration = null;
-  document.documentElement.dataset.theme = resolveTheme(readText(params, "theme"));
+  resetRenderedConfiguration();
 
-  const legacyMessage = readMultilineText(params, "message");
-  const iconUrl = readText(params, "iconUrl");
-  setText(elements.heading, readText(params, "heading"));
-  const showWeather = readBoolean(params, "weather");
-  const showTime = readBoolean(params, "time");
+  let configuration;
 
-  const latitude = readCoordinate(params, "latitude", -90, 90);
-  const longitude = readCoordinate(params, "longitude", -180, 180);
-  const canLoadWeather = showWeather && latitude !== null && longitude !== null;
+  try {
+    configuration = parseWidgetConfiguration(window.location.hash, {
+      baseUrl: window.location.href,
+      isDevelopment: import.meta.env.DEV,
+    });
+  } catch {
+    renderInvalidConfiguration();
+    return;
+  }
+
+  document.documentElement.dataset.theme = resolveTheme(configuration.theme);
+  setText(elements.heading, configuration.heading);
+
+  const canLoadWeather =
+    configuration.weather &&
+    configuration.latitude !== null &&
+    configuration.longitude !== null;
 
   elements.weatherSource.hidden = !canLoadWeather;
   elements.weatherSource.dataset.state = canLoadWeather ? "loading" : "idle";
@@ -175,40 +195,37 @@ function renderFromHash() {
   elements.weatherIcon.textContent = canLoadWeather ? "…" : "";
   setText(
     elements.temperature,
-    showWeather ? readText(params, "temp") : "",
+    configuration.weather ? configuration.temperature : "",
   );
 
   if (canLoadWeather) {
     weatherConfiguration = {
-      latitude,
-      longitude,
+      latitude: configuration.latitude,
+      longitude: configuration.longitude,
       temperatureUnit: normalizeTemperatureUnit(
-        readText(params, "temperatureUnit"),
+        configuration.temperatureUnit,
       ),
     };
   }
 
-  timeFormatter = showTime ? createTimeFormatter(readText(params, "timeZone")) : null;
-  elements.localTime.hidden = !showTime;
+  timeFormatter = configuration.time
+    ? createTimeFormatter(configuration.timeZone)
+    : null;
+  elements.localTime.hidden = !configuration.time;
   updateTime();
 
-  setText(elements.info1, readMultilineText(params, "info1"));
-  setText(
-    elements.info2,
-    readMultilineText(params, "info2") || legacyMessage,
-  );
-  const showInfo3 = setText(elements.info3, readMultilineText(params, "info3"));
+  setText(elements.info1, configuration.info1);
+  setText(elements.info2, configuration.info2 || configuration.message);
+  const showInfo3 = setText(elements.info3, configuration.info3);
 
-  const hasBrand = iconUrl.length > 0;
+  const hasBrand = configuration.iconUrl.length > 0;
   elements.info3.hidden = hasBrand;
   elements.brand.hidden = !hasBrand;
   elements.brandableBlock.hidden = !(hasBrand || showInfo3);
   elements.brandableBlock.classList.toggle("info-block--branding", hasBrand);
 
   if (hasBrand) {
-    elements.brandImage.src = iconUrl;
-  } else {
-    elements.brandImage.removeAttribute("src");
+    elements.brandImage.src = configuration.iconUrl;
   }
 
   syncVisibility();

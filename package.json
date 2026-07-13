@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "preview": "vite preview --host 127.0.0.1"
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --test",
+    "check:production-security": "node scripts/check-production-security.mjs"
   },
   "dependencies": {
     "@momentum-design/tokens": "^0.10.4"

@@ -9,11 +9,13 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite. The widget is a fixed 600 × 600 CSS pixels at normal RoomOS display sizes, so it keeps the same scale on 1080p and 4K screens. With no configured content it displays **Widget is not configured** above the permanent footer.
+Open the local URL printed by Vite. `npm run dev` listens on all network interfaces so RoomOS devices on the LAN can reach it. Run the development server only on a trusted network or protect access with suitable host firewall controls.
+
+The widget is a fixed 600 × 600 CSS pixels at normal RoomOS display sizes, so it keeps the same scale on 1080p and 4K screens. With no configured content it displays **Widget is not configured** above the permanent footer.
 
 ## Hash parameters
 
-Widget data is supplied exclusively through URL hash parameters (everything after `#`) so it remains entirely in the browser. URL query parameters are ignored.
+Widget configuration is supplied exclusively through URL hash parameters (everything after `#`). URL query parameters are ignored. Fragments are not included in HTTP requests to the hosting server, but they may remain visible in browser or device history, bookmarks, screenshots, logs captured by client software, and management interfaces. Never place passwords, tokens, personal data, or other secrets in widget fragments.
 
 | Parameter | Content |
 | --- | --- |
@@ -29,7 +31,7 @@ Widget data is supplied exclusively through URL hash parameters (everything afte
 | `info1` | First information block |
 | `info2` | Second information block |
 | `info3` | Third information block |
-| `iconUrl` | Square branding image URL; when present, `info3` is hidden |
+| `iconUrl` | Validated square branding image URL; when present, `info3` is hidden |
 
 Example:
 
@@ -40,6 +42,34 @@ http://localhost:5173/#theme=EveningFjord&heading=Welcome&weather=true&latitude=
 When coordinates are configured, the widget retrieves current temperature, weather condition, and day/night state directly from Open-Meteo. It refreshes every 15 minutes and converts the current WMO weather code into a recognizable clear, cloudy, fog, rain, snow, or thunderstorm symbol. The weather symbol links to the data provider for attribution. This live feature requires outbound HTTPS access to `api.open-meteo.com` from the RoomOS device.
 
 The original `message` parameter remains supported as an alias for `info2`.
+
+### Input limits and invalid configuration
+
+The widget validates the complete fragment before displaying any supplied content or requesting a branding image. These limits are intentionally sized for the 600 × 600 layout:
+
+| Input | Maximum characters |
+| --- | ---: |
+| Complete fragment, before decoding and excluding `#` | 8,192 |
+| `heading` | 80 |
+| `temp` | 16 |
+| `timeZone` | 64 |
+| Each of `info1`, `info2`, `info3`, and `message` | 400 |
+| `iconUrl` | 2,048 |
+| `theme` | 32 |
+| Each coordinate | 24 |
+| `temperatureUnit` | 16 |
+| Boolean fields | 5 |
+
+Malformed percent encoding, incomplete or invalid coordinates, an excessive fragment, an oversized field, or an unsafe branding URL causes the complete configuration to be rejected. Existing branding image sources are removed and the widget displays **Widget configuration is invalid**. Values are never truncated silently.
+
+### Branding image policy
+
+Branding images may use a same-origin HTTPS URL or a relative URL hosted with the widget. During `npm run dev`, same-origin HTTP images are also allowed from `localhost` or the private LAN address serving the widget. Approved cross-origin images must use HTTPS and currently may originate only from:
+
+- `https://www.cisco.com`
+- `https://www.webex.com`
+
+URLs with credentials, unsupported schemes such as `javascript:`, `file:`, or `data:`, malformed URLs, unapproved origins, and loopback or private literal targets are rejected. Private or loopback same-origin HTTP is allowed only in local development. Validation deliberately does not attempt DNS-based private-network detection; the exact HTTPS origin allowlist is the cross-origin boundary. Branding image requests use a `no-referrer` policy.
 
 ### RoomOS themes
 
@@ -68,6 +98,8 @@ npm run build
 ```
 
 The static output is written to `dist/` and can be hosted with GitHub Pages.
+
+Production builds include a restrictive Content Security Policy and an explicit `no-referrer` policy. The CSP permits same-origin scripts, styles, fonts, and images; the two approved branding origins above; data images required by bundled assets; and the Open-Meteo weather API as the only outbound connection. Development builds omit the CSP meta tag so Vite hot-module replacement continues to work.
 
 Pushes to `main` run the included GitHub Pages deployment workflow. In the repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions** once.
 

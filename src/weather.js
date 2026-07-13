@@ -1,3 +1,5 @@
+import { APPROVED_CONNECT_ORIGINS } from "./security.js";
+
 const WEATHER_CONDITIONS = [
   { codes: [0], day: "☀️", night: "🌙", label: "Clear sky" },
   { codes: [1], day: "🌤️", night: "🌙", label: "Mainly clear" },
@@ -37,7 +39,7 @@ export async function fetchCurrentWeather(
   { latitude, longitude, temperatureUnit },
   fetchWeather = fetch,
 ) {
-  const requestUrl = new URL("https://api.open-meteo.com/v1/forecast");
+  const requestUrl = new URL("/v1/forecast", APPROVED_CONNECT_ORIGINS[0]);
   requestUrl.search = new URLSearchParams({
     latitude: String(latitude),
     longitude: String(longitude),
