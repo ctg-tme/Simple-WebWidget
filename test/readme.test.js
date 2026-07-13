@@ -11,7 +11,7 @@ test("uses the GitHub Pages URL for every widget example", () => {
   assert.doesNotMatch(readme, /https?:\/\/(?:localhost|127\.0\.0\.1):\d+/);
 
   const exampleBlocks = [...readme.matchAll(/```text\n(https?:\/\/[^\n]+)\n```/g)];
-  assert.ok(exampleBlocks.length >= 4);
+  assert.ok(exampleBlocks.length >= 5);
 
   for (const [, exampleUrl] of exampleBlocks) {
     assert.match(exampleUrl, /^https:\/\/ctg-tme\.github\.io\/Simple-WebWidget\//);
@@ -34,18 +34,24 @@ test("all README documentation images exist", async () => {
     ...readme.matchAll(/(?:src="|!\[[^\]]*\]\()(?<path>docs\/images\/[^\")]+)/g),
   ].map((match) => match.groups.path);
 
-  assert.ok(imagePaths.length >= 16);
+  assert.ok(imagePaths.length >= 20);
 
   await Promise.all(
     imagePaths.map((imagePath) => access(new URL(`../${imagePath}`, import.meta.url))),
   );
 });
 
-test("documents independent branding, automatic weather symbols, and iframe limits", () => {
+test("documents settings, strict parameters, automatic weather, and iframe limits", () => {
   assert.doesNotMatch(readme, /iconUrl[^\n]*(?:replaces|hidden when)/i);
   assert.match(readme, /weather code[^\n]*symbol/i);
   assert.match(readme, /HTTPS URL[^\n]*iframe/i);
   assert.match(readme, /X-Frame-Options/);
   assert.doesNotMatch(readme, /15-second load timeout/);
-  assert.match(readme, /Scan to learn how to configure this WebWidget/);
+  assert.match(readme, /settings gear/i);
+  assert.match(readme, /hideSettings/);
+  assert.match(readme, /Legacy names, unknown parameters, duplicate parameters/);
+  assert.match(readme, /Scan to learn more about the Simple WebWidget/);
+  assert.match(readme, /H2R Graphics Countdown Timer/);
+  assert.match(readme, /Barker Technologies AB/);
+  assert.doesNotMatch(readme, /`message`/);
 });

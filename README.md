@@ -2,11 +2,25 @@
 
 A lightweight, front-end-only information widget for Cisco RoomOS devices, hosted with GitHub Pages and configured entirely through URL hash parameters.
 
-The widget uses a fixed 600 × 600 CSS-pixel canvas at normal RoomOS display sizes, keeping the same scale on 1080p and 4K screens. With no configured content, it displays a QR code above the permanent footer with the message **Scan to learn how to configure this WebWidget**.
+The widget uses a fixed 600 × 600 CSS-pixel canvas at normal RoomOS display sizes, keeping the same scale on 1080p and 4K screens. With no configured content, it points users to the settings gear and displays a QR code above the permanent footer with the message **Scan to learn more about the Simple WebWidget**.
 
 ## User Guide
 
-Add configuration after the `#` in the GitHub Pages URL. Only the sections represented by supplied parameters are shown.
+The easiest way to configure the widget is the gear in the top-right. It opens a guided form, shows only the fields needed for each choice, and writes the resulting configuration after the `#` in the GitHub Pages URL.
+
+1. Open the gear and select only the sections you want to include.
+2. Use the toggles for weather and time. Weather can request the device location, with manual coordinates available as a fallback. Time can follow the device automatically or use a selected IANA time zone.
+3. For each information block, choose **Not included**, **Text**, **Website / iframe**, or **H2R countdown**.
+4. Select **Apply configuration** to replace the current hash parameters. Optionally enable **Hide the settings gear after applying** for deployment.
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/images/user-guide/settings-dialog.png" width="320" alt="Simple WebWidget settings dialog showing appearance fields"><br><sub>The settings gear opens a guided, optional configuration form</sub></td>
+    <td align="center"><img src="docs/images/user-guide/countdown-settings.png" width="320" alt="Simple WebWidget settings dialog showing H2R countdown fields"><br><sub>H2R countdown mode reveals target, title, completion message, and color fields</sub></td>
+  </tr>
+</table>
+
+Only the sections represented by applied parameters are shown.
 
 ![Configured RoomOS WebWidget showing the header, conditions, and three information blocks](docs/images/user-guide/widget-parameter-map.png)
 
@@ -15,13 +29,13 @@ Add configuration after the `#` in the GitHub Pages URL. Only the sections repre
 | Header, left | `iconUrl`, `heading` | Optional borderless branding icon and information heading |
 | Header, right | `weather`, `latitude`, `longitude`, `temperatureUnit`, `time`, `timeZone` | Compact local weather and time area |
 | First block | `info1` | First text or iframe information block |
-| Second block | `info2` or `message` | Second text or iframe information block |
+| Second block | `info2` | Second text or iframe information block |
 | Third block | `info3` | Third text or iframe information block |
 
 <table>
   <tr>
     <td align="center"><img src="docs/images/user-guide/configured-widget.png" width="320" alt="Configured WebWidget with generic text and inline branding"><br><sub><code>iconUrl</code> shares the header; all three information blocks remain available</sub></td>
-    <td align="center"><img src="docs/images/user-guide/unconfigured-widget.png" width="320" alt="Unconfigured WebWidget showing the user-guide QR code"><br><sub>No hash parameters: learn how to configure the widget</sub></td>
+    <td align="center"><img src="docs/images/user-guide/unconfigured-widget.png" width="320" alt="Unconfigured WebWidget showing the settings gear and user-guide QR code"><br><sub>No hash parameters: use the gear to configure or scan to learn more</sub></td>
   </tr>
 </table>
 
@@ -57,6 +71,18 @@ https://ctg-tme.github.io/Simple-WebWidget/#theme=ChiliPlum&heading=Visitor%20In
 https://ctg-tme.github.io/Simple-WebWidget/#theme=CrystalMist&heading=Embedded%20Information&info1=https%3A%2F%2Fexample.com%2F&info2=Reference%20information&info3=Additional%20notes
 ```
 
+#### Three H2R countdowns
+
+[Open the three-countdown example](https://ctg-tme.github.io/Simple-WebWidget/#theme=ArcticNight&heading=Wave%20Schedules&info1=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-09-19T12%253A00%26title%3DWave%2B3%26theme%3Ddark&info2=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-10-19T12%253A00%26title%3DWave%2B4%26theme%3Ddark&info3=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-11-19T12%253A00%26title%3DWave%2B5%26theme%3Ddark)
+
+```text
+https://ctg-tme.github.io/Simple-WebWidget/#theme=ArcticNight&heading=Wave%20Schedules&info1=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-09-19T12%253A00%26title%3DWave%2B3%26theme%3Ddark&info2=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-10-19T12%253A00%26title%3DWave%2B4%26theme%3Ddark&info3=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-11-19T12%253A00%26title%3DWave%2B5%26theme%3Ddark
+```
+
+![Three H2R countdown timers embedded in the Simple WebWidget](docs/images/user-guide/countdown-example.png)
+
+This example uses the external [H2R Graphics Countdown Timer](https://h2r.graphics/tools/countdown/), which H2R presents as a free streaming tool with shareable URLs. The settings form can build the H2R URL for each block from a target date and time, title, completion message, and H2R color theme. H2R Graphics is developed by Barker Technologies AB; its availability, behavior, and terms remain outside this project.
+
 #### Live weather from coordinates
 
 [Open the live-weather example](https://ctg-tme.github.io/Simple-WebWidget/#theme=ArcticNight&heading=Local%20Conditions&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Live%20weather%20for%20the%20configured%20location)
@@ -75,7 +101,7 @@ https://ctg-tme.github.io/Simple-WebWidget/
 
 ## Hash parameters
 
-Widget configuration is supplied exclusively through URL hash parameters—everything after `#`. URL query parameters are ignored. Fragments are not included in HTTP requests to the hosting server, but they may remain visible in browser or device history, bookmarks, screenshots, logs captured by client software, and management interfaces. Never place passwords, tokens, personal data, or other secrets in widget fragments.
+Widget configuration is supplied exclusively through URL hash parameters—everything after `#`. URL query parameters are ignored. The settings form is the recommended way to create or edit them, but the supported parameters can also be written manually. Fragments are not included in HTTP requests to the hosting server, but they may remain visible in browser or device history, bookmarks, screenshots, logs captured by client software, and management interfaces. Never place passwords, tokens, personal data, or other secrets in widget fragments.
 
 | Parameter | Content |
 | --- | --- |
@@ -90,8 +116,10 @@ Widget configuration is supplied exclusively through URL hash parameters—every
 | `info1` | First information block; text or a validated HTTPS URL rendered in an iframe |
 | `info2` | Second information block; text or a validated HTTPS URL rendered in an iframe |
 | `info3` | Third information block; text or a validated HTTPS URL rendered in an iframe |
-| `message` | Backward-compatible alias for `info2` |
 | `iconUrl` | Validated square branding image URL displayed borderlessly to the left of the heading |
+| `hideSettings` | Set to `true` to hide the settings gear after deployment; remove it manually from the URL to restore the gear |
+
+These are the only supported hash parameters. Legacy names, unknown parameters, duplicate parameters, and boolean values other than `true` or `false` reject the complete configuration. The settings form omits disabled boolean options rather than writing `false`.
 
 When `weather=true` and coordinates are configured, the widget retrieves current temperature, weather condition, and day/night state directly from Open-Meteo. It refreshes every 15 minutes and converts the current WMO weather code into a recognizable clear, cloudy, fog, rain, snow, or thunderstorm symbol. Neither the temperature nor the weather symbol can be overridden by hash parameters. The weather symbol links to the data provider for attribution. This live feature requires outbound HTTPS access to `api.open-meteo.com` from the RoomOS device.
 
@@ -104,14 +132,14 @@ The widget validates the complete fragment before displaying supplied content or
 | Complete fragment, before decoding and excluding `#` | 8,192 |
 | `heading` | 80 |
 | `timeZone` | 64 |
-| Each of `info1`, `info2`, `info3`, and `message` | 400 |
+| Each of `info1`, `info2`, and `info3` | 400 |
 | `iconUrl` | 2,048 |
 | `theme` | 32 |
 | Each coordinate | 24 |
 | `temperatureUnit` | 16 |
 | Boolean fields | 5 |
 
-Malformed percent encoding, incomplete or invalid coordinates, an excessive fragment, an oversized field, or an unsafe branding or iframe URL causes the complete configuration to be rejected. Existing remote sources are removed and the widget displays **Widget configuration is invalid**. Values are never truncated silently.
+Malformed percent encoding, incomplete or invalid coordinates, an excessive fragment, an oversized field, an unsupported or duplicate parameter, an invalid boolean, or an unsafe branding or iframe URL causes the complete configuration to be rejected. Existing remote sources are removed and the widget displays **Widget configuration is invalid**. The settings gear remains available so the configuration can be replaced. Values are never truncated silently.
 
 ### Branding image policy
 
@@ -121,7 +149,7 @@ URLs with credentials, unsupported schemes such as `javascript:`, `file:`, or `d
 
 ### Iframe content
 
-When the complete value of `info1`, `info2`, `info3`, or `message` is a validated HTTPS URL, the block renders that URL in a sandboxed iframe. Relative same-origin URLs are also supported. Same-origin HTTP is permitted only during local development. Ordinary text, including multiline text, continues to render as escaped text.
+When the complete value of `info1`, `info2`, or `info3` is a validated HTTPS URL, the block renders that URL in a sandboxed iframe. Relative same-origin URLs are also supported. Same-origin HTTP is permitted only during local development. Ordinary text, including multiline text, continues to render as escaped text.
 
 Iframe navigation does not use the same CORS permission model as `fetch`. Cross-origin frames receive `allow-same-origin` so their dynamic modules, cookies, and local storage can work while the browser's origin boundary continues to isolate them from the widget. Same-origin frames retain the stricter opaque-origin sandbox because combining same-origin access with scripts would let same-origin content escape the sandbox.
 
