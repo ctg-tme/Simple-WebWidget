@@ -123,7 +123,9 @@ URLs with credentials, unsupported schemes such as `javascript:`, `file:`, or `d
 
 When the complete value of `info1`, `info2`, `info3`, or `message` is a validated HTTPS URL, the block renders that URL in a sandboxed iframe. Relative same-origin URLs are also supported. Same-origin HTTP is permitted only during local development. Ordinary text, including multiline text, continues to render as escaped text.
 
-Iframe navigation does not use the same CORS permission model as `fetch`. A destination can instead refuse embedding with `X-Frame-Options` or a Content Security Policy `frame-ancestors` directive. Browsers do not reliably expose those refusal details to the parent page, so the widget cannot guarantee automatic detection. Failures delivered through the iframe error event or the 15-second load timeout are logged as `information-frame-load-failed` or `information-frame-load-timeout` and the affected block is hidden. The browser may also report an embedding refusal directly in its console. Confirm that each destination explicitly permits iframe embedding before deployment.
+Iframe navigation does not use the same CORS permission model as `fetch`. Cross-origin frames receive `allow-same-origin` so their dynamic modules, cookies, and local storage can work while the browser's origin boundary continues to isolate them from the widget. Same-origin frames retain the stricter opaque-origin sandbox because combining same-origin access with scripts would let same-origin content escape the sandbox.
+
+A destination can refuse embedding with `X-Frame-Options` or a Content Security Policy `frame-ancestors` directive. Browsers do not reliably expose those refusal details to the parent page, so the widget cannot guarantee automatic detection or safely use a fixed load timeout. Failures delivered through the iframe error event are logged as `information-frame-load-failed` and the affected block is hidden. The browser may report other embedding refusals directly in its console. Confirm that each destination explicitly permits iframe embedding before deployment.
 
 ### Line breaks
 

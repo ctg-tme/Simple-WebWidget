@@ -5,6 +5,7 @@ import {
   logConfigurationError,
   logRuntimeWarning,
 } from "./logger.js";
+import { getInformationFrameSandbox } from "./security.js";
 import { resolveTheme } from "./themes.js";
 import {
   fetchCurrentWeather,
@@ -36,8 +37,6 @@ const elements = {
 let timeFormatter = null;
 let weatherConfiguration = null;
 let weatherRequestVersion = 0;
-const frameLoadTimers = new WeakMap();
-const FRAME_LOAD_TIMEOUT_MS = 15_000;
 
 function setText(element, value) {
   element.textContent = value;
@@ -49,8 +48,6 @@ function clearInformationBlock(element) {
   const frame = element.querySelector("iframe");
 
   if (frame) {
-    window.clearTimeout(frameLoadTimers.get(frame));
-    frameLoadTimers.delete(frame);
     frame.removeAttribute("src");
   }
 
@@ -86,14 +83,9 @@ function renderInformationBlock(element, value, frameUrl, position) {
   frame.title = `Information block ${position}`;
   frame.referrerPolicy = "no-referrer";
   frame.loading = "eager";
-  frame.setAttribute("sandbox", "allow-forms allow-popups allow-scripts");
-  frame.addEventListener(
-    "load",
-    () => {
-      window.clearTimeout(frameLoadTimers.get(frame));
-      frameLoadTimers.delete(frame);
-    },
-    { once: true },
+  frame.setAttribute(
+    "sandbox",
+    getInformationFrameSandbox(frameUrl, { baseUrl: window.location.href }),
   );
   frame.addEventListener(
     "error",
@@ -111,17 +103,6 @@ function renderInformationBlock(element, value, frameUrl, position) {
   element.classList.add("info-block--frame");
   element.append(frame);
   element.hidden = false;
-  frameLoadTimers.set(
-    frame,
-    window.setTimeout(() => {
-      hideFailedInformationFrame(
-        element,
-        frame,
-        "information-frame-load-timeout",
-        `Information block ${position} did not finish loading.`,
-      );
-    }, FRAME_LOAD_TIMEOUT_MS),
-  );
   frame.src = frameUrl;
   return true;
 }

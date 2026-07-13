@@ -215,3 +215,20 @@ export function validateIconUrl(value, options) {
 export function validateFrameUrl(value, options) {
   return validateRemoteResourceUrl(value, options);
 }
+
+export function getInformationFrameSandbox(value, { baseUrl } = {}) {
+  const tokens = ["allow-forms", "allow-popups", "allow-scripts"];
+
+  try {
+    const pageUrl = new URL(baseUrl);
+    const frameUrl = new URL(value, pageUrl);
+
+    if (frameUrl.origin !== pageUrl.origin) {
+      tokens.push("allow-same-origin");
+    }
+  } catch {
+    // URL validation occurs before rendering. Retain the stricter sandbox here.
+  }
+
+  return tokens.join(" ");
+}

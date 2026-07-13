@@ -46,5 +46,6 @@ test("documents independent branding, automatic weather symbols, and iframe limi
   assert.match(readme, /weather code[^\n]*symbol/i);
   assert.match(readme, /HTTPS URL[^\n]*iframe/i);
   assert.match(readme, /X-Frame-Options/);
+  assert.doesNotMatch(readme, /15-second load timeout/);
   assert.match(readme, /Scan to learn how to configure this WebWidget/);
 });

@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   CONTENT_SECURITY_POLICY,
+  getInformationFrameSandbox,
   validateFrameUrl,
   validateIconUrl,
 } from "../src/security.js";
@@ -134,4 +135,17 @@ test("applies the same bounded HTTPS policy to information frames", () => {
 test("permits validated HTTPS frames in the production policy", () => {
   assert.match(CONTENT_SECURITY_POLICY, /frame-src 'self' https:/);
   assert.doesNotMatch(CONTENT_SECURITY_POLICY, /unsafe-inline|unsafe-eval/);
+});
+
+test("restores origin capabilities only for cross-origin information frames", () => {
+  assert.match(
+    getInformationFrameSandbox("https://h2r.graphics/tools/countdown/", {
+      baseUrl: productionPage,
+    }),
+    /allow-same-origin/,
+  );
+  assert.doesNotMatch(
+    getInformationFrameSandbox("./embedded.html", { baseUrl: productionPage }),
+    /allow-same-origin/,
+  );
 });
