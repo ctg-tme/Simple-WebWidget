@@ -1,0 +1,42 @@
+:root {
+  color: var(--mds-color-theme-text-primary-normal, #1b1c1d);
+  background: var(--mds-color-theme-background-solid-primary-normal, #f7f7f7);
+  font-family: var(
+    --mds-font-family-primary,
+    "CiscoSansTT Regular",
+    "Helvetica Neue",
+    Arial,
+    sans-serif
+  );
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-width: 320px;
+  height: 100%;
+  margin: 0;
+}
+
+.widget {
+  display: grid;
+  width: 100%;
+  min-height: 100%;
+  place-items: center;
+  padding: var(--mds-core-spacing-32, 2rem);
+  text-align: center;
+}
+
+.widget h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  font-weight: 400;
+  line-height: 1.1;
+  text-wrap: balance;
+}
