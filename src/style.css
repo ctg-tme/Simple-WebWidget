@@ -317,9 +317,13 @@ body {
 }
 
 .info-block--branding {
+  overflow: visible;
   border: 0;
   background: transparent;
+  box-shadow: none;
   padding: 0;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .configuration-message {
