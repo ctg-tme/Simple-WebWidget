@@ -738,6 +738,10 @@ body.settings-open {
     gap: 8px;
   }
 
+  .settings-button:not([hidden]) + .widget-shell .widget__header {
+    padding-right: 68px;
+  }
+
   .widget__header {
     flex-basis: 76px;
   }
