@@ -125,6 +125,10 @@ export function serializeWidgetSettings(settings = {}) {
     params.set("hideSettings", "true");
   }
 
+  if (typeof settings.winter === "boolean") {
+    params.set("winter", String(settings.winter));
+  }
+
   const fragment = params.toString();
   return fragment ? `#${fragment}` : "";
 }

@@ -20,17 +20,36 @@ test("guides an unconfigured user to the gear and README", () => {
   assert.match(html, /id="configuration-error" hidden/);
 });
 
-test("provides an accessible settings dialog for every supported content type", () => {
+test("provides an accessible non-modal settings drawer for every supported content type", () => {
   assert.match(html, /class="mds-theme-stable-lightWebex"/);
-  assert.match(html, /id="settings-button"[\s\S]*aria-haspopup="dialog"/);
+  assert.match(html, /id="settings-button"[\s\S]*aria-expanded="false"/);
   assert.match(html, /id="settings-button"[\s\S]*<svg/);
-  assert.match(html, /id="settings-modal"[\s\S]*role="dialog"[\s\S]*aria-modal="true"/);
+  assert.match(html, /id="settings-modal" class="settings-drawer"/);
+  assert.match(html, /<aside[\s\S]*aria-labelledby="settings-title"/);
+  assert.doesNotMatch(html, /aria-modal="true"/);
   assert.match(html, /type="checkbox"/);
   assert.match(html, /Not included/);
   assert.match(html, /Website \/ iframe/);
   assert.match(html, /H2R countdown/);
   assert.match(html, /https:\/\/h2r\.graphics\/tools\/countdown\//);
   assert.match(html, /id="setting-hide-settings"/);
+});
+
+test("previews drawer changes without changing the URL until Apply", () => {
+  assert.match(main, /onPreview: renderConfiguration/);
+  assert.match(main, /onCancel: renderFromHash/);
+  assert.match(styles, /body\.settings-open \.widget-shell/);
+  assert.match(styles, /\.settings-drawer--open/);
+});
+
+test("includes a motion-aware winter overlay without adding a theme option", () => {
+  assert.match(html, /id="winter-effects"[\s\S]*winter-snowman/);
+  assert.match(styles, /--winter-light-cell: clamp\(/);
+  assert.match(styles, /--winter-content-inset: clamp\(/);
+  assert.match(styles, /html\.winter-active \.widget-shell/);
+  assert.match(styles, /@keyframes winter-snowfall-right/);
+  assert.match(styles, /@keyframes winter-snowman-crossing/);
+  assert.doesNotMatch(html, /<option[^>]*>Winter<\/option>/);
 });
 
 test("keeps settings static and transitions RoomOS themes in place after one second", () => {

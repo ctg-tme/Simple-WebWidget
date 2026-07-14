@@ -6,7 +6,7 @@ The widget uses a fixed 600 × 600 CSS-pixel canvas at normal RoomOS display siz
 
 ## User Guide
 
-The easiest way to configure the widget is the gear in the top-right. It opens a guided form, shows only the fields needed for each choice, and writes the resulting configuration after the `#` in the GitHub Pages URL.
+The easiest way to configure the widget is the gear in the top-right. It opens a compact drawer that shifts the widget left, previews valid changes live, shows only the fields needed for each choice, and writes the applied configuration after the `#` in the GitHub Pages URL.
 
 1. Open the gear and select only the sections you want to include.
 2. Use the toggles for weather and time. Weather can request the device location, with manual coordinates available as a fallback. Time can follow the device automatically or use a selected IANA time zone.
@@ -15,8 +15,8 @@ The easiest way to configure the widget is the gear in the top-right. It opens a
 
 <table>
   <tr>
-    <td align="center"><img src="docs/images/user-guide/settings-dialog.png" width="320" alt="Simple WebWidget settings dialog showing appearance fields"><br><sub>The settings gear opens a guided, optional configuration form</sub></td>
-    <td align="center"><img src="docs/images/user-guide/countdown-settings.png" width="320" alt="Simple WebWidget settings dialog showing H2R countdown fields"><br><sub>H2R countdown mode reveals target, title, completion message, and color fields</sub></td>
+    <td align="center"><img src="docs/images/user-guide/settings-dialog.png" width="320" alt="Simple WebWidget settings drawer showing appearance fields and a live preview"><br><sub>The compact drawer shifts the widget left and previews valid changes live</sub></td>
+    <td align="center"><img src="docs/images/user-guide/countdown-settings.png" width="320" alt="Simple WebWidget settings drawer showing H2R countdown fields"><br><sub>H2R countdown mode reveals target, title, completion message, and color fields</sub></td>
   </tr>
 </table>
 

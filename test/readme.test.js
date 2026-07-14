@@ -54,4 +54,5 @@ test("documents settings, strict parameters, automatic weather, and iframe limit
   assert.match(readme, /H2R Graphics Countdown Timer/);
   assert.match(readme, /Barker Technologies AB/);
   assert.doesNotMatch(readme, /`message`/);
+  assert.doesNotMatch(readme, /winter/i);
 });

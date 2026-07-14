@@ -30,6 +30,7 @@ export const SUPPORTED_HASH_PARAMETERS = Object.freeze([
   "info3",
   "iconUrl",
   "hideSettings",
+  "winter",
 ]);
 
 const supportedHashParameterSet = new Set(SUPPORTED_HASH_PARAMETERS);
@@ -96,6 +97,14 @@ function readBoolean(params, name) {
   }
 
   return value === "true";
+}
+
+function readOptionalBoolean(params, name) {
+  if (!params.has(name)) {
+    return null;
+  }
+
+  return readBoolean(params, name);
 }
 
 function readCoordinate(params, name, minimum, maximum) {
@@ -208,5 +217,6 @@ export function parseWidgetConfiguration(
     info3Url: info3.url,
     iconUrl,
     hideSettings: readBoolean(params, "hideSettings"),
+    winter: readOptionalBoolean(params, "winter"),
   });
 }

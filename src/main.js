@@ -12,6 +12,7 @@ import {
   fetchCurrentWeather,
   normalizeTemperatureUnit,
 } from "./weather.js";
+import { isWinterActive } from "./winter.js";
 import "./style.css";
 
 const elements = {
@@ -34,6 +35,7 @@ const elements = {
   brand: document.querySelector("#brand"),
   brandImage: document.querySelector("#brand-image"),
   settingsButton: document.querySelector("#settings-button"),
+  winterEffects: document.querySelector("#winter-effects"),
 };
 
 let timeFormatter = null;
@@ -96,6 +98,7 @@ function clearInformationBlock(element) {
   }
 
   element.replaceChildren();
+  delete element.dataset.frameUrl;
   element.classList.remove("info-block--frame");
   element.hidden = true;
 }
@@ -111,6 +114,15 @@ function hideFailedInformationFrame(element, frame, code, message) {
 }
 
 function renderInformationBlock(element, value, frameUrl, position) {
+  if (
+    frameUrl &&
+    element.dataset.frameUrl === frameUrl &&
+    element.querySelector("iframe")
+  ) {
+    element.hidden = false;
+    return true;
+  }
+
   clearInformationBlock(element);
 
   if (!value) {
@@ -145,6 +157,7 @@ function renderInformationBlock(element, value, frameUrl, position) {
   );
 
   element.classList.add("info-block--frame");
+  element.dataset.frameUrl = frameUrl;
   element.append(frame);
   element.hidden = false;
   frame.src = frameUrl;
@@ -183,6 +196,12 @@ function updateTime() {
   }
 }
 
+function syncWinterEffects(override = currentConfiguration?.winter ?? null) {
+  const enabled = isWinterActive(override);
+  elements.winterEffects.hidden = !enabled;
+  document.documentElement.classList.toggle("winter-active", enabled);
+}
+
 function syncVisibility() {
   const hasWeather = !elements.weatherSource.hidden || !elements.temperature.hidden;
   const hasTime = !elements.localTime.hidden;
@@ -206,7 +225,7 @@ function syncVisibility() {
   }
 }
 
-function resetRenderedConfiguration() {
+function resetRenderedConfiguration({ preserveInformation = false } = {}) {
   timeFormatter = null;
   weatherConfiguration = null;
   setText(elements.heading, "");
@@ -219,9 +238,11 @@ function resetRenderedConfiguration() {
   setText(elements.temperature, "");
   elements.localTime.hidden = true;
   elements.localTime.textContent = "";
-  clearInformationBlock(elements.info1);
-  clearInformationBlock(elements.info2);
-  clearInformationBlock(elements.info3);
+  if (!preserveInformation) {
+    clearInformationBlock(elements.info1);
+    clearInformationBlock(elements.info2);
+    clearInformationBlock(elements.info3);
+  }
   elements.brand.hidden = true;
   elements.brandImage.removeAttribute("src");
   elements.configurationGuide.hidden = false;
@@ -231,7 +252,9 @@ function resetRenderedConfiguration() {
 }
 
 function renderInvalidConfiguration() {
+  currentConfiguration = null;
   applyTheme(resolveTheme(""));
+  syncWinterEffects(null);
   elements.header.hidden = true;
   elements.conditions.hidden = true;
   elements.configurationGuide.hidden = true;
@@ -286,26 +309,12 @@ async function updateWeather() {
   }
 }
 
-function renderFromHash() {
+function renderConfiguration(configuration) {
   weatherRequestVersion += 1;
-  currentConfiguration = null;
-  resetRenderedConfiguration();
-
-  let configuration;
-
-  try {
-    configuration = parseWidgetConfiguration(window.location.hash, {
-      baseUrl: window.location.href,
-      isDevelopment: import.meta.env.DEV,
-    });
-  } catch (error) {
-    logConfigurationError(error);
-    renderInvalidConfiguration();
-    return;
-  }
-
+  resetRenderedConfiguration({ preserveInformation: true });
   currentConfiguration = configuration;
   applyTheme(resolveTheme(configuration.theme));
+  syncWinterEffects(configuration.winter);
   elements.settingsButton.hidden = configuration.hideSettings;
   setText(elements.heading, configuration.heading);
 
@@ -367,6 +376,25 @@ function renderFromHash() {
   void updateWeather();
 }
 
+function renderFromHash() {
+  let configuration;
+
+  try {
+    configuration = parseWidgetConfiguration(window.location.hash, {
+      baseUrl: window.location.href,
+      isDevelopment: import.meta.env.DEV,
+    });
+  } catch (error) {
+    weatherRequestVersion += 1;
+    resetRenderedConfiguration();
+    logConfigurationError(error);
+    renderInvalidConfiguration();
+    return;
+  }
+
+  renderConfiguration(configuration);
+}
+
 elements.brandImage.addEventListener("load", () => {
   if (elements.brandImage.hasAttribute("src")) {
     elements.brand.hidden = false;
@@ -389,6 +417,8 @@ elements.brandImage.addEventListener("error", () => {
 elements.footerYear.textContent = new Date().getFullYear();
 createSettingsController({
   getConfiguration: () => currentConfiguration,
+  onPreview: renderConfiguration,
+  onCancel: renderFromHash,
   onApply: (fragment) => {
     if (fragment === window.location.hash) {
       renderFromHash();
@@ -412,3 +442,4 @@ renderFromHash();
 window.addEventListener("hashchange", renderFromHash);
 window.setInterval(updateTime, 30_000);
 window.setInterval(updateWeather, 15 * 60_000);
+window.setInterval(syncWinterEffects, 60 * 60_000);

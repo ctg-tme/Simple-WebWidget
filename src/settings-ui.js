@@ -170,7 +170,12 @@ function readInformationEditor(editor) {
   return { type: "none" };
 }
 
-export function createSettingsController({ onApply, getConfiguration }) {
+export function createSettingsController({
+  onApply,
+  onPreview,
+  onCancel,
+  getConfiguration,
+}) {
   const elements = {
     button: document.querySelector("#settings-button"),
     modal: document.querySelector("#settings-modal"),
@@ -200,6 +205,9 @@ export function createSettingsController({ onApply, getConfiguration }) {
     elements.informationTemplate,
   );
   let previouslyFocused = null;
+  let winterOverride = null;
+  let closeTimer = null;
+  let previewTimer = null;
 
   populateThemeOptions(elements.theme);
   populateTimeZoneOptions(elements.timeZone);
@@ -217,6 +225,7 @@ export function createSettingsController({ onApply, getConfiguration }) {
 
   function setConfiguration(configuration) {
     const value = configuration ?? {};
+    winterOverride = value.winter ?? null;
     ensureSelectValue(elements.theme, value.theme ?? "");
     elements.heading.value = value.heading ?? "";
     elements.iconUrl.value = value.iconUrl ?? "";
@@ -248,16 +257,32 @@ export function createSettingsController({ onApply, getConfiguration }) {
   }
 
   function open() {
+    window.clearTimeout(closeTimer);
     setConfiguration(getConfiguration());
     previouslyFocused = document.activeElement;
     elements.modal.hidden = false;
     document.body.classList.add("settings-open");
+    elements.button.setAttribute("aria-expanded", "true");
+    window.requestAnimationFrame(() => {
+      elements.modal.classList.add("settings-drawer--open");
+    });
     elements.close.focus();
   }
 
-  function close() {
-    elements.modal.hidden = true;
+  function close({ restorePreview = true } = {}) {
+    window.clearTimeout(previewTimer);
+    window.clearTimeout(closeTimer);
+    elements.modal.classList.remove("settings-drawer--open");
     document.body.classList.remove("settings-open");
+    elements.button.setAttribute("aria-expanded", "false");
+
+    if (restorePreview) {
+      onCancel();
+    }
+
+    closeTimer = window.setTimeout(() => {
+      elements.modal.hidden = true;
+    }, 260);
 
     if (previouslyFocused instanceof HTMLElement) {
       previouslyFocused.focus();
@@ -279,7 +304,26 @@ export function createSettingsController({ onApply, getConfiguration }) {
       info2: readInformationEditor(informationEditors[1]),
       info3: readInformationEditor(informationEditors[2]),
       hideSettings: elements.hideSettings.checked,
+      winter: winterOverride,
     };
+  }
+
+  function previewSettings() {
+    window.clearTimeout(previewTimer);
+    previewTimer = window.setTimeout(() => {
+      try {
+        const fragment = serializeWidgetSettings(readSettings());
+        const configuration = parseWidgetConfiguration(fragment, {
+          baseUrl: window.location.href,
+          isDevelopment: import.meta.env.DEV,
+        });
+        elements.formError.hidden = true;
+        onPreview(configuration);
+      } catch {
+        // Incomplete fields are expected while the user is typing. Keep the
+        // last valid preview until the form becomes valid again.
+      }
+    }, 120);
   }
 
   function useDeviceLocation() {
@@ -298,6 +342,7 @@ export function createSettingsController({ onApply, getConfiguration }) {
         elements.longitude.value = coords.longitude.toFixed(6);
         elements.locationStatus.textContent = "Device coordinates added.";
         elements.useDeviceLocation.disabled = false;
+        previewSettings();
       },
       (error) => {
         elements.locationStatus.textContent =
@@ -314,16 +359,13 @@ export function createSettingsController({ onApply, getConfiguration }) {
   }
 
   elements.button.addEventListener("click", open);
-  elements.close.addEventListener("click", close);
-  elements.cancel.addEventListener("click", close);
+  elements.close.addEventListener("click", () => close());
+  elements.cancel.addEventListener("click", () => close());
   elements.weather.addEventListener("change", syncWeatherFields);
   elements.time.addEventListener("change", syncTimeFields);
   elements.useDeviceLocation.addEventListener("click", useDeviceLocation);
-  elements.modal.addEventListener("click", (event) => {
-    if (event.target === elements.modal) {
-      close();
-    }
-  });
+  elements.form.addEventListener("input", previewSettings);
+  elements.form.addEventListener("change", previewSettings);
   elements.modal.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       event.preventDefault();
@@ -340,7 +382,8 @@ export function createSettingsController({ onApply, getConfiguration }) {
         baseUrl: window.location.href,
         isDevelopment: import.meta.env.DEV,
       });
-      close();
+      window.clearTimeout(previewTimer);
+      close({ restorePreview: false });
       onApply(fragment);
     } catch (error) {
       elements.formError.textContent =

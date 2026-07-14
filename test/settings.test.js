@@ -71,3 +71,8 @@ test("requires a target for H2R countdown settings", () => {
     /target is required/,
   );
 });
+
+test("preserves the hidden winter override when visible settings are applied", () => {
+  assert.match(serializeWidgetSettings({ winter: true }), /winter=true/);
+  assert.match(serializeWidgetSettings({ winter: false }), /winter=false/);
+});

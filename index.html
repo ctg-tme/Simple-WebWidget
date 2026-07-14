@@ -16,8 +16,8 @@
       class="settings-button"
       type="button"
       aria-label="Configure this WebWidget"
-      aria-haspopup="dialog"
       aria-controls="settings-modal"
+      aria-expanded="false"
       title="Configure this WebWidget"
       hidden
     >
@@ -95,11 +95,36 @@
       </article>
     </main>
 
-    <div id="settings-modal" class="settings-modal" hidden>
-      <section
+    <div id="winter-effects" class="winter-effects" aria-hidden="true" hidden>
+      <div class="winter-lights winter-lights--horizontal"></div>
+      <div class="winter-lights winter-lights--vertical"></div>
+      <div class="winter-snow">
+        <span class="snowflake snowflake--1">❄</span>
+        <span class="snowflake snowflake--2">❅</span>
+        <span class="snowflake snowflake--3">❆</span>
+        <span class="snowflake snowflake--4">❄</span>
+        <span class="snowflake snowflake--5">❅</span>
+        <span class="snowflake snowflake--6">❆</span>
+        <span class="snowflake snowflake--7">❄</span>
+        <span class="snowflake snowflake--8">❅</span>
+        <span class="snowflake snowflake--9">❆</span>
+        <span class="snowflake snowflake--10">❄</span>
+        <span class="snowflake snowflake--11">❅</span>
+        <span class="snowflake snowflake--12">❆</span>
+        <span class="snowflake snowflake--13">❄</span>
+        <span class="snowflake snowflake--14">❅</span>
+        <span class="snowflake snowflake--15">❆</span>
+        <span class="snowflake snowflake--16">❄</span>
+        <span class="snowflake snowflake--17">❅</span>
+        <span class="snowflake snowflake--18">❆</span>
+      </div>
+      <div class="winter-ground"></div>
+      <div class="winter-snowman"><span>⛄</span></div>
+    </div>
+
+    <div id="settings-modal" class="settings-drawer" hidden>
+      <aside
         class="settings-panel"
-        role="dialog"
-        aria-modal="true"
         aria-labelledby="settings-title"
         aria-describedby="settings-description"
       >
@@ -107,7 +132,7 @@
           <div>
             <h2 id="settings-title">Configure WebWidget</h2>
             <p id="settings-description">
-              Choose only the content you want to include. Applying replaces the current hash configuration.
+              Changes preview live. Apply saves them to the URL.
             </p>
           </div>
           <button
@@ -237,7 +262,7 @@
             <button class="settings-primary" type="submit">Apply configuration</button>
           </div>
         </form>
-      </section>
+      </aside>
     </div>
 
     <template id="information-setting-template">
@@ -256,7 +281,7 @@
         <div data-information-panel="text" hidden>
           <label class="settings-field">
             <span>Text</span>
-            <textarea data-information-text maxlength="400" rows="3"></textarea>
+            <textarea data-information-text maxlength="400" rows="2"></textarea>
             <small>Plain text only. Line breaks are preserved.</small>
           </label>
         </div>

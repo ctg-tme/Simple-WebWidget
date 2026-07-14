@@ -56,6 +56,10 @@
     --mds-color-theme-background-alert-error-normal,
     #ffe8ea
   );
+  --settings-drawer-width: clamp(280px, 32vw, 360px);
+  --winter-light-cell: clamp(11px, 2.35vmin, 14px);
+  --winter-light-radius: clamp(2.75px, 0.58vmin, 3.5px);
+  --winter-content-inset: clamp(16px, 3.25vmin, 20px);
   color: var(--widget-text);
   background: #101828;
   font-family: var(
@@ -242,7 +246,8 @@ body {
   margin: 0;
 }
 
-html.theme-transitioning body {
+html.theme-transitioning .widget-shell,
+html.theme-transitioning .winter-effects {
   animation: roomos-theme-crossfade 1s cubic-bezier(0.2, 0, 0, 1) both;
 }
 
@@ -262,34 +267,267 @@ html.theme-transitioning body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html.theme-transitioning body {
+  html.theme-transitioning .widget-shell,
+  html.theme-transitioning .winter-effects {
+    animation: none;
+  }
+
+  .winter-snow,
+  .winter-snowman {
+    display: none;
+  }
+
+  .winter-lights {
     animation: none;
   }
 }
 
 html {
-  background: var(--widget-app-end);
+  background: #101828;
 }
 
 body {
-  background:
-    radial-gradient(circle at 85% 8%, var(--widget-app-glow), transparent 42%),
-    linear-gradient(155deg, var(--widget-app-start), var(--widget-app-end));
+  background: #101828;
 }
 
 .widget-shell {
+  background:
+    radial-gradient(circle at 85% 8%, var(--widget-app-glow), transparent 42%),
+    linear-gradient(155deg, var(--widget-app-start), var(--widget-app-end));
   display: grid;
   width: 100%;
   min-height: 100%;
   place-items: center;
   padding: 1rem;
+  transition: padding-right 240ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+body.settings-open .widget-shell {
+  padding-right: calc(var(--settings-drawer-width) + 1rem);
+}
+
+html.winter-active .widget-shell {
+  padding: var(--winter-content-inset);
+}
+
+html.winter-active body.settings-open .widget-shell {
+  padding-right: calc(
+    var(--settings-drawer-width) + var(--winter-content-inset)
+  );
+}
+
+.winter-effects {
+  position: fixed;
+  z-index: 850;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.winter-lights {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  filter:
+    drop-shadow(0 0 3px rgb(255 255 255 / 92%))
+    drop-shadow(0 0 6px rgb(5 12 28 / 82%));
+  animation: winter-lights-twinkle 2.4s ease-in-out infinite alternate;
+}
+
+.winter-lights--horizontal::before,
+.winter-lights--horizontal::after {
+  position: absolute;
+  right: var(--winter-light-cell);
+  left: var(--winter-light-cell);
+  height: var(--winter-light-cell);
+  border-top: 2px solid #13263a;
+  background-image:
+    radial-gradient(circle at center, #ff4057 0 var(--winter-light-radius), #fff calc(var(--winter-light-radius) + 0.5px) calc(var(--winter-light-radius) + 1px), transparent calc(var(--winter-light-radius) + 1.5px)),
+    radial-gradient(circle at center, #31d37c 0 var(--winter-light-radius), #fff calc(var(--winter-light-radius) + 0.5px) calc(var(--winter-light-radius) + 1px), transparent calc(var(--winter-light-radius) + 1.5px)),
+    radial-gradient(circle at center, #37a7ff 0 var(--winter-light-radius), #fff calc(var(--winter-light-radius) + 0.5px) calc(var(--winter-light-radius) + 1px), transparent calc(var(--winter-light-radius) + 1.5px)),
+    radial-gradient(circle at center, #ffd84a 0 var(--winter-light-radius), #fff calc(var(--winter-light-radius) + 0.5px) calc(var(--winter-light-radius) + 1px), transparent calc(var(--winter-light-radius) + 1.5px));
+  background-position:
+    0 0,
+    var(--winter-light-cell) 0,
+    calc(var(--winter-light-cell) * 2) 0,
+    calc(var(--winter-light-cell) * 3) 0;
+  background-repeat: repeat-x;
+  background-size:
+    calc(var(--winter-light-cell) * 4) var(--winter-light-cell);
+  content: "";
+}
+
+.winter-lights--horizontal::before {
+  top: 2px;
+}
+
+.winter-lights--horizontal::after {
+  bottom: 2px;
+  transform: rotate(180deg);
+}
+
+.winter-lights--vertical::before,
+.winter-lights--vertical::after {
+  position: absolute;
+  top: var(--winter-light-cell);
+  bottom: var(--winter-light-cell);
+  width: var(--winter-light-cell);
+  border-left: 2px solid #13263a;
+  background-image:
+    radial-gradient(circle at center, #37a7ff 0 var(--winter-light-radius), #fff calc(var(--winter-light-radius) + 0.5px) calc(var(--winter-light-radius) + 1px), transparent calc(var(--winter-light-radius) + 1.5px)),
+    radial-gradient(circle at center, #ffd84a 0 var(--winter-light-radius), #fff calc(var(--winter-light-radius) + 0.5px) calc(var(--winter-light-radius) + 1px), transparent calc(var(--winter-light-radius) + 1.5px)),
+    radial-gradient(circle at center, #ff4057 0 var(--winter-light-radius), #fff calc(var(--winter-light-radius) + 0.5px) calc(var(--winter-light-radius) + 1px), transparent calc(var(--winter-light-radius) + 1.5px)),
+    radial-gradient(circle at center, #31d37c 0 var(--winter-light-radius), #fff calc(var(--winter-light-radius) + 0.5px) calc(var(--winter-light-radius) + 1px), transparent calc(var(--winter-light-radius) + 1.5px));
+  background-position:
+    0 0,
+    0 var(--winter-light-cell),
+    0 calc(var(--winter-light-cell) * 2),
+    0 calc(var(--winter-light-cell) * 3);
+  background-repeat: repeat-y;
+  background-size:
+    var(--winter-light-cell) calc(var(--winter-light-cell) * 4);
+  content: "";
+}
+
+.winter-lights--vertical::before {
+  left: 2px;
+}
+
+.winter-lights--vertical::after {
+  right: 2px;
+  transform: rotate(180deg);
+}
+
+.winter-snow {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+}
+
+.snowflake {
+  position: absolute;
+  top: -12vh;
+  color: #f9fdff;
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1;
+  text-shadow:
+    0 1px 2px #061529,
+    0 0 8px #55c8ff;
+  animation-name: winter-snowfall-right;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.snowflake:nth-child(even) {
+  animation-name: winter-snowfall-left;
+}
+
+.snowflake--1 { left: 3%; font-size: 24px; animation-duration: 12s; animation-delay: -7s; }
+.snowflake--2 { left: 9%; font-size: 17px; animation-duration: 9s; animation-delay: -2s; }
+.snowflake--3 { left: 15%; font-size: 30px; animation-duration: 15s; animation-delay: -12s; }
+.snowflake--4 { left: 21%; font-size: 20px; animation-duration: 11s; animation-delay: -5s; }
+.snowflake--5 { left: 28%; font-size: 14px; animation-duration: 8s; animation-delay: -4s; }
+.snowflake--6 { left: 34%; font-size: 27px; animation-duration: 14s; animation-delay: -9s; }
+.snowflake--7 { left: 40%; font-size: 18px; animation-duration: 10s; animation-delay: -8s; }
+.snowflake--8 { left: 46%; font-size: 32px; animation-duration: 16s; animation-delay: -3s; }
+.snowflake--9 { left: 52%; font-size: 15px; animation-duration: 9s; animation-delay: -6s; }
+.snowflake--10 { left: 58%; font-size: 24px; animation-duration: 13s; animation-delay: -11s; }
+.snowflake--11 { left: 64%; font-size: 19px; animation-duration: 11s; animation-delay: -1s; }
+.snowflake--12 { left: 70%; font-size: 29px; animation-duration: 15s; animation-delay: -8s; }
+.snowflake--13 { left: 76%; font-size: 16px; animation-duration: 8s; animation-delay: -7s; }
+.snowflake--14 { left: 81%; font-size: 23px; animation-duration: 12s; animation-delay: -4s; }
+.snowflake--15 { left: 86%; font-size: 31px; animation-duration: 16s; animation-delay: -13s; }
+.snowflake--16 { left: 91%; font-size: 18px; animation-duration: 10s; animation-delay: -3s; }
+.snowflake--17 { left: 95%; font-size: 26px; animation-duration: 14s; animation-delay: -10s; }
+.snowflake--18 { left: 98%; font-size: 14px; animation-duration: 9s; animation-delay: -5s; }
+
+:root[data-theme="FirstLight"] .snowflake,
+:root[data-theme="Light"] .snowflake,
+:root[data-theme="SandShoal"] .snowflake,
+:root[data-theme="PebbleShoal"] .snowflake {
+  color: #075985;
+  text-shadow:
+    0 1px 2px #fff,
+    0 0 7px #e0f7ff;
+}
+
+@media (prefers-color-scheme: light) {
+  :root[data-theme="Auto"] .snowflake {
+    color: #075985;
+    text-shadow:
+      0 1px 2px #fff,
+      0 0 7px #e0f7ff;
+  }
+}
+
+.winter-ground {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 28px;
+  background: linear-gradient(transparent, rgb(238 249 255 / 86%));
+  filter: drop-shadow(0 -2px 3px rgb(5 32 56 / 50%));
+}
+
+.winter-snowman {
+  position: absolute;
+  z-index: 3;
+  bottom: 15px;
+  left: -88px;
+  color: #fff;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  font-size: clamp(46px, 7vw, 68px);
+  line-height: 1;
+  filter:
+    drop-shadow(0 3px 2px rgb(5 15 30 / 78%))
+    drop-shadow(0 0 5px rgb(255 255 255 / 90%));
+  animation: winter-snowman-crossing 20s linear infinite;
+}
+
+.winter-snowman span {
+  display: block;
+  transform-origin: 50% 62%;
+  animation: winter-snowman-roll 20s linear infinite;
+}
+
+@keyframes winter-snowfall-right {
+  to {
+    transform: translate3d(36px, 118vh, 0) rotate(420deg);
+  }
+}
+
+@keyframes winter-snowfall-left {
+  to {
+    transform: translate3d(-32px, 118vh, 0) rotate(-360deg);
+  }
+}
+
+@keyframes winter-lights-twinkle {
+  from { opacity: 0.78; }
+  to { opacity: 1; }
+}
+
+@keyframes winter-snowman-crossing {
+  0%,
+  62% { transform: translateX(0); }
+  92%,
+  100% { transform: translateX(calc(100vw + 176px)); }
+}
+
+@keyframes winter-snowman-roll {
+  0%,
+  62% { transform: rotate(0); }
+  92%,
+  100% { transform: rotate(1080deg); }
 }
 
 .widget {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: min(600px, calc(100vw - 2rem));
+  width: min(600px, 100%);
   height: min(600px, calc(100vh - 2rem));
   min-height: 480px;
   overflow: visible;
@@ -485,10 +723,6 @@ body {
   white-space: nowrap;
 }
 
-body.settings-open {
-  overflow: hidden;
-}
-
 .settings-button,
 .settings-close,
 .settings-primary,
@@ -517,12 +751,18 @@ body.settings-open {
   cursor: pointer;
   transition:
     background-color 120ms ease,
-    box-shadow 120ms ease;
+    box-shadow 120ms ease,
+    opacity 120ms ease;
 }
 
 .settings-button:hover {
   background: var(--settings-surface-secondary);
   box-shadow: 0 3px 12px rgb(0 0 0 / 22%);
+}
+
+body.settings-open .settings-button {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .settings-button:focus-visible,
@@ -533,27 +773,31 @@ body.settings-open {
   outline-offset: 2px;
 }
 
-.settings-modal {
+.settings-drawer {
   position: fixed;
   z-index: 1000;
-  inset: 0;
-  display: grid;
-  padding: 20px;
-  overflow: hidden;
-  place-items: center;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--settings-drawer-width);
   color-scheme: light;
-  background: var(--settings-overlay);
+  transform: translateX(100%);
+  transition: transform 240ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.settings-drawer--open {
+  transform: translateX(0);
 }
 
 .settings-panel {
-  width: min(760px, 100%);
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
   overflow: auto;
   border: 0;
-  border-radius: 16px;
+  border-radius: 16px 0 0 16px;
   color: var(--settings-text);
   background: var(--settings-surface);
-  box-shadow: 0 20px 56px rgb(0 0 0 / 28%);
+  box-shadow: -12px 0 36px rgb(0 0 0 / 24%);
 }
 
 .settings-panel__header {
@@ -563,15 +807,15 @@ body.settings-open {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 20px;
-  padding: 24px;
+  gap: 12px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--settings-subtle-outline);
   background: var(--settings-surface);
 }
 
 .settings-panel__header h2 {
   margin: 0 0 6px;
-  font-size: 28px;
+  font-size: 22px;
   line-height: 1.1;
 }
 
@@ -579,19 +823,20 @@ body.settings-open {
 .settings-countdown p {
   margin: 0;
   color: var(--settings-text-secondary);
-  line-height: 1.45;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .settings-close {
-  flex: 0 0 42px;
-  width: 42px;
-  height: 42px;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
   padding: 0;
   border: 0;
   border-radius: 50%;
   color: var(--settings-text);
   background: transparent;
-  font-size: 30px;
+  font-size: 24px;
   line-height: 1;
   cursor: pointer;
 }
@@ -602,16 +847,16 @@ body.settings-open {
 
 .settings-form {
   display: grid;
-  gap: 18px;
-  padding: 24px;
+  gap: 10px;
+  padding: 12px;
 }
 
 .settings-group {
   display: grid;
   min-width: 0;
-  gap: 16px;
+  gap: 10px;
   margin: 0;
-  padding: 18px;
+  padding: 12px;
   border: 0;
   border-radius: 12px;
   background: var(--settings-surface-secondary);
@@ -619,14 +864,15 @@ body.settings-open {
 
 .settings-group legend {
   padding: 0 8px;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .settings-field {
   display: grid;
   min-width: 0;
-  gap: 7px;
+  gap: 4px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -635,7 +881,7 @@ body.settings-open {
 .settings-status {
   display: block;
   color: var(--settings-text-secondary);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 400;
   line-height: 1.35;
 }
@@ -645,11 +891,13 @@ body.settings-open {
 .settings-form textarea {
   width: 100%;
   min-width: 0;
-  padding: 11px 12px;
+  min-height: 36px;
+  padding: 8px 10px;
   border: 1px solid var(--settings-input-outline);
   border-radius: 8px;
   color: var(--settings-text);
   background: var(--settings-surface);
+  font-size: 14px;
 }
 
 .settings-form textarea {
@@ -668,9 +916,10 @@ body.settings-open {
 .settings-toggle {
   position: relative;
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
+  grid-template-columns: 40px minmax(0, 1fr);
   align-items: center;
-  gap: 12px;
+  gap: 9px;
+  font-size: 14px;
   cursor: pointer;
 }
 
@@ -684,8 +933,8 @@ body.settings-open {
 .settings-toggle__track {
   position: relative;
   display: block;
-  width: 48px;
-  height: 28px;
+  width: 40px;
+  height: 22px;
   border: 0;
   border-radius: 999px;
   background: var(--settings-surface-tertiary);
@@ -694,10 +943,10 @@ body.settings-open {
 
 .settings-toggle__track::after {
   position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 18px;
-  height: 18px;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: var(--settings-surface);
   box-shadow: 0 1px 3px rgb(0 0 0 / 28%);
@@ -711,7 +960,7 @@ body.settings-open {
 
 .settings-toggle input:checked + .settings-toggle__track::after {
   background: var(--settings-surface);
-  transform: translateX(20px);
+  transform: translateX(18px);
 }
 
 .settings-toggle input:focus-visible + .settings-toggle__track {
@@ -722,15 +971,15 @@ body.settings-open {
 .settings-dependent,
 .settings-countdown {
   display: grid;
-  gap: 14px;
-  padding: 16px;
+  gap: 9px;
+  padding: 10px;
   border-left: 3px solid var(--settings-accent);
 }
 
 .settings-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 8px;
 }
 
 .settings-status {
@@ -740,7 +989,7 @@ body.settings-open {
 
 .information-settings {
   display: grid;
-  gap: 18px;
+  gap: 10px;
 }
 
 .settings-countdown a {
@@ -749,15 +998,20 @@ body.settings-open {
 }
 
 .settings-actions {
+  position: sticky;
+  z-index: 2;
+  bottom: 0;
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 8px;
+  padding: 8px 0 2px;
+  background: linear-gradient(transparent, var(--settings-surface) 30%);
 }
 
 .settings-primary,
 .settings-secondary {
-  min-height: 44px;
-  padding: 10px 18px;
+  min-height: 36px;
+  padding: 7px 12px;
   border: 0;
   border-radius: 999px;
   cursor: pointer;
@@ -810,6 +1064,10 @@ body.settings-open {
     padding-right: 68px;
   }
 
+  body.settings-open .settings-button + .widget-shell .widget__header {
+    padding-right: 12px;
+  }
+
   .widget__header {
     flex-basis: 76px;
   }
@@ -855,16 +1113,35 @@ body.settings-open {
     height: 46px;
   }
 
-  .settings-modal {
-    padding: 10px;
-  }
-
-  .settings-panel__header,
-  .settings-form {
-    padding: 18px;
-  }
-
   .settings-columns {
     grid-template-columns: 1fr;
+  }
+
+  body.settings-open .widget {
+    min-height: 0;
+  }
+
+  body.settings-open .widget h1 {
+    font-size: 18px;
+  }
+
+  body.settings-open .conditions {
+    font-size: 12px;
+  }
+
+  body.settings-open .brand {
+    flex-basis: 42px;
+    width: 42px;
+    height: 42px;
+  }
+
+  body.settings-open .info-block {
+    padding: 10px;
+    font-size: 20px;
+  }
+
+  body.settings-open .widget__footer {
+    padding-inline: 6px;
+    font-size: 10px;
   }
 }

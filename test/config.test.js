@@ -139,6 +139,13 @@ test("accepts hideSettings and strict boolean values", () => {
   assertInvalid("#hideSettings=1", "hideSettings-invalid");
 });
 
+test("accepts an optional winter override without changing its automatic state", () => {
+  assert.equal(parseWidgetConfiguration("", options).winter, null);
+  assert.equal(parseWidgetConfiguration("#winter=true", options).winter, true);
+  assert.equal(parseWidgetConfiguration("#winter=false", options).winter, false);
+  assertInvalid("#winter=yes", "winter-invalid");
+});
+
 test("rejects unsupported legacy, unknown, and duplicate parameters", () => {
   assertInvalid("#message=Legacy", "unsupported-parameter");
   assertInvalid("#weatherSymbol=%E2%9B%85", "unsupported-parameter");
