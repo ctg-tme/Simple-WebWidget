@@ -11,7 +11,7 @@ The easiest way to configure the widget is the gear in the top-right. It opens a
 1. Open the gear and select only the sections you want to include.
 2. Use the toggles for weather and time. Weather can request the device location, with manual coordinates available as a fallback. Time can follow the device automatically or use a selected IANA time zone.
 3. For each information block, choose **Not included**, **Text**, **Website / iframe**, or **H2R countdown**.
-4. Select **Apply configuration** to replace the current hash parameters. Optionally enable **Hide the settings gear after applying** for deployment.
+4. Select **Apply configuration** to replace the current hash parameters. The widget updates in place without reloading the page. RoomOS theme colors wait one second, then transition smoothly to the new palette. Browsers and devices configured to reduce motion switch immediately. Optionally enable **Hide the settings gear after applying** for deployment.
 
 <table>
   <tr>

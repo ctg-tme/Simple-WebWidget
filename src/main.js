@@ -40,6 +40,47 @@ let timeFormatter = null;
 let weatherConfiguration = null;
 let weatherRequestVersion = 0;
 let currentConfiguration = null;
+let themeDelayTimer = null;
+let themeSwapTimer = null;
+let themeCleanupTimer = null;
+
+const THEME_TRANSITION_DELAY_MS = 1_000;
+const THEME_CROSSFADE_DURATION_MS = 1_000;
+
+function cancelThemeTransition() {
+  window.clearTimeout(themeDelayTimer);
+  window.clearTimeout(themeSwapTimer);
+  window.clearTimeout(themeCleanupTimer);
+  themeDelayTimer = null;
+  themeSwapTimer = null;
+  themeCleanupTimer = null;
+  document.documentElement.classList.remove("theme-transitioning");
+}
+
+function applyTheme(theme) {
+  const root = document.documentElement;
+
+  if (
+    !root.dataset.theme ||
+    root.dataset.theme === theme ||
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+  ) {
+    cancelThemeTransition();
+    root.dataset.theme = theme;
+    return;
+  }
+
+  cancelThemeTransition();
+  themeDelayTimer = window.setTimeout(() => {
+    root.classList.add("theme-transitioning");
+    themeSwapTimer = window.setTimeout(() => {
+      root.dataset.theme = theme;
+    }, THEME_CROSSFADE_DURATION_MS / 2);
+    themeCleanupTimer = window.setTimeout(() => {
+      root.classList.remove("theme-transitioning");
+    }, THEME_CROSSFADE_DURATION_MS);
+  }, THEME_TRANSITION_DELAY_MS);
+}
 
 function setText(element, value) {
   element.textContent = value;
@@ -190,7 +231,7 @@ function resetRenderedConfiguration() {
 }
 
 function renderInvalidConfiguration() {
-  document.documentElement.dataset.theme = resolveTheme("");
+  applyTheme(resolveTheme(""));
   elements.header.hidden = true;
   elements.conditions.hidden = true;
   elements.configurationGuide.hidden = true;
@@ -264,7 +305,7 @@ function renderFromHash() {
   }
 
   currentConfiguration = configuration;
-  document.documentElement.dataset.theme = resolveTheme(configuration.theme);
+  applyTheme(resolveTheme(configuration.theme));
   elements.settingsButton.hidden = configuration.hideSettings;
   setText(elements.heading, configuration.heading);
 
