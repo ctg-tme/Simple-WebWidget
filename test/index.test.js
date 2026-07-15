@@ -82,3 +82,12 @@ test("does not remove rendered frames with a fixed load timeout", () => {
     /FRAME_LOAD_TIMEOUT|information-frame-load-timeout/,
   );
 });
+
+test("keeps text and iframe information blocks on equal outer flex geometry", () => {
+  const infoBlockRule =
+    styles.match(/\.info-block \{([\s\S]*?)\n\}/)?.[1] ?? "";
+
+  assert.match(infoBlockRule, /padding: 0;/);
+  assert.match(styles, /\.info-block__text \{[\s\S]*?padding: 18px 24px;/);
+  assert.match(main, /className = "info-block__text"/);
+});

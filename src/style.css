@@ -616,8 +616,9 @@ html.winter-active body.settings-open .widget-shell {
 .info-block {
   display: grid;
   flex: 1 1 0;
-  place-items: center;
-  padding: 18px 24px;
+  min-height: 0;
+  place-items: stretch;
+  padding: 0;
   overflow: hidden;
   font-size: 34px;
   font-weight: 400;
@@ -626,8 +627,12 @@ html.winter-active body.settings-open .widget-shell {
   white-space: pre-line;
 }
 
-.info-block--frame {
-  padding: 0;
+.info-block__text {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  place-items: center;
+  padding: 18px 24px;
 }
 
 .info-block iframe {
@@ -1136,8 +1141,11 @@ body.settings-open .settings-button {
   }
 
   body.settings-open .info-block {
-    padding: 10px;
     font-size: 20px;
+  }
+
+  body.settings-open .info-block__text {
+    padding: 10px;
   }
 
   body.settings-open .widget__footer {

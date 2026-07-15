@@ -130,7 +130,10 @@ function renderInformationBlock(element, value, frameUrl, position) {
   }
 
   if (!frameUrl) {
-    element.textContent = value;
+    const textContent = document.createElement("div");
+    textContent.className = "info-block__text";
+    textContent.textContent = value;
+    element.append(textContent);
     element.hidden = false;
     return true;
   }
