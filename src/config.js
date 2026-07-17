@@ -13,6 +13,7 @@ export const INPUT_LIMITS = Object.freeze({
   theme: 32,
   coordinate: 24,
   temperatureUnit: 16,
+  xLaunch: 64,
   boolean: 5,
 });
 
@@ -31,6 +32,7 @@ export const SUPPORTED_HASH_PARAMETERS = Object.freeze([
   "iconUrl",
   "hideSettings",
   "winter",
+  "xLaunch",
 ]);
 
 const supportedHashParameterSet = new Set(SUPPORTED_HASH_PARAMETERS);
@@ -218,5 +220,6 @@ export function parseWidgetConfiguration(
     iconUrl,
     hideSettings: readBoolean(params, "hideSettings"),
     winter: readOptionalBoolean(params, "winter"),
+    xLaunch: readLimitedText(params, "xLaunch", INPUT_LIMITS.xLaunch),
   });
 }

@@ -206,6 +206,7 @@ export function createSettingsController({
   );
   let previouslyFocused = null;
   let winterOverride = null;
+  let launchContext = "";
   let closeTimer = null;
   let previewTimer = null;
 
@@ -226,6 +227,7 @@ export function createSettingsController({
   function setConfiguration(configuration) {
     const value = configuration ?? {};
     winterOverride = value.winter ?? null;
+    launchContext = value.xLaunch ?? "";
     ensureSelectValue(elements.theme, value.theme ?? "");
     elements.heading.value = value.heading ?? "";
     elements.iconUrl.value = value.iconUrl ?? "";
@@ -305,6 +307,7 @@ export function createSettingsController({
       info3: readInformationEditor(informationEditors[2]),
       hideSettings: elements.hideSettings.checked,
       winter: winterOverride,
+      xLaunch: launchContext,
     };
   }
 

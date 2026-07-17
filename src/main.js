@@ -1,5 +1,6 @@
 import "@momentum-design/tokens/dist/css/theme/webex/light-stable.css";
 import "@momentum-design/tokens/dist/css/typography/complete.css";
+import { trackPageOpened } from "./analytics.js";
 import { parseWidgetConfiguration } from "./config.js";
 import {
   logConfigurationError,
@@ -442,6 +443,14 @@ createSettingsController({
   },
 });
 renderFromHash();
+void trackPageOpened(window.location.hash).then((result) => {
+  if (result.reason === "tracking-failed") {
+    logRuntimeWarning(
+      "analytics-page-opened-failed",
+      "The page-opened analytics event could not be recorded.",
+    );
+  }
+});
 window.addEventListener("hashchange", renderFromHash);
 window.setInterval(updateTime, 30_000);
 window.setInterval(updateWeather, 15 * 60_000);

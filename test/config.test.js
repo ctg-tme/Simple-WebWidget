@@ -146,6 +146,19 @@ test("accepts an optional winter override without changing its automatic state",
   assertInvalid("#winter=yes", "winter-invalid");
 });
 
+test("accepts a bounded xLaunch context without exposing it to other fields", () => {
+  const configuration = parseWidgetConfiguration(
+    "#heading=Example&xLaunch=deployment-portal",
+    options,
+  );
+
+  assert.equal(configuration.xLaunch, "deployment-portal");
+  assertInvalid(
+    "#xLaunch=" + "a".repeat(INPUT_LIMITS.xLaunch + 1),
+    "xLaunch-too-long",
+  );
+});
+
 test("rejects unsupported legacy, unknown, and duplicate parameters", () => {
   assertInvalid("#message=Legacy", "unsupported-parameter");
   assertInvalid("#weatherSymbol=%E2%9B%85", "unsupported-parameter");

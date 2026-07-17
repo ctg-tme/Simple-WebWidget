@@ -76,3 +76,14 @@ test("preserves the hidden winter override when visible settings are applied", (
   assert.match(serializeWidgetSettings({ winter: true }), /winter=true/);
   assert.match(serializeWidgetSettings({ winter: false }), /winter=false/);
 });
+
+test("preserves xLaunch without exposing it as a visible setting", () => {
+  const fragment = serializeWidgetSettings({
+    heading: "Updated heading",
+    xLaunch: "deployment-portal",
+  });
+  const configuration = parseWidgetConfiguration(fragment, { baseUrl });
+
+  assert.equal(configuration.heading, "Updated heading");
+  assert.equal(configuration.xLaunch, "deployment-portal");
+});

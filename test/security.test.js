@@ -137,6 +137,12 @@ test("permits validated HTTPS frames in the production policy", () => {
   assert.doesNotMatch(CONTENT_SECURITY_POLICY, /unsafe-inline|unsafe-eval/);
 });
 
+test("permits only the configured weather and Aptabase APIs for connections", () => {
+  assert.match(CONTENT_SECURITY_POLICY, /https:\/\/api\.open-meteo\.com/);
+  assert.match(CONTENT_SECURITY_POLICY, /https:\/\/us\.aptabase\.com/);
+  assert.match(CONTENT_SECURITY_POLICY, /https:\/\/eu\.aptabase\.com/);
+});
+
 test("restores origin capabilities only for cross-origin information frames", () => {
   assert.match(
     getInformationFrameSandbox("https://h2r.graphics/tools/countdown/", {

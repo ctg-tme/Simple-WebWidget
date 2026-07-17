@@ -12,6 +12,7 @@
     "check:production-security": "node scripts/check-production-security.mjs"
   },
   "dependencies": {
+    "@aptabase/web": "^0.5.0",
     "@momentum-design/tokens": "^0.10.4"
   },
   "devDependencies": {

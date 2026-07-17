@@ -118,6 +118,7 @@ Widget configuration is supplied exclusively through URL hash parameters—every
 | `info3` | Third information block; text or a validated HTTPS URL rendered in an iframe |
 | `iconUrl` | Validated square branding image URL displayed borderlessly to the left of the heading |
 | `hideSettings` | Set to `true` to hide the settings gear after deployment; remove it manually from the URL to restore the gear |
+| `xLaunch` | Optional cross-project launch context reserved for integrations; accepted and preserved, but intentionally absent from the settings drawer |
 
 These are the only supported hash parameters. Legacy names, unknown parameters, duplicate parameters, and boolean values other than `true` or `false` reject the complete configuration. The settings form omits disabled boolean options rather than writing `false`.
 
@@ -137,6 +138,7 @@ The widget validates the complete fragment before displaying supplied content or
 | `theme` | 32 |
 | Each coordinate | 24 |
 | `temperatureUnit` | 16 |
+| `xLaunch` | 64 |
 | Boolean fields | 5 |
 
 Malformed percent encoding, incomplete or invalid coordinates, an excessive fragment, an oversized field, an unsupported or duplicate parameter, an invalid boolean, or an unsafe branding or iframe URL causes the complete configuration to be rejected. Existing remote sources are removed and the widget displays **Widget configuration is invalid**. The settings gear remains available so the configuration can be replaced. Values are never truncated silently.
@@ -168,6 +170,21 @@ The text remains escaped; other HTML is never rendered. Encode the full value of
 ### Console diagnostics
 
 Invalid configuration, invalid time-zone fallback, weather retrieval failure, branding image load failure, and detectable iframe load failure are reported in the browser console with a `[Simple-WebWidget]` prefix and a stable issue code. Configuration values and the complete fragment are not logged. For example, a rejected scheme reports `icon-url-unsupported-scheme`, while a failed image request reports `branding-image-load-failed`.
+
+## Analytics and privacy
+
+The production GitHub Pages build uses Aptabase for one event: `page_opened`. It is emitted once per full page load, not for live settings previews or hash changes. The event has only two custom properties:
+
+- `parameter_names`: an alphabetized, comma-separated list of recognized hash parameter names that were present, or `none`
+- `parameter_count`: the number of recognized parameter names that were present
+
+Hash parameter values, the complete fragment, headings, information text, iframe or image URLs, coordinates, time zones, themes, and `xLaunch` values are never included in the custom analytics event. Unknown parameter names are also excluded. The Aptabase Web SDK adds its standard event timestamp, generated session identifier, locale, debug state, and SDK metadata and sends requests without browser credentials.
+
+The Aptabase client App Key is supplied to GitHub Actions as the repository secret `APTABASE_API_KEY`. The workflow exposes it only to the Vite build step; dependency installation, tests, and deployment do not receive it. Add the key under **Repository settings → Secrets and variables → Actions → New repository secret** before pushing the analytics-enabled build.
+
+Because this is a front-end-only application, the client App Key becomes visible in the compiled JavaScript and browser request after deployment even though it is absent from Git history. Use only an Aptabase client App Key here—never a privileged credential or personal token.
+
+Local development leaves analytics disabled by default. To test it locally, copy `.env.example` to `.env.local`, add a development Aptabase App Key, and restart Vite. Local environment files are ignored by Git.
 
 ## RoomOS 26 Themes
 
@@ -227,7 +244,7 @@ npm run build
 npm run check:production-security
 ```
 
-The static output is written to `dist/`. Production builds include a restrictive Content Security Policy and an explicit `no-referrer` policy. The CSP permits same-origin scripts, styles, and fonts; same-origin, data, and HTTPS images; validated same-origin or HTTPS frames; and the Open-Meteo weather API as the only outbound connection. Development builds omit the CSP meta tag so Vite hot-module replacement continues to work.
+The static output is written to `dist/`. Production builds include a restrictive Content Security Policy and an explicit `no-referrer` policy. The CSP permits same-origin scripts, styles, and fonts; same-origin, data, and HTTPS images; validated same-origin or HTTPS frames; and outbound connections only to the Open-Meteo weather API and Aptabase's US and EU event endpoints. Development builds omit the CSP meta tag so Vite hot-module replacement continues to work.
 
 Pushes to `main` run the included GitHub Pages deployment workflow. In the repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions**. Deploying directly from the `main` branch serves the unbuilt Vite source and will not render the widget correctly.
 

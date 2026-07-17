@@ -29,7 +29,14 @@ jobs:
       - name: Test input security controls
         run: npm test
       - name: Build static site
-        run: npm run build
+        env:
+          VITE_APTABASE_APP_KEY: ${{ secrets.APTABASE_API_KEY }}
+        run: |
+          if [ -z "${VITE_APTABASE_APP_KEY}" ]; then
+            echo "The APTABASE_API_KEY repository secret is required."
+            exit 1
+          fi
+          npm run build
       - name: Verify production browser policy
         run: npm run check:production-security
       - name: Upload site artifact
