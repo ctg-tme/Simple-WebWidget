@@ -59,7 +59,7 @@ test("publishes the dynamic RoomOS macro as a clearly scoped example", () => {
   assert.match(readme, /educational example, not a complete or production-ready solution/i);
   assert.match(readme, /RoomOS supports only one WebWidget at a time/);
   assert.match(readme, /docs\/images\/examples\/dynamic-roomos-macro-poc\.png/);
-  assert.match(dynamicMacro, /Cisco Sample Code License, Version 1\.1/);
+  assert.match(dynamicMacro, /Cisco Sample\s+Code License, Version 1\.1/);
   assert.match(dynamicMacro, /import xapi from 'xapi'/);
   assert.match(dynamicMacro, /WEB_WIDGET_X_LAUNCH = 'SWW_POC_Macro'/);
   assert.match(dynamicMacro, /Extensions\.WebWidget\.Save/);
