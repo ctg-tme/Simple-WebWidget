@@ -38,6 +38,12 @@ test("places the transiently attributed unconfigured example first", () => {
   );
 });
 
+test("documents xLaunch as the sole captured parameter value", () => {
+  assert.match(readme, /`xLaunch` is the only hash parameter whose value is captured/);
+  assert.match(readme, /apps that cross-launch into Simple WebWidget/);
+  assert.match(readme, /willing to share that app name/);
+});
+
 test("documents every supported RoomOS 26 theme", () => {
   for (const theme of SUPPORTED_THEMES) {
     assert.match(readme, new RegExp(`<code>${theme}</code>`));

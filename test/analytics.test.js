@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   PAGE_OPENED_EVENT,
   createPageOpenedEvent,
+  getLaunchSource,
   getParameterNamesInUse,
   trackPageOpened,
 } from "../src/analytics.js";
@@ -34,6 +35,29 @@ test("builds a page-opened event without fragment values", () => {
   );
 });
 
+test("captures xLaunch as the only parameter value", () => {
+  const event = createPageOpenedEvent(
+    "#heading=Private%20heading&info1=Private%20content&xLaunch=SWW_Example",
+  );
+
+  assert.deepEqual(event.properties, {
+    parameter_names: "heading,info1,xLaunch",
+    parameter_count: 3,
+    launch_source: "SWW_Example",
+  });
+  assert.doesNotMatch(JSON.stringify(event), /Private heading|Private content/);
+  assert.equal(getLaunchSource("#xLaunch=%20Partner_App%20"), "Partner_App");
+});
+
+test("does not capture invalid or ambiguous xLaunch values", () => {
+  assert.equal(
+    getLaunchSource("#xLaunch=" + "a".repeat(INPUT_LIMITS.xLaunch + 1)),
+    "",
+  );
+  assert.equal(getLaunchSource("#xLaunch=one&xLaunch=two"), "");
+  assert.equal(getLaunchSource("#xLaunch=bad%ZZvalue"), "");
+});
+
 test("does not parse oversized or malformed fragments for analytics", () => {
   assert.deepEqual(
     getParameterNamesInUse("#" + "a".repeat(INPUT_LIMITS.fragment + 1)),
@@ -56,7 +80,11 @@ test("initializes Aptabase and records one page-opened event", async () => {
     [
       "track",
       PAGE_OPENED_EVENT,
-      { parameter_names: "heading,xLaunch", parameter_count: 2 },
+      {
+        parameter_names: "heading,xLaunch",
+        parameter_count: 2,
+        launch_source: "portal",
+      },
     ],
   ]);
 });

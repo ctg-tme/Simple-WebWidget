@@ -118,7 +118,7 @@ Widget configuration is supplied exclusively through URL hash parameters—every
 | `info3` | Third information block; text or a validated HTTPS URL rendered in an iframe |
 | `iconUrl` | Validated square branding image URL displayed borderlessly to the left of the heading |
 | `hideSettings` | Set to `true` to hide the settings gear after deployment; remove it manually from the URL to restore the gear |
-| `xLaunch` | Optional one-time cross-project launch context; captured during initial load, removed from the visible URL, and intentionally absent from the settings drawer |
+| `xLaunch` | Optional one-time cross-project app name; captured in analytics during initial load, removed from the visible URL, and intentionally absent from the settings drawer |
 
 These are the only supported hash parameters. Legacy names, unknown parameters, duplicate parameters, and boolean values other than `true` or `false` reject the complete configuration. The settings form omits disabled boolean options rather than writing `false`.
 
@@ -173,12 +173,15 @@ Invalid configuration, invalid time-zone fallback, weather retrieval failure, br
 
 ## Analytics and privacy
 
-The production GitHub Pages build uses Aptabase for one event: `page_opened`. It is emitted once per full page load, not for live settings previews or hash changes. The event has only two custom properties:
+The production GitHub Pages build uses Aptabase for one event: `page_opened`. It is emitted once per full page load, not for live settings previews or hash changes. The event has these custom properties:
 
 - `parameter_names`: an alphabetized, comma-separated list of recognized hash parameter names that were present, or `none`
 - `parameter_count`: the number of recognized parameter names that were present
+- `launch_source`: the `xLaunch` value when it is present and valid
 
-Hash parameter values, the complete fragment, headings, information text, iframe or image URLs, coordinates, time zones, themes, and `xLaunch` values are never included in the custom analytics event. Unknown parameter names are also excluded. The Aptabase Web SDK adds its standard event timestamp, generated session identifier, locale, debug state, and SDK metadata and sends requests without browser credentials.
+`xLaunch` is the only hash parameter whose value is captured. It is intended for apps that cross-launch into Simple WebWidget and should contain only the launching app's non-sensitive name. Set it only when you are willing to share that app name with the Simple WebWidget developer. The value is read once and then removed from the visible URL to reduce accidental copying.
+
+All other hash parameter values, the complete fragment, headings, information text, iframe or image URLs, coordinates, time zones, and themes are never included in the custom analytics event. Unknown parameter names are also excluded. The Aptabase Web SDK adds its standard event timestamp, generated session identifier, locale, debug state, and SDK metadata and sends requests without browser credentials.
 
 The Aptabase client App Key is supplied to GitHub Actions as the repository secret `APTABASE_API_KEY`. The workflow exposes it only to the Vite build step; dependency installation, tests, and deployment do not receive it. Add the key under **Repository settings → Secrets and variables → Actions → New repository secret** before pushing the analytics-enabled build.
 
