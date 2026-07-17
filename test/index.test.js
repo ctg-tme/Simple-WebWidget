@@ -42,6 +42,13 @@ test("previews drawer changes without changing the URL until Apply", () => {
   assert.match(styles, /\.settings-drawer--open/);
 });
 
+test("captures xLaunch once and removes it without reloading", () => {
+  assert.match(main, /trackPageOpened\(initialFragment\)/);
+  assert.match(main, /stripLaunchContextFromFragment\(initialFragment\)/);
+  assert.match(main, /window\.history\.replaceState/);
+  assert.doesNotMatch(main, /location\.reload/);
+});
+
 test("includes a motion-aware winter overlay without adding a theme option", () => {
   assert.match(html, /id="winter-effects"[\s\S]*winter-snowman/);
   assert.match(styles, /--winter-light-cell: clamp\(/);

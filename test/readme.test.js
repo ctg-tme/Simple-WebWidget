@@ -17,10 +17,25 @@ test("uses the GitHub Pages URL for every widget example", () => {
     assert.match(exampleUrl, /^https:\/\/ctg-tme\.github\.io\/Simple-WebWidget\//);
 
     const url = new URL(exampleUrl);
+    const params = new URLSearchParams(url.hash.slice(1));
+    assert.equal(params.get("xLaunch"), "SWW_Example");
     assert.doesNotThrow(() =>
       parseWidgetConfiguration(url.hash, { baseUrl: url.href }),
     );
   }
+});
+
+test("places the transiently attributed unconfigured example first", () => {
+  const examplesStart = readme.indexOf("### Ready-to-use examples");
+  const unconfigured = readme.indexOf("#### Unconfigured widget", examplesStart);
+  const configured = readme.indexOf("#### Three information blocks", examplesStart);
+
+  assert.ok(unconfigured > examplesStart);
+  assert.ok(unconfigured < configured);
+  assert.match(
+    readme.slice(unconfigured, configured),
+    /#xLaunch=SWW_Example/,
+  );
 });
 
 test("documents every supported RoomOS 26 theme", () => {

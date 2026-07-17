@@ -47,36 +47,44 @@ The footer is not editable with hash parameters.
 
 Each example is a complete URL and can be opened directly or pasted into a RoomOS Web Widget configuration.
 
-#### Three information blocks
+#### Unconfigured widget
 
-[Open the three-block example](https://ctg-tme.github.io/Simple-WebWidget/#theme=EveningFjord&heading=Visitor%20Information&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Primary%20information&info2=Secondary%20information&info3=Additional%20information)
+[Open the unconfigured widget](https://ctg-tme.github.io/Simple-WebWidget/#xLaunch=SWW_Example)
 
 ```text
-https://ctg-tme.github.io/Simple-WebWidget/#theme=EveningFjord&heading=Visitor%20Information&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Primary%20information&info2=Secondary%20information&info3=Additional%20information
+https://ctg-tme.github.io/Simple-WebWidget/#xLaunch=SWW_Example
+```
+
+#### Three information blocks
+
+[Open the three-block example](https://ctg-tme.github.io/Simple-WebWidget/#theme=EveningFjord&heading=Visitor%20Information&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Primary%20information&info2=Secondary%20information&info3=Additional%20information&xLaunch=SWW_Example)
+
+```text
+https://ctg-tme.github.io/Simple-WebWidget/#theme=EveningFjord&heading=Visitor%20Information&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Primary%20information&info2=Secondary%20information&info3=Additional%20information&xLaunch=SWW_Example
 ```
 
 #### Branding image with all three information blocks
 
-[Open the branding example](https://ctg-tme.github.io/Simple-WebWidget/#theme=ChiliPlum&heading=Visitor%20Information&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Primary%20information&info2=Secondary%20information&info3=Additional%20information&iconUrl=https%3A%2F%2Fgithub.com%2FWebexSamples.png%3Fsize%3D256)
+[Open the branding example](https://ctg-tme.github.io/Simple-WebWidget/#theme=ChiliPlum&heading=Visitor%20Information&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Primary%20information&info2=Secondary%20information&info3=Additional%20information&iconUrl=https%3A%2F%2Fgithub.com%2FWebexSamples.png%3Fsize%3D256&xLaunch=SWW_Example)
 
 ```text
-https://ctg-tme.github.io/Simple-WebWidget/#theme=ChiliPlum&heading=Visitor%20Information&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Primary%20information&info2=Secondary%20information&info3=Additional%20information&iconUrl=https%3A%2F%2Fgithub.com%2FWebexSamples.png%3Fsize%3D256
+https://ctg-tme.github.io/Simple-WebWidget/#theme=ChiliPlum&heading=Visitor%20Information&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Primary%20information&info2=Secondary%20information&info3=Additional%20information&iconUrl=https%3A%2F%2Fgithub.com%2FWebexSamples.png%3Fsize%3D256&xLaunch=SWW_Example
 ```
 
 #### Iframe information block
 
-[Open the iframe example](https://ctg-tme.github.io/Simple-WebWidget/#theme=CrystalMist&heading=Embedded%20Information&info1=https%3A%2F%2Fexample.com%2F&info2=Reference%20information&info3=Additional%20notes)
+[Open the iframe example](https://ctg-tme.github.io/Simple-WebWidget/#theme=CrystalMist&heading=Embedded%20Information&info1=https%3A%2F%2Fexample.com%2F&info2=Reference%20information&info3=Additional%20notes&xLaunch=SWW_Example)
 
 ```text
-https://ctg-tme.github.io/Simple-WebWidget/#theme=CrystalMist&heading=Embedded%20Information&info1=https%3A%2F%2Fexample.com%2F&info2=Reference%20information&info3=Additional%20notes
+https://ctg-tme.github.io/Simple-WebWidget/#theme=CrystalMist&heading=Embedded%20Information&info1=https%3A%2F%2Fexample.com%2F&info2=Reference%20information&info3=Additional%20notes&xLaunch=SWW_Example
 ```
 
 #### Three H2R countdowns
 
-[Open the three-countdown example](https://ctg-tme.github.io/Simple-WebWidget/#theme=ArcticNight&heading=Wave%20Schedules&info1=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-09-19T12%253A00%26title%3DWave%2B3%26theme%3Ddark&info2=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-10-19T12%253A00%26title%3DWave%2B4%26theme%3Ddark&info3=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-11-19T12%253A00%26title%3DWave%2B5%26theme%3Ddark)
+[Open the three-countdown example](https://ctg-tme.github.io/Simple-WebWidget/#theme=ArcticNight&heading=Wave%20Schedules&info1=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-09-19T12%253A00%26title%3DWave%2B3%26theme%3Ddark&info2=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-10-19T12%253A00%26title%3DWave%2B4%26theme%3Ddark&info3=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-11-19T12%253A00%26title%3DWave%2B5%26theme%3Ddark&xLaunch=SWW_Example)
 
 ```text
-https://ctg-tme.github.io/Simple-WebWidget/#theme=ArcticNight&heading=Wave%20Schedules&info1=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-09-19T12%253A00%26title%3DWave%2B3%26theme%3Ddark&info2=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-10-19T12%253A00%26title%3DWave%2B4%26theme%3Ddark&info3=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-11-19T12%253A00%26title%3DWave%2B5%26theme%3Ddark
+https://ctg-tme.github.io/Simple-WebWidget/#theme=ArcticNight&heading=Wave%20Schedules&info1=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-09-19T12%253A00%26title%3DWave%2B3%26theme%3Ddark&info2=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-10-19T12%253A00%26title%3DWave%2B4%26theme%3Ddark&info3=https%3A%2F%2Fh2r.graphics%2Ftools%2Fcountdown%2F%3Ftarget%3D2026-11-19T12%253A00%26title%3DWave%2B5%26theme%3Ddark&xLaunch=SWW_Example
 ```
 
 ![Three H2R countdown timers embedded in the Simple WebWidget](docs/images/user-guide/countdown-example.png)
@@ -85,18 +93,10 @@ This example uses the external [H2R Graphics Countdown Timer](https://h2r.graphi
 
 #### Live weather from coordinates
 
-[Open the live-weather example](https://ctg-tme.github.io/Simple-WebWidget/#theme=ArcticNight&heading=Local%20Conditions&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Live%20weather%20for%20the%20configured%20location)
+[Open the live-weather example](https://ctg-tme.github.io/Simple-WebWidget/#theme=ArcticNight&heading=Local%20Conditions&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Live%20weather%20for%20the%20configured%20location&xLaunch=SWW_Example)
 
 ```text
-https://ctg-tme.github.io/Simple-WebWidget/#theme=ArcticNight&heading=Local%20Conditions&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Live%20weather%20for%20the%20configured%20location
-```
-
-#### Unconfigured widget
-
-[Open the unconfigured widget](https://ctg-tme.github.io/Simple-WebWidget/)
-
-```text
-https://ctg-tme.github.io/Simple-WebWidget/
+https://ctg-tme.github.io/Simple-WebWidget/#theme=ArcticNight&heading=Local%20Conditions&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Live%20weather%20for%20the%20configured%20location&xLaunch=SWW_Example
 ```
 
 ## Hash parameters
@@ -118,7 +118,7 @@ Widget configuration is supplied exclusively through URL hash parameters—every
 | `info3` | Third information block; text or a validated HTTPS URL rendered in an iframe |
 | `iconUrl` | Validated square branding image URL displayed borderlessly to the left of the heading |
 | `hideSettings` | Set to `true` to hide the settings gear after deployment; remove it manually from the URL to restore the gear |
-| `xLaunch` | Optional cross-project launch context reserved for integrations; accepted and preserved, but intentionally absent from the settings drawer |
+| `xLaunch` | Optional one-time cross-project launch context; captured during initial load, removed from the visible URL, and intentionally absent from the settings drawer |
 
 These are the only supported hash parameters. Legacy names, unknown parameters, duplicate parameters, and boolean values other than `true` or `false` reject the complete configuration. The settings form omits disabled boolean options rather than writing `false`.
 

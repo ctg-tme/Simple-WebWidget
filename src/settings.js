@@ -129,8 +129,6 @@ export function serializeWidgetSettings(settings = {}) {
     params.set("winter", String(settings.winter));
   }
 
-  appendText(params, "xLaunch", settings.xLaunch);
-
   const fragment = params.toString();
   return fragment ? `#${fragment}` : "";
 }

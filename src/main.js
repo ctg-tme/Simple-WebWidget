@@ -6,6 +6,7 @@ import {
   logConfigurationError,
   logRuntimeWarning,
 } from "./logger.js";
+import { stripLaunchContextFromFragment } from "./launch-context.js";
 import { getInformationFrameSandbox } from "./security.js";
 import { createSettingsController } from "./settings-ui.js";
 import { resolveTheme } from "./themes.js";
@@ -442,8 +443,9 @@ createSettingsController({
     renderFromHash();
   },
 });
+const initialFragment = window.location.hash;
 renderFromHash();
-void trackPageOpened(window.location.hash).then((result) => {
+void trackPageOpened(initialFragment).then((result) => {
   if (result.reason === "tracking-failed") {
     logRuntimeWarning(
       "analytics-page-opened-failed",
@@ -451,6 +453,16 @@ void trackPageOpened(window.location.hash).then((result) => {
     );
   }
 });
+const scrubbedInitialFragment = stripLaunchContextFromFragment(initialFragment);
+
+if (scrubbedInitialFragment !== initialFragment) {
+  window.history.replaceState(
+    null,
+    "",
+    `${window.location.pathname}${window.location.search}${scrubbedInitialFragment}`,
+  );
+}
+
 window.addEventListener("hashchange", renderFromHash);
 window.setInterval(updateTime, 30_000);
 window.setInterval(updateWeather, 15 * 60_000);
