@@ -5,6 +5,7 @@ import {
 } from "./config.js";
 
 export const PAGE_OPENED_EVENT = "page_opened";
+export const PARAMETER_USED_EVENT = "parameter_used";
 
 const supportedParameterNames = new Set(SUPPORTED_HASH_PARAMETERS);
 
@@ -67,25 +68,31 @@ export function getLaunchSource(rawFragment) {
 }
 
 export function createPageOpenedEvent(rawFragment) {
-  const parameterNames = getParameterNamesInUse(rawFragment);
   const launchSource = getLaunchSource(rawFragment);
-  const properties = {};
-
-  for (const name of parameterNames) {
-    if (name === "xLaunch") {
-      if (launchSource) {
-        properties.xLaunch = launchSource;
-      }
-      continue;
-    }
-
-    properties[name] = true;
-  }
+  const properties = launchSource ? { xLaunch: launchSource } : {};
 
   return Object.freeze({
     name: PAGE_OPENED_EVENT,
     properties: Object.freeze(properties),
   });
+}
+
+export function createParameterUsedEvents(rawFragment) {
+  return Object.freeze(
+    getParameterNamesInUse(rawFragment).map((name) =>
+      Object.freeze({
+        name: PARAMETER_USED_EVENT,
+        properties: Object.freeze({ parameter_name: name }),
+      }),
+    ),
+  );
+}
+
+export function createInitialAnalyticsEvents(rawFragment) {
+  return Object.freeze([
+    createPageOpenedEvent(rawFragment),
+    ...createParameterUsedEvents(rawFragment),
+  ]);
 }
 
 export async function trackPageOpened(
@@ -102,11 +109,13 @@ export async function trackPageOpened(
     return Object.freeze({ tracked: false, reason: "missing-app-key" });
   }
 
-  const event = createPageOpenedEvent(rawFragment);
+  const events = createInitialAnalyticsEvents(rawFragment);
 
   try {
     initialize(normalizedAppKey);
-    await track(event.name, event.properties);
+    await Promise.all(
+      events.map((event) => track(event.name, event.properties)),
+    );
     return Object.freeze({ tracked: true });
   } catch {
     return Object.freeze({ tracked: false, reason: "tracking-failed" });

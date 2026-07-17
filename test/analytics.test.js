@@ -2,7 +2,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   PAGE_OPENED_EVENT,
+  PARAMETER_USED_EVENT,
+  createInitialAnalyticsEvents,
   createPageOpenedEvent,
+  createParameterUsedEvents,
   getLaunchSource,
   getParameterNamesInUse,
   trackPageOpened,
@@ -18,16 +21,12 @@ test("reports only supported parameter names in a stable order", () => {
   assert.doesNotMatch(names.join(","), /Confidential|Private|portal|secret/);
 });
 
-test("builds a page-opened event without fragment values", () => {
+test("builds one page-opened event without parameter-presence booleans", () => {
   assert.deepEqual(
     createPageOpenedEvent("#theme=ArcticNight&time=true&info2=Example"),
     {
       name: PAGE_OPENED_EVENT,
-      properties: {
-        info2: true,
-        theme: true,
-        time: true,
-      },
+      properties: {},
     },
   );
   assert.deepEqual(createPageOpenedEvent("").properties, {});
@@ -39,12 +38,49 @@ test("captures xLaunch as the only parameter value", () => {
   );
 
   assert.deepEqual(event.properties, {
-    heading: true,
-    info1: true,
     xLaunch: "SWW_Example",
   });
   assert.doesNotMatch(JSON.stringify(event), /Private heading|Private content/);
   assert.equal(getLaunchSource("#xLaunch=%20Partner_App%20"), "Partner_App");
+});
+
+test("represents parameter names as values of one categorical dimension", () => {
+  assert.deepEqual(
+    createParameterUsedEvents(
+      "#theme=ArcticNight&heading=Private&info1=Private&xLaunch=portal",
+    ),
+    [
+      {
+        name: PARAMETER_USED_EVENT,
+        properties: { parameter_name: "heading" },
+      },
+      {
+        name: PARAMETER_USED_EVENT,
+        properties: { parameter_name: "info1" },
+      },
+      {
+        name: PARAMETER_USED_EVENT,
+        properties: { parameter_name: "theme" },
+      },
+      {
+        name: PARAMETER_USED_EVENT,
+        properties: { parameter_name: "xLaunch" },
+      },
+    ],
+  );
+});
+
+test("creates one page event plus one usage event per recognized parameter", () => {
+  const events = createInitialAnalyticsEvents(
+    "#heading=Private&unknown=ignored&time=true",
+  );
+
+  assert.equal(events[0].name, PAGE_OPENED_EVENT);
+  assert.deepEqual(
+    events.slice(1).map(({ properties }) => properties.parameter_name),
+    ["heading", "time"],
+  );
+  assert.doesNotMatch(JSON.stringify(events), /Private|ignored/);
 });
 
 test("does not capture invalid or ambiguous xLaunch values", () => {
@@ -64,25 +100,25 @@ test("does not parse oversized or malformed fragments for analytics", () => {
   assert.deepEqual(getParameterNamesInUse("#heading=bad%ZZvalue"), []);
 });
 
-test("initializes Aptabase and records one page-opened event", async () => {
+test("records parameter usage as one categorical Aptabase dimension", async () => {
   const calls = [];
-  const result = await trackPageOpened("#heading=Example&xLaunch=portal", {
-    appKey: "A-US-example",
-    initialize: (key) => calls.push(["init", key]),
-    track: (name, properties) => calls.push(["track", name, properties]),
-  });
+  const result = await trackPageOpened(
+    "#theme=ArcticNight&heading=Example&info1=Private&xLaunch=portal",
+    {
+      appKey: "A-US-example",
+      initialize: (key) => calls.push(["init", key]),
+      track: (name, properties) => calls.push(["track", name, properties]),
+    },
+  );
 
   assert.deepEqual(result, { tracked: true });
   assert.deepEqual(calls, [
     ["init", "A-US-example"],
-    [
-      "track",
-      PAGE_OPENED_EVENT,
-      {
-        heading: true,
-        xLaunch: "portal",
-      },
-    ],
+    ["track", PAGE_OPENED_EVENT, { xLaunch: "portal" }],
+    ["track", PARAMETER_USED_EVENT, { parameter_name: "heading" }],
+    ["track", PARAMETER_USED_EVENT, { parameter_name: "info1" }],
+    ["track", PARAMETER_USED_EVENT, { parameter_name: "theme" }],
+    ["track", PARAMETER_USED_EVENT, { parameter_name: "xLaunch" }],
   ]);
 });
 
