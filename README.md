@@ -99,6 +99,21 @@ This example uses the external [H2R Graphics Countdown Timer](https://h2r.graphi
 https://ctg-tme.github.io/Simple-WebWidget/#theme=ArcticNight&heading=Local%20Conditions&weather=true&latitude=40.7128&longitude=-74.0060&temperatureUnit=fahrenheit&time=true&timeZone=America%2FNew_York&info1=Live%20weather%20for%20the%20configured%20location&xLaunch=SWW_Example
 ```
 
+### Dynamic RoomOS macro example
+
+The included [Simple WebWidget Dynamic POC macro](examples/roomos/Simple-WebWidget-Dynamic-POC_2026.js) demonstrates how a RoomOS macro can build and save a widget URL from live device values, subscribe to changes, and dynamically add or remove an information block.
+
+![Simple WebWidget Dynamic POC rendered beside the RoomOS controls](docs/images/examples/dynamic-roomos-macro-poc.png)
+
+This is an educational example, not a complete or production-ready solution. It intentionally keeps the behavior visible and easy to follow:
+
+- Reads the current RoomOS theme, device name and platform, people count, audio volume, DRAM status, and December-theme setting.
+- Rebuilds the widget when subscribed values change and toggles `info3` every five seconds to demonstrate content appearing and disappearing dynamically.
+- Adds `xLaunch=SWW_POC_Macro` for cross-launch attribution and hides the settings gear.
+- Detects an existing WebWidget and asks before replacing it because RoomOS supports only one WebWidget at a time.
+
+Before using the macro, review its constants, device compatibility, update frequency, error handling, and overwrite behavior. A production integration should update only when needed, avoid unnecessary saves, and be tested against the specific RoomOS software and hardware in scope.
+
 ## Hash parameters
 
 Widget configuration is supplied exclusively through URL hash parameters—everything after `#`. URL query parameters are ignored. The settings form is the recommended way to create or edit them, but the supported parameters can also be written manually. Fragments are not included in HTTP requests to the hosting server, but they may remain visible in browser or device history, bookmarks, screenshots, logs captured by client software, and management interfaces. Never place passwords, tokens, personal data, or other secrets in widget fragments.

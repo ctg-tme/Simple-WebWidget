@@ -6,6 +6,13 @@ import { SUPPORTED_THEMES } from "../src/themes.js";
 
 const readmeUrl = new URL("../README.md", import.meta.url);
 const readme = await readFile(readmeUrl, "utf8");
+const dynamicMacro = await readFile(
+  new URL(
+    "../examples/roomos/Simple-WebWidget-Dynamic-POC_2026.js",
+    import.meta.url,
+  ),
+  "utf8",
+);
 
 test("uses the GitHub Pages URL for every widget example", () => {
   assert.doesNotMatch(readme, /https?:\/\/(?:localhost|127\.0\.0\.1):\d+/);
@@ -45,6 +52,17 @@ test("documents xLaunch as the sole captured parameter value", () => {
   assert.doesNotMatch(readme, /- `parameter_names`:/);
   assert.match(readme, /apps that cross-launch into Simple WebWidget/);
   assert.match(readme, /willing to share that app name/);
+});
+
+test("publishes the dynamic RoomOS macro as a clearly scoped example", () => {
+  assert.match(readme, /### Dynamic RoomOS macro example/);
+  assert.match(readme, /educational example, not a complete or production-ready solution/i);
+  assert.match(readme, /RoomOS supports only one WebWidget at a time/);
+  assert.match(readme, /docs\/images\/examples\/dynamic-roomos-macro-poc\.png/);
+  assert.match(dynamicMacro, /Cisco Sample Code License, Version 1\.1/);
+  assert.match(dynamicMacro, /import xapi from 'xapi'/);
+  assert.match(dynamicMacro, /WEB_WIDGET_X_LAUNCH = 'SWW_POC_Macro'/);
+  assert.match(dynamicMacro, /Extensions\.WebWidget\.Save/);
 });
 
 test("documents every supported RoomOS 26 theme", () => {
