@@ -173,13 +173,11 @@ Invalid configuration, invalid time-zone fallback, weather retrieval failure, br
 
 ## Analytics and privacy
 
-The production GitHub Pages build uses Aptabase for one event: `page_opened`. It is emitted once per full page load, not for live settings previews or hash changes. The event has these custom properties:
+The production GitHub Pages build uses Aptabase for one event: `page_opened`. It is emitted once per full page load, not for live settings previews or hash changes.
 
-- `parameter_names`: an alphabetized, comma-separated list of recognized hash parameter names that were present, or `none`
-- `parameter_count`: the number of recognized parameter names that were present
-- `launch_source`: the `xLaunch` value when it is present and valid
+Each recognized parameter in use is recorded as its own event property so Aptabase can report usage totals independently. For example, a page using `heading`, `info1`, and `hideSettings` sends `heading: true`, `info1: true`, and `hideSettings: true`. The widget does not send the former aggregate `parameter_names` or `parameter_count` properties.
 
-`xLaunch` is the only hash parameter whose value is captured. It is intended for apps that cross-launch into Simple WebWidget and should contain only the launching app's non-sensitive name. Set it only when you are willing to share that app name with the Simple WebWidget developer. The value is read once and then removed from the visible URL to reduce accidental copying.
+`xLaunch` is the only hash parameter whose value is captured. It is sent under the `xLaunch` property rather than as a boolean. It is intended for apps that cross-launch into Simple WebWidget and should contain only the launching app's non-sensitive name. Set it only when you are willing to share that app name with the Simple WebWidget developer. The value is read once and then removed from the visible URL to reduce accidental copying.
 
 All other hash parameter values, the complete fragment, headings, information text, iframe or image URLs, coordinates, time zones, and themes are never included in the custom analytics event. Unknown parameter names are also excluded. The Aptabase Web SDK adds its standard event timestamp, generated session identifier, locale, debug state, and SDK metadata and sends requests without browser credentials.
 

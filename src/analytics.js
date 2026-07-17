@@ -69,15 +69,17 @@ export function getLaunchSource(rawFragment) {
 export function createPageOpenedEvent(rawFragment) {
   const parameterNames = getParameterNamesInUse(rawFragment);
   const launchSource = getLaunchSource(rawFragment);
-  const properties = {
-    parameter_names: parameterNames.length
-      ? parameterNames.join(",")
-      : "none",
-    parameter_count: parameterNames.length,
-  };
+  const properties = {};
 
-  if (launchSource) {
-    properties.launch_source = launchSource;
+  for (const name of parameterNames) {
+    if (name === "xLaunch") {
+      if (launchSource) {
+        properties.xLaunch = launchSource;
+      }
+      continue;
+    }
+
+    properties[name] = true;
   }
 
   return Object.freeze({

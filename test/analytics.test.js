@@ -24,15 +24,13 @@ test("builds a page-opened event without fragment values", () => {
     {
       name: PAGE_OPENED_EVENT,
       properties: {
-        parameter_names: "info2,theme,time",
-        parameter_count: 3,
+        info2: true,
+        theme: true,
+        time: true,
       },
     },
   );
-  assert.equal(
-    createPageOpenedEvent("").properties.parameter_names,
-    "none",
-  );
+  assert.deepEqual(createPageOpenedEvent("").properties, {});
 });
 
 test("captures xLaunch as the only parameter value", () => {
@@ -41,9 +39,9 @@ test("captures xLaunch as the only parameter value", () => {
   );
 
   assert.deepEqual(event.properties, {
-    parameter_names: "heading,info1,xLaunch",
-    parameter_count: 3,
-    launch_source: "SWW_Example",
+    heading: true,
+    info1: true,
+    xLaunch: "SWW_Example",
   });
   assert.doesNotMatch(JSON.stringify(event), /Private heading|Private content/);
   assert.equal(getLaunchSource("#xLaunch=%20Partner_App%20"), "Partner_App");
@@ -81,9 +79,8 @@ test("initializes Aptabase and records one page-opened event", async () => {
       "track",
       PAGE_OPENED_EVENT,
       {
-        parameter_names: "heading,xLaunch",
-        parameter_count: 2,
-        launch_source: "portal",
+        heading: true,
+        xLaunch: "portal",
       },
     ],
   ]);
