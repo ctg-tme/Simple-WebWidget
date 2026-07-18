@@ -188,14 +188,17 @@ Invalid configuration, invalid time-zone fallback, weather retrieval failure, br
 
 ## Analytics and privacy
 
-The production GitHub Pages build uses two Aptabase events. They are emitted only during a full page load, not for live settings previews or hash changes:
+The production GitHub Pages build uses three Aptabase event types. They are emitted only during a full page load, not for live settings previews or hash changes:
 
-- `page_opened` is emitted once so it remains an accurate page-load count. It has no properties unless a valid `xLaunch` value is present.
+- `page_opened` is emitted once without custom properties so it remains an accurate page-load count.
 - `parameter_used` is emitted once for each recognized parameter in the fragment. Its `parameter_name` property is the parameter name, such as `heading`, `info1`, or `hideSettings`.
+- `xlaunch_used` is emitted once when a valid `xLaunch` value is present. Its `launch_source` property is the supplied launching app name.
 
-To see all parameter totals together in Aptabase, select the `parameter_used` event, choose `parameter_name` as the property, and use the **Events** metric. Every recognized parameter then appears as a row in one breakdown instead of appearing as a separate `true` property. This model generates one analytics event per recognized parameter in addition to the single `page_opened` event.
+To see all parameter totals together in Aptabase, select the `parameter_used` event, choose `parameter_name` as the property, and use the **Events** metric. Every recognized parameter then appears as a row in one breakdown instead of appearing as a separate `true` property. This model generates one analytics event per recognized parameter in addition to the single `page_opened` event, plus one `xlaunch_used` event when launch attribution is present.
 
-`xLaunch` is the only hash parameter whose value is captured. Its presence is counted with the other parameters under `parameter_used`, while its value is sent only on the `page_opened` event under the `xLaunch` property. It is intended for apps that cross-launch into Simple WebWidget and should contain only the launching app's non-sensitive name. Set it only when you are willing to share that app name with the Simple WebWidget developer. The value is read once and then removed from the visible URL to reduce accidental copying.
+To see launching-app totals together, select the `xlaunch_used` event, choose `launch_source` as the property, and use the **Events** metric. Each distinct app name then appears with its quantity in one breakdown.
+
+`xLaunch` is the only hash parameter whose value is captured. Its presence is also counted with the other parameters under `parameter_used`. It is intended for apps that cross-launch into Simple WebWidget and should contain only the launching app's non-sensitive name. Set it only when you are willing to share that app name with the Simple WebWidget developer. The value is read once and then removed from the visible URL to reduce accidental copying.
 
 All other hash parameter values, the complete fragment, headings, information text, iframe or image URLs, coordinates, time zones, and themes are never included in the custom analytics events. Unknown parameter names are also excluded. The Aptabase Web SDK adds its standard event timestamp, generated session identifier, locale, debug state, and SDK metadata and sends requests without browser credentials.
 

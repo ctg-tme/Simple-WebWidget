@@ -6,6 +6,7 @@ import {
 
 export const PAGE_OPENED_EVENT = "page_opened";
 export const PARAMETER_USED_EVENT = "parameter_used";
+export const XLAUNCH_USED_EVENT = "xlaunch_used";
 
 const supportedParameterNames = new Set(SUPPORTED_HASH_PARAMETERS);
 
@@ -67,13 +68,10 @@ export function getLaunchSource(rawFragment) {
   return value.length <= INPUT_LIMITS.xLaunch ? value : "";
 }
 
-export function createPageOpenedEvent(rawFragment) {
-  const launchSource = getLaunchSource(rawFragment);
-  const properties = launchSource ? { xLaunch: launchSource } : {};
-
+export function createPageOpenedEvent() {
   return Object.freeze({
     name: PAGE_OPENED_EVENT,
-    properties: Object.freeze(properties),
+    properties: Object.freeze({}),
   });
 }
 
@@ -88,10 +86,26 @@ export function createParameterUsedEvents(rawFragment) {
   );
 }
 
+export function createLaunchSourceEvent(rawFragment) {
+  const launchSource = getLaunchSource(rawFragment);
+
+  if (!launchSource) {
+    return null;
+  }
+
+  return Object.freeze({
+    name: XLAUNCH_USED_EVENT,
+    properties: Object.freeze({ launch_source: launchSource }),
+  });
+}
+
 export function createInitialAnalyticsEvents(rawFragment) {
+  const launchSourceEvent = createLaunchSourceEvent(rawFragment);
+
   return Object.freeze([
-    createPageOpenedEvent(rawFragment),
+    createPageOpenedEvent(),
     ...createParameterUsedEvents(rawFragment),
+    ...(launchSourceEvent ? [launchSourceEvent] : []),
   ]);
 }
 

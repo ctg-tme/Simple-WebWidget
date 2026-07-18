@@ -449,7 +449,7 @@ void trackPageOpened(initialFragment).then((result) => {
   if (result.reason === "tracking-failed") {
     logRuntimeWarning(
       "analytics-page-opened-failed",
-      "The page-opened analytics event could not be recorded.",
+      "The initial analytics events could not be recorded.",
     );
   }
 });

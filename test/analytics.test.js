@@ -3,7 +3,9 @@ import assert from "node:assert/strict";
 import {
   PAGE_OPENED_EVENT,
   PARAMETER_USED_EVENT,
+  XLAUNCH_USED_EVENT,
   createInitialAnalyticsEvents,
+  createLaunchSourceEvent,
   createPageOpenedEvent,
   createParameterUsedEvents,
   getLaunchSource,
@@ -32,16 +34,18 @@ test("builds one page-opened event without parameter-presence booleans", () => {
   assert.deepEqual(createPageOpenedEvent("").properties, {});
 });
 
-test("captures xLaunch as the only parameter value", () => {
-  const event = createPageOpenedEvent(
+test("captures xLaunch as a dedicated categorical launch-source event", () => {
+  const event = createLaunchSourceEvent(
     "#heading=Private%20heading&info1=Private%20content&xLaunch=SWW_Example",
   );
 
-  assert.deepEqual(event.properties, {
-    xLaunch: "SWW_Example",
+  assert.deepEqual(event, {
+    name: XLAUNCH_USED_EVENT,
+    properties: { launch_source: "SWW_Example" },
   });
   assert.doesNotMatch(JSON.stringify(event), /Private heading|Private content/);
   assert.equal(getLaunchSource("#xLaunch=%20Partner_App%20"), "Partner_App");
+  assert.equal(createLaunchSourceEvent("#heading=Example"), null);
 });
 
 test("represents parameter names as values of one categorical dimension", () => {
@@ -90,6 +94,7 @@ test("does not capture invalid or ambiguous xLaunch values", () => {
   );
   assert.equal(getLaunchSource("#xLaunch=one&xLaunch=two"), "");
   assert.equal(getLaunchSource("#xLaunch=bad%ZZvalue"), "");
+  assert.equal(createLaunchSourceEvent("#xLaunch=one&xLaunch=two"), null);
 });
 
 test("does not parse oversized or malformed fragments for analytics", () => {
@@ -114,11 +119,12 @@ test("records parameter usage as one categorical Aptabase dimension", async () =
   assert.deepEqual(result, { tracked: true });
   assert.deepEqual(calls, [
     ["init", "A-US-example"],
-    ["track", PAGE_OPENED_EVENT, { xLaunch: "portal" }],
+    ["track", PAGE_OPENED_EVENT, {}],
     ["track", PARAMETER_USED_EVENT, { parameter_name: "heading" }],
     ["track", PARAMETER_USED_EVENT, { parameter_name: "info1" }],
     ["track", PARAMETER_USED_EVENT, { parameter_name: "theme" }],
     ["track", PARAMETER_USED_EVENT, { parameter_name: "xLaunch" }],
+    ["track", XLAUNCH_USED_EVENT, { launch_source: "portal" }],
   ]);
 });
 

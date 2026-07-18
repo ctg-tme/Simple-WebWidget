@@ -50,6 +50,8 @@ test("documents xLaunch as the sole captured parameter value", () => {
   assert.match(readme, /`parameter_used` is emitted once for each recognized parameter/);
   assert.match(readme, /Its `parameter_name` property is the parameter name/);
   assert.match(readme, /select the `parameter_used` event, choose `parameter_name`/);
+  assert.match(readme, /`xlaunch_used` is emitted once when a valid `xLaunch` value is present/);
+  assert.match(readme, /select the `xlaunch_used` event, choose `launch_source`/);
   assert.doesNotMatch(readme, /`heading: true`/);
   assert.match(readme, /apps that cross-launch into Simple WebWidget/);
   assert.match(readme, /willing to share that app name/);
