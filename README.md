@@ -216,7 +216,7 @@ The `theme` parameter accepts the endpoint values exactly as written. Every imag
 <table>
   <tr>
     <td align="center"><img src="docs/images/themes/arctic-night.png" width="180" alt="Arctic Night WebWidget theme screenshot"><br><code>ArcticNight</code></td>
-    <td align="center"><img src="docs/images/themes/auto.png" width="180" alt="Auto WebWidget theme screenshot"><br><code>Auto</code><br><sub>Follows device appearance</sub></td>
+    <td align="center"><img src="docs/images/themes/evening-fjord.png" width="180" alt="Auto WebWidget theme screenshot"><br><code>Auto</code><br><sub>Uses Evening Fjord palette</sub></td>
     <td align="center"><img src="docs/images/themes/carbon-black.png" width="180" alt="Carbon Black WebWidget theme screenshot"><br><code>CarbonBlack</code></td>
   </tr>
   <tr>
@@ -241,7 +241,7 @@ The `theme` parameter accepts the endpoint values exactly as written. Every imag
   </tr>
 </table>
 
-Missing or unrecognized values use `EveningFjord`. `Light` uses the `FirstLight` palette, `Night` uses the `CarbonBlack` palette, and `Auto` follows the browser or device light/dark appearance.
+Missing or unrecognized values use `EveningFjord`. `Light` uses the `FirstLight` palette, `Night` uses the `CarbonBlack` palette, and `Auto` uses the `EveningFjord` palette.
 
 Each palette covers the complete page body, including the space around and between content sections. Content sections use translucent glass backgrounds with blur and a leaf-derived outline color selected to complement the corresponding RoomOS wallpaper while preserving readable contrast.
 

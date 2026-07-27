@@ -4,7 +4,10 @@ import {
   readInformationSetting,
   serializeWidgetSettings,
 } from "./settings.js";
-import { DEFAULT_THEME, SUPPORTED_THEMES } from "./themes.js";
+import {
+  SETTINGS_THEME_OPTIONS,
+  getThemeSelectionValue,
+} from "./themes.js";
 
 const FALLBACK_TIME_ZONES = Object.freeze([
   "America/New_York",
@@ -50,10 +53,9 @@ function addOption(select, value, label = value) {
 
 function populateThemeOptions(select) {
   select.replaceChildren();
-  addOption(select, "", `${DEFAULT_THEME} (default)`);
 
-  for (const theme of SUPPORTED_THEMES) {
-    addOption(select, theme);
+  for (const { value, label } of SETTINGS_THEME_OPTIONS) {
+    addOption(select, value, label);
   }
 }
 
@@ -227,7 +229,7 @@ export function createSettingsController({
   function setConfiguration(configuration) {
     const value = configuration ?? {};
     winterOverride = value.winter ?? null;
-    ensureSelectValue(elements.theme, value.theme ?? "");
+    ensureSelectValue(elements.theme, getThemeSelectionValue(value.theme));
     elements.heading.value = value.heading ?? "";
     elements.iconUrl.value = value.iconUrl ?? "";
     elements.weather.checked = value.weather === true;

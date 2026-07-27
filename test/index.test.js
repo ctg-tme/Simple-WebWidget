@@ -73,6 +73,10 @@ test("keeps settings static and transitions RoomOS themes in place after one sec
   assert.doesNotMatch(main, /location\.reload/);
 });
 
+test("uses the Evening Fjord palette for Auto in every device appearance", () => {
+  assert.doesNotMatch(styles, /:root\[data-theme="Auto"\]/);
+});
+
 test("places borderless branding inline with the heading and keeps info3 independent", () => {
   const header = html.slice(
     html.indexOf('<header id="header"'),
@@ -80,6 +84,7 @@ test("places borderless branding inline with the heading and keeps info3 indepen
   );
 
   assert.match(header, /id="brand"[\s\S]*id="brand-image"[\s\S]*id="heading"/);
+  assert.match(styles, /\.brand img \{[\s\S]*?filter:[\s\S]*?drop-shadow\(/);
   assert.match(html, /<section id="info-3" class="info-block" hidden><\/section>/);
   assert.doesNotMatch(html, /brandable-block|info-block--brandable/);
 });

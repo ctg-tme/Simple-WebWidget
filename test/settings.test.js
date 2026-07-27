@@ -7,8 +7,26 @@ import {
   readInformationSetting,
   serializeWidgetSettings,
 } from "../src/settings.js";
+import {
+  DEFAULT_THEME,
+  SETTINGS_THEME_OPTIONS,
+  getThemeSelectionValue,
+  resolveTheme,
+} from "../src/themes.js";
 
 const baseUrl = "https://ctg-tme.github.io/Simple-WebWidget/";
+
+test("offers the default theme once and selects it for explicit legacy values", () => {
+  const defaultOptions = SETTINGS_THEME_OPTIONS.filter(
+    ({ value }) => resolveTheme(value) === DEFAULT_THEME,
+  );
+
+  assert.deepEqual(defaultOptions, [
+    { value: "", label: `${DEFAULT_THEME} (default)` },
+  ]);
+  assert.equal(getThemeSelectionValue(DEFAULT_THEME), "");
+  assert.equal(getThemeSelectionValue("Auto"), "Auto");
+});
 
 test("omits optional and false settings", () => {
   assert.equal(

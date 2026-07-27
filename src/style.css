@@ -179,8 +179,7 @@
 }
 
 :root[data-theme="FirstLight"],
-:root[data-theme="Light"],
-:root[data-theme="Auto"] {
+:root[data-theme="Light"] {
   --widget-text: #202327;
   --widget-text-secondary: #51575e;
   --widget-app-start: #d5d9de;
@@ -217,21 +216,6 @@
   --widget-outline: rgb(92 85 76 / 72%);
   --widget-highlight: rgb(255 255 255 / 66%);
   --widget-shadow: rgb(64 59 53 / 17%);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root[data-theme="Auto"] {
-    --widget-text: #f7f8f9;
-    --widget-text-secondary: #c7cacf;
-    --widget-app-start: #242628;
-    --widget-app-end: #0b0c0d;
-    --widget-app-glow: rgb(151 155 160 / 17%);
-    --widget-surface-start: rgb(93 97 101 / 45%);
-    --widget-surface-end: rgb(24 26 28 / 42%);
-    --widget-outline: rgb(144 149 154 / 72%);
-    --widget-highlight: rgb(255 255 255 / 18%);
-    --widget-shadow: rgb(0 0 0 / 30%);
-  }
 }
 
 * {
@@ -449,15 +433,6 @@ html.winter-active body.settings-open .widget-shell {
   text-shadow:
     0 1px 2px #fff,
     0 0 7px #e0f7ff;
-}
-
-@media (prefers-color-scheme: light) {
-  :root[data-theme="Auto"] .snowflake {
-    color: #075985;
-    text-shadow:
-      0 1px 2px #fff,
-      0 0 7px #e0f7ff;
-  }
 }
 
 .winter-ground {
@@ -705,6 +680,9 @@ html.winter-active body.settings-open .widget-shell {
   display: block;
   width: 100%;
   height: 100%;
+  filter:
+    drop-shadow(0 1px 2px rgb(0 0 0 / 72%))
+    drop-shadow(0 2px 6px rgb(0 0 0 / 35%));
   object-fit: contain;
 }
 
