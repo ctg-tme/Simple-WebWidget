@@ -9,6 +9,7 @@ import {
 import { stripLaunchContextFromFragment } from "./launch-context.js";
 import { getInformationFrameSandbox } from "./security.js";
 import { createSettingsController } from "./settings-ui.js";
+import { createTimeFormatter } from "./time.js";
 import { resolveTheme } from "./themes.js";
 import {
   fetchCurrentWeather,
@@ -169,32 +170,6 @@ function renderInformationBlock(element, value, frameUrl, position) {
   return true;
 }
 
-function createTimeFormatter(timeZone) {
-  const options = {
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-  };
-
-  if (timeZone) {
-    options.timeZone = timeZone;
-  }
-
-  try {
-    return new Intl.DateTimeFormat(undefined, options);
-  } catch {
-    logRuntimeWarning(
-      "invalid-time-zone",
-      "The configured time zone is invalid; using the device time zone.",
-    );
-    return new Intl.DateTimeFormat(undefined, {
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23",
-    });
-  }
-}
-
 function updateTime() {
   if (timeFormatter) {
     elements.localTime.textContent = timeFormatter.format(new Date());
@@ -346,7 +321,10 @@ function renderConfiguration(configuration) {
   }
 
   timeFormatter = configuration.time
-    ? createTimeFormatter(configuration.timeZone)
+    ? createTimeFormatter(
+        configuration.timeZone,
+        configuration["24hrTime"],
+      )
     : null;
   elements.localTime.hidden = !configuration.time;
   updateTime();

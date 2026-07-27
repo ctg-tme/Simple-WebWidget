@@ -114,6 +114,11 @@ export function serializeWidgetSettings(settings = {}) {
 
   if (settings.time) {
     params.set("time", "true");
+
+    if (settings["24hrTime"]) {
+      params.set("24hrTime", "true");
+    }
+
     appendText(params, "timeZone", settings.timeZone);
   }
 

@@ -16,6 +16,7 @@ test("omits optional and false settings", () => {
       theme: "EveningFjord",
       weather: false,
       time: false,
+      "24hrTime": false,
       hideSettings: false,
       info1: { type: "none" },
     }),
@@ -33,6 +34,7 @@ test("serializes all current settings without legacy parameters", () => {
     longitude: "-74.0060",
     temperatureUnit: "celsius",
     time: true,
+    "24hrTime": true,
     timeZone: "America/New_York",
     info1: { type: "text", value: "Primary information" },
     info2: { type: "iframe", value: "https://example.com/status" },
@@ -43,9 +45,17 @@ test("serializes all current settings without legacy parameters", () => {
 
   assert.equal(configuration.theme, "ArcticNight");
   assert.equal(configuration.weather, true);
+  assert.equal(configuration["24hrTime"], true);
   assert.equal(configuration.info2Url, "https://example.com/status");
   assert.equal(configuration.hideSettings, true);
   assert.doesNotMatch(fragment, /message|weatherSymbol|temp=/);
+});
+
+test("omits the 24-hour preference when the clock is disabled", () => {
+  assert.doesNotMatch(
+    serializeWidgetSettings({ time: false, "24hrTime": true }),
+    /24hrTime/,
+  );
 });
 
 test("builds and recognizes an official H2R countdown URL", () => {

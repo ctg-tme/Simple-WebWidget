@@ -9,7 +9,7 @@ The widget uses a fixed 600 × 600 CSS-pixel canvas at normal RoomOS display siz
 The easiest way to configure the widget is the gear in the top-right. It opens a compact drawer that shifts the widget left, previews valid changes live, shows only the fields needed for each choice, and writes the applied configuration after the `#` in the GitHub Pages URL.
 
 1. Open the gear and select only the sections you want to include.
-2. Use the toggles for weather and time. Weather can request the device location, with manual coordinates available as a fallback. Time can follow the device automatically or use a selected IANA time zone.
+2. Use the toggles for weather and time. Weather can request the device location, with manual coordinates available as a fallback. Time uses a 12-hour clock by default, can be switched to 24-hour time, and can follow the device time zone automatically or use a selected IANA time zone.
 3. For each information block, choose **Not included**, **Text**, **Website / iframe**, or **H2R countdown**.
 4. Select **Apply configuration** to replace the current hash parameters. The widget updates in place without reloading the page. RoomOS theme colors wait one second, then transition smoothly to the new palette. Browsers and devices configured to reduce motion switch immediately. Optionally enable **Hide the settings gear after applying** for deployment.
 
@@ -27,7 +27,7 @@ Only the sections represented by applied parameters are shown.
 | Area | Parameters | Effect |
 | --- | --- | --- |
 | Header, left | `iconUrl`, `heading` | Optional borderless branding icon and information heading |
-| Header, right | `weather`, `latitude`, `longitude`, `temperatureUnit`, `time`, `timeZone` | Compact local weather and time area |
+| Header, right | `weather`, `latitude`, `longitude`, `temperatureUnit`, `time`, `24hrTime`, `timeZone` | Compact local weather and time area |
 | First block | `info1` | First text or iframe information block |
 | Second block | `info2` | Second text or iframe information block |
 | Third block | `info3` | Third text or iframe information block |
@@ -126,7 +126,8 @@ Widget configuration is supplied exclusively through URL hash parameters—every
 | `latitude` | Latitude used to retrieve current weather; required with `weather=true` |
 | `longitude` | Longitude used to retrieve current weather; required with `weather=true` |
 | `temperatureUnit` | `fahrenheit` (default) or `celsius` |
-| `time` | Set to `true` to show a 24-hour clock |
+| `time` | Set to `true` to show a clock; the default format is 12-hour time |
+| `24hrTime` | Set to `true` to use 24-hour time; omit it to keep the default 12-hour format |
 | `timeZone` | Optional IANA timezone, such as `America/New_York`; otherwise the browser or device timezone is used |
 | `info1` | First information block; text or a validated HTTPS URL rendered in an iframe |
 | `info2` | Second information block; text or a validated HTTPS URL rendered in an iframe |

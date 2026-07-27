@@ -195,6 +195,7 @@ export function createSettingsController({
     locationStatus: document.querySelector("#location-status"),
     time: document.querySelector("#setting-time"),
     timeSettings: document.querySelector("#time-settings"),
+    twentyFourHourTime: document.querySelector("#setting-24hr-time"),
     timeZone: document.querySelector("#setting-time-zone"),
     hideSettings: document.querySelector("#setting-hide-settings"),
     informationSettings: document.querySelector("#information-settings"),
@@ -237,6 +238,7 @@ export function createSettingsController({
         ? "celsius"
         : "fahrenheit";
     elements.time.checked = value.time === true;
+    elements.twentyFourHourTime.checked = value["24hrTime"] === true;
     ensureSelectValue(elements.timeZone, value.timeZone ?? "");
     elements.hideSettings.checked = value.hideSettings === true;
 
@@ -299,6 +301,7 @@ export function createSettingsController({
       longitude: elements.longitude.value,
       temperatureUnit: elements.temperatureUnit.value,
       time: elements.time.checked,
+      "24hrTime": elements.twentyFourHourTime.checked,
       timeZone: elements.timeZone.value,
       info1: readInformationEditor(informationEditors[0]),
       info2: readInformationEditor(informationEditors[1]),

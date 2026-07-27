@@ -230,10 +230,22 @@
               <span class="settings-toggle__track" aria-hidden="true"></span>
               <span>
                 <strong>Show local time</strong>
-                <small>Displays a compact 24-hour clock in the header.</small>
+                <small>Displays a compact 12-hour clock in the header by default.</small>
               </span>
             </label>
             <div id="time-settings" class="settings-dependent" hidden>
+              <label class="settings-toggle">
+                <input
+                  id="setting-24hr-time"
+                  name="24hrTime"
+                  type="checkbox"
+                />
+                <span class="settings-toggle__track" aria-hidden="true"></span>
+                <span>
+                  <strong>Use 24-hour time</strong>
+                  <small>Leave off to use the default 12-hour format.</small>
+                </span>
+              </label>
               <label class="settings-field">
                 <span>Time zone</span>
                 <select id="setting-time-zone" name="timeZone"></select>

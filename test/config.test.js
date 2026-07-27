@@ -127,15 +127,21 @@ test("rejects invalid or incomplete coordinates", () => {
   assertInvalid("#weather=true", "weather-coordinates-required");
 });
 
-test("accepts hideSettings and strict boolean values", () => {
+test("accepts 24-hour time, hideSettings, and strict boolean values", () => {
   const configuration = parseWidgetConfiguration(
-    "#time=false&hideSettings=true",
+    "#time=true&24hrTime=true&hideSettings=true",
     options,
   );
 
-  assert.equal(configuration.time, false);
+  assert.equal(configuration.time, true);
+  assert.equal(configuration["24hrTime"], true);
   assert.equal(configuration.hideSettings, true);
+  assert.equal(
+    parseWidgetConfiguration("#time=true", options)["24hrTime"],
+    false,
+  );
   assertInvalid("#time=yes", "time-invalid");
+  assertInvalid("#24hrTime=yes", "24hrTime-invalid");
   assertInvalid("#hideSettings=1", "hideSettings-invalid");
 });
 

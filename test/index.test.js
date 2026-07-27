@@ -32,6 +32,8 @@ test("provides an accessible non-modal settings drawer for every supported conte
   assert.match(html, /Website \/ iframe/);
   assert.match(html, /H2R countdown/);
   assert.match(html, /https:\/\/h2r\.graphics\/tools\/countdown\//);
+  assert.match(html, /id="setting-24hr-time"[\s\S]*name="24hrTime"/);
+  assert.match(html, /Use 24-hour time/);
   assert.match(html, /id="setting-hide-settings"/);
 });
 
