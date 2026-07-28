@@ -183,8 +183,14 @@
               </span>
             </label>
             <div id="weather-settings" class="settings-dependent" hidden>
-              <button id="use-device-location" class="settings-secondary" type="button">
-                Use this device’s location
+              <button
+                id="search-for-location"
+                class="settings-secondary"
+                type="button"
+                aria-haspopup="dialog"
+                aria-controls="location-search-dialog"
+              >
+                Search for a location
               </button>
               <p id="location-status" class="settings-status" role="status"></p>
               <div class="settings-columns">
@@ -276,6 +282,113 @@
         </form>
       </aside>
     </div>
+
+    <dialog
+      id="location-search-dialog"
+      class="location-search-dialog"
+      aria-modal="true"
+      aria-labelledby="location-search-title"
+      aria-describedby="location-search-description"
+    >
+      <div class="location-search-dialog__content">
+        <header class="settings-panel__header location-search-dialog__header">
+          <div>
+            <h2 id="location-search-title">Search for a location</h2>
+          </div>
+          <button
+            id="location-search-close"
+            class="settings-close"
+            type="button"
+            aria-label="Close location search"
+          >
+            ×
+          </button>
+        </header>
+
+        <div class="location-search-dialog__body">
+          <p id="location-search-description" class="location-search-dialog__description">
+            Search by city, town, village, or postal/ZIP code. Exact street addresses are not supported.
+          </p>
+
+          <div class="location-search-device">
+            <button id="use-device-location" class="settings-secondary" type="button">
+              Use this device’s location
+            </button>
+          </div>
+
+          <p
+            id="location-search-status"
+            class="settings-status location-search-dialog__status"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          ></p>
+
+          <div class="location-search-separator" aria-hidden="true">
+            <span>or</span>
+          </div>
+
+          <form id="location-search-form" class="location-search-form" novalidate>
+            <label class="settings-field">
+              <span>City, place, or postal/ZIP code</span>
+              <input
+                id="location-search-input"
+                type="search"
+                autocomplete="off"
+                maxlength="120"
+              />
+            </label>
+            <button id="location-search-submit" class="settings-primary" type="submit">
+              Search
+            </button>
+          </form>
+
+          <ul
+            id="location-search-results"
+            class="location-search-results"
+            aria-label="Location search results"
+            hidden
+          ></ul>
+
+          <div class="location-search-separator" aria-hidden="true">
+            <span>or</span>
+          </div>
+
+          <form id="maps-url-form" class="location-search-form" novalidate>
+            <label class="settings-field">
+              <span>Google Maps URL</span>
+              <input
+                id="maps-url-input"
+                type="url"
+                inputmode="url"
+                autocomplete="off"
+                maxlength="2048"
+                aria-describedby="maps-url-help"
+              />
+              <small id="maps-url-help">
+                Paste the full URL from your browser’s address bar. Shortened maps.app.goo.gl links are not supported.
+              </small>
+            </label>
+            <button class="settings-primary" type="submit">
+              Use coordinates
+            </button>
+          </form>
+
+          <p class="location-search-attribution">
+            Location data by
+            <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>,
+            based on
+            <a href="https://www.geonames.org/" target="_blank" rel="noopener noreferrer">GeoNames</a>.
+          </p>
+
+          <div class="location-search-dialog__actions">
+            <button id="location-search-cancel" class="settings-secondary" type="button">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </dialog>
 
     <template id="information-setting-template">
       <fieldset class="settings-group settings-information">

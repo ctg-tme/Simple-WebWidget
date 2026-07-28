@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  APPROVED_CONNECT_ORIGINS,
   CONTENT_SECURITY_POLICY,
   getInformationFrameSandbox,
   validateFrameUrl,
@@ -137,8 +138,18 @@ test("permits validated HTTPS frames in the production policy", () => {
   assert.doesNotMatch(CONTENT_SECURITY_POLICY, /unsafe-inline|unsafe-eval/);
 });
 
-test("permits only the configured weather and Aptabase APIs for connections", () => {
+test("permits only the configured Open-Meteo and Aptabase APIs for connections", () => {
+  assert.deepEqual(APPROVED_CONNECT_ORIGINS, [
+    "https://api.open-meteo.com",
+    "https://geocoding-api.open-meteo.com",
+    "https://us.aptabase.com",
+    "https://eu.aptabase.com",
+  ]);
   assert.match(CONTENT_SECURITY_POLICY, /https:\/\/api\.open-meteo\.com/);
+  assert.match(
+    CONTENT_SECURITY_POLICY,
+    /https:\/\/geocoding-api\.open-meteo\.com/,
+  );
   assert.match(CONTENT_SECURITY_POLICY, /https:\/\/us\.aptabase\.com/);
   assert.match(CONTENT_SECURITY_POLICY, /https:\/\/eu\.aptabase\.com/);
 });

@@ -1,4 +1,9 @@
 import { parseWidgetConfiguration } from "./config.js";
+import {
+  createLocationSearchClient,
+  normalizeCoordinatePair,
+  parseGoogleMapsUrl,
+} from "./location.js";
 import { logRuntimeWarning } from "./logger.js";
 import {
   readInformationSetting,
@@ -194,7 +199,20 @@ export function createSettingsController({
     longitude: document.querySelector("#setting-longitude"),
     temperatureUnit: document.querySelector("#setting-temperature-unit"),
     useDeviceLocation: document.querySelector("#use-device-location"),
+    searchForLocation: document.querySelector("#search-for-location"),
     locationStatus: document.querySelector("#location-status"),
+    locationDialog: document.querySelector("#location-search-dialog"),
+    locationDialogClose: document.querySelector("#location-search-close"),
+    locationDialogCancel: document.querySelector("#location-search-cancel"),
+    locationSearchForm: document.querySelector("#location-search-form"),
+    locationSearchInput: document.querySelector("#location-search-input"),
+    locationSearchSubmit: document.querySelector("#location-search-submit"),
+    locationSearchStatus: document.querySelector("#location-search-status"),
+    locationSearchResults: document.querySelector(
+      "#location-search-results",
+    ),
+    mapsUrlForm: document.querySelector("#maps-url-form"),
+    mapsUrlInput: document.querySelector("#maps-url-input"),
     time: document.querySelector("#setting-time"),
     timeSettings: document.querySelector("#time-settings"),
     twentyFourHourTime: document.querySelector("#setting-24hr-time"),
@@ -207,10 +225,12 @@ export function createSettingsController({
     elements.informationSettings,
     elements.informationTemplate,
   );
+  const locationSearchClient = createLocationSearchClient();
   let previouslyFocused = null;
   let winterOverride = null;
   let closeTimer = null;
   let previewTimer = null;
+  let locationUiRequestVersion = 0;
 
   populateThemeOptions(elements.theme);
   populateTimeZoneOptions(elements.timeZone);
@@ -273,9 +293,75 @@ export function createSettingsController({
     elements.close.focus();
   }
 
+  function setLocationDialogStatus(message, { error = false } = {}) {
+    elements.locationSearchStatus.textContent = message;
+
+    if (error) {
+      elements.locationSearchStatus.dataset.state = "error";
+    } else {
+      delete elements.locationSearchStatus.dataset.state;
+    }
+  }
+
+  function setLocationSearchLoading(loading) {
+    elements.locationSearchSubmit.disabled = loading;
+    elements.locationSearchSubmit.textContent = loading
+      ? "Searching…"
+      : "Search";
+    elements.locationSearchForm.setAttribute(
+      "aria-busy",
+      loading ? "true" : "false",
+    );
+  }
+
+  function setDeviceLocationLoading(loading) {
+    elements.useDeviceLocation.disabled = loading;
+    elements.useDeviceLocation.textContent = loading
+      ? "Locating…"
+      : "Use this device’s location";
+  }
+
+  function clearLocationSearchResults() {
+    elements.locationSearchResults.replaceChildren();
+    elements.locationSearchResults.hidden = true;
+  }
+
+  function resetLocationDialog() {
+    locationUiRequestVersion += 1;
+    locationSearchClient.cancel();
+    elements.locationSearchForm.reset();
+    elements.mapsUrlForm.reset();
+    setLocationSearchLoading(false);
+    setDeviceLocationLoading(false);
+    setLocationDialogStatus("");
+    clearLocationSearchResults();
+  }
+
+  function openLocationDialog() {
+    resetLocationDialog();
+    elements.locationDialog.showModal();
+    window.requestAnimationFrame(() => {
+      elements.locationSearchInput.focus();
+    });
+  }
+
+  function closeLocationDialog({ restoreFocus = true } = {}) {
+    locationUiRequestVersion += 1;
+    locationSearchClient.cancel();
+
+    if (elements.locationDialog.open) {
+      elements.locationDialog.close();
+    }
+
+    if (restoreFocus && !elements.modal.hidden) {
+      elements.searchForLocation.focus();
+    }
+  }
+
   function close({ restorePreview = true } = {}) {
     window.clearTimeout(previewTimer);
     window.clearTimeout(closeTimer);
+    closeLocationDialog({ restoreFocus: false });
     elements.modal.classList.remove("settings-drawer--open");
     document.body.classList.remove("settings-open");
     elements.button.setAttribute("aria-expanded", "false");
@@ -331,28 +417,80 @@ export function createSettingsController({
     }, 120);
   }
 
+  function applyCoordinates(latitude, longitude, message) {
+    let coordinates;
+
+    try {
+      coordinates = normalizeCoordinatePair(latitude, longitude);
+    } catch {
+      elements.locationStatus.textContent =
+        "Those coordinates are not valid. Enter a latitude from -90 to 90 and a longitude from -180 to 180.";
+      return false;
+    }
+
+    elements.latitude.value = coordinates.latitude;
+    elements.longitude.value = coordinates.longitude;
+    elements.locationStatus.textContent = message;
+    previewSettings();
+    return true;
+  }
+
   function useDeviceLocation() {
-    elements.locationStatus.textContent = "Requesting this device’s location…";
+    const requestVersion = ++locationUiRequestVersion;
+    locationSearchClient.cancel();
+    setLocationSearchLoading(false);
+    setDeviceLocationLoading(true);
+    const requestMessage = "Requesting this device’s location…";
+    elements.locationStatus.textContent = requestMessage;
+    setLocationDialogStatus(requestMessage);
 
     if (!navigator.geolocation) {
-      elements.locationStatus.textContent =
+      const unavailableMessage =
         "Device location is unavailable. Enter latitude and longitude manually.";
+      elements.locationStatus.textContent = unavailableMessage;
+      setLocationDialogStatus(unavailableMessage, { error: true });
+      setDeviceLocationLoading(false);
       return;
     }
 
-    elements.useDeviceLocation.disabled = true;
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
-        elements.latitude.value = coords.latitude.toFixed(6);
-        elements.longitude.value = coords.longitude.toFixed(6);
-        elements.locationStatus.textContent = "Device coordinates added.";
-        elements.useDeviceLocation.disabled = false;
-        previewSettings();
+        if (
+          requestVersion !== locationUiRequestVersion ||
+          !elements.locationDialog.open
+        ) {
+          return;
+        }
+
+        const applied = applyCoordinates(
+          coords.latitude,
+          coords.longitude,
+          "Device coordinates added.",
+        );
+        setDeviceLocationLoading(false);
+
+        if (applied) {
+          closeLocationDialog();
+        } else {
+          setLocationDialogStatus(
+            "This device returned invalid coordinates. Search for a location or enter coordinates manually.",
+            { error: true },
+          );
+        }
       },
       (error) => {
-        elements.locationStatus.textContent =
+        if (
+          requestVersion !== locationUiRequestVersion ||
+          !elements.locationDialog.open
+        ) {
+          return;
+        }
+
+        const unavailableMessage =
           "Device location was not available. Enter coordinates manually.";
-        elements.useDeviceLocation.disabled = false;
+        elements.locationStatus.textContent = unavailableMessage;
+        setLocationDialogStatus(unavailableMessage, { error: true });
+        setDeviceLocationLoading(false);
         logRuntimeWarning(
           "settings-location-unavailable",
           "Device location could not be used for weather settings.",
@@ -363,12 +501,148 @@ export function createSettingsController({
     );
   }
 
+  function renderLocationResults(results) {
+    clearLocationSearchResults();
+
+    for (const result of results) {
+      const item = document.createElement("li");
+      const button = document.createElement("button");
+      button.className = "location-search-result";
+      button.type = "button";
+      button.textContent = result.label;
+      button.addEventListener("click", () => {
+        const applied = applyCoordinates(
+          result.latitude,
+          result.longitude,
+          `Coordinates added for ${result.label}.`,
+        );
+
+        if (applied) {
+          closeLocationDialog();
+        }
+      });
+      item.append(button);
+      elements.locationSearchResults.append(item);
+    }
+
+    elements.locationSearchResults.hidden = results.length === 0;
+  }
+
+  async function searchForLocations(event) {
+    event.preventDefault();
+    const query = elements.locationSearchInput.value.trim();
+
+    if (query.length < 2) {
+      setLocationDialogStatus(
+        "Enter at least two characters to search.",
+        { error: true },
+      );
+      clearLocationSearchResults();
+      elements.locationSearchInput.focus();
+      return;
+    }
+
+    const requestVersion = ++locationUiRequestVersion;
+    setDeviceLocationLoading(false);
+    clearLocationSearchResults();
+    setLocationSearchLoading(true);
+    setLocationDialogStatus("Searching for locations…");
+
+    try {
+      const results = await locationSearchClient.search(query, {
+        count: 5,
+        language: navigator.language,
+      });
+
+      if (
+        results === null ||
+        requestVersion !== locationUiRequestVersion ||
+        !elements.locationDialog.open
+      ) {
+        return;
+      }
+
+      renderLocationResults(results);
+      setLocationDialogStatus(
+        results.length === 0
+          ? "No locations found. Try a nearby city or postal/ZIP code."
+          : `${results.length} location${results.length === 1 ? "" : "s"} found. Select one to use its coordinates.`,
+      );
+    } catch {
+      if (
+        requestVersion === locationUiRequestVersion &&
+        elements.locationDialog.open
+      ) {
+        clearLocationSearchResults();
+        setLocationDialogStatus(
+          "Location search is unavailable right now. Check your connection and try again.",
+          { error: true },
+        );
+      }
+    } finally {
+      if (
+        requestVersion === locationUiRequestVersion &&
+        elements.locationDialog.open
+      ) {
+        setLocationSearchLoading(false);
+      }
+    }
+  }
+
+  function useGoogleMapsCoordinates(event) {
+    event.preventDefault();
+    locationUiRequestVersion += 1;
+    locationSearchClient.cancel();
+    setLocationSearchLoading(false);
+    setDeviceLocationLoading(false);
+
+    try {
+      const coordinates = parseGoogleMapsUrl(elements.mapsUrlInput.value);
+      const applied = applyCoordinates(
+        coordinates.latitude,
+        coordinates.longitude,
+        "Coordinates added from Google Maps.",
+      );
+
+      if (applied) {
+        closeLocationDialog();
+      }
+    } catch (error) {
+      setLocationDialogStatus(
+        error?.message ??
+          "Enter a full Google Maps URL that includes latitude and longitude.",
+        { error: true },
+      );
+      elements.mapsUrlInput.focus();
+    }
+  }
+
   elements.button.addEventListener("click", open);
   elements.close.addEventListener("click", () => close());
   elements.cancel.addEventListener("click", () => close());
   elements.weather.addEventListener("change", syncWeatherFields);
   elements.time.addEventListener("change", syncTimeFields);
   elements.useDeviceLocation.addEventListener("click", useDeviceLocation);
+  elements.searchForLocation.addEventListener("click", openLocationDialog);
+  elements.locationDialogClose.addEventListener("click", () =>
+    closeLocationDialog(),
+  );
+  elements.locationDialogCancel.addEventListener("click", () =>
+    closeLocationDialog(),
+  );
+  elements.locationDialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeLocationDialog();
+  });
+  elements.locationDialog.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      event.stopPropagation();
+      closeLocationDialog();
+    }
+  });
+  elements.locationSearchForm.addEventListener("submit", searchForLocations);
+  elements.mapsUrlForm.addEventListener("submit", useGoogleMapsCoordinates);
   elements.form.addEventListener("input", previewSettings);
   elements.form.addEventListener("change", previewSettings);
   elements.modal.addEventListener("keydown", (event) => {

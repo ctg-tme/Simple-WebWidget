@@ -9,9 +9,11 @@ The widget uses a fixed 600 × 600 CSS-pixel canvas at normal RoomOS display siz
 The easiest way to configure the widget is the gear in the top-right. It opens a compact drawer that shifts the widget left, previews valid changes live, shows only the fields needed for each choice, and writes the applied configuration after the `#` in the GitHub Pages URL.
 
 1. Open the gear and select only the sections you want to include.
-2. Use the toggles for weather and time. Weather can request the device location, with manual coordinates available as a fallback. Time uses a 12-hour clock by default, can be switched to 24-hour time, and can follow the device time zone automatically or use a selected IANA time zone.
+2. Use the toggles for weather and time. Weather can request the device location, search by city or place name or a postal/ZIP code, or accept a full coordinate-bearing Google Maps URL. Time uses a 12-hour clock by default, can be switched to 24-hour time, and can follow the device time zone automatically or use a selected IANA time zone.
 3. For each information block, choose **Not included**, **Text**, **Website / iframe**, or **H2R countdown**.
 4. Select **Apply configuration** to replace the current hash parameters. The widget updates in place without reloading the page. RoomOS theme colors wait one second, then transition smoothly to the new palette. Browsers and devices configured to reduce motion switch immediately. Optionally enable **Hide the settings gear after applying** for deployment.
+
+The **Local conditions** settings keep the latitude and longitude fields visible so you can always enter latitude and longitude manually. A single **Search for a location** button opens a modal where you can use this device’s location, look up a city, town, village, or postal/ZIP code through Open-Meteo, or paste a full coordinate-bearing Google Maps URL from the browser address bar. Exact street-address search is not supported. A Maps URL must explicitly include latitude and longitude; shortened Google Maps links are not supported, including `maps.app.goo.gl` and `goo.gl/maps` links.
 
 <table>
   <tr>
@@ -138,7 +140,7 @@ Widget configuration is supplied exclusively through URL hash parameters—every
 
 These are the only supported hash parameters. Legacy names, unknown parameters, duplicate parameters, and boolean values other than `true` or `false` reject the complete configuration. The settings form omits disabled boolean options rather than writing `false`.
 
-When `weather=true` and coordinates are configured, the widget retrieves current temperature, weather condition, and day/night state directly from Open-Meteo. It refreshes every 15 minutes and converts the current WMO weather code into a recognizable clear, cloudy, fog, rain, snow, or thunderstorm symbol. Neither the temperature nor the weather symbol can be overridden by hash parameters. The weather symbol links to the data provider for attribution. This live feature requires outbound HTTPS access to `api.open-meteo.com` from the RoomOS device.
+When `weather=true` and coordinates are configured, the widget retrieves current temperature, weather condition, and day/night state directly from Open-Meteo. It refreshes every 15 minutes and converts the current WMO weather code into a recognizable clear, cloudy, fog, rain, snow, or thunderstorm symbol. Neither the temperature nor the weather symbol can be overridden by hash parameters. The weather symbol links to the data provider for attribution. Live weather requires outbound HTTPS access to `api.open-meteo.com` from the RoomOS device, and location-name searches require access to `geocoding-api.open-meteo.com`.
 
 ### Input limits and invalid configuration
 
@@ -267,7 +269,7 @@ npm run build
 npm run check:production-security
 ```
 
-The static output is written to `dist/`. Production builds include a restrictive Content Security Policy and an explicit `no-referrer` policy. The CSP permits same-origin scripts, styles, and fonts; same-origin, data, and HTTPS images; validated same-origin or HTTPS frames; and outbound connections only to the Open-Meteo weather API and Aptabase's US and EU event endpoints. Development builds omit the CSP meta tag so Vite hot-module replacement continues to work.
+The static output is written to `dist/`. Production builds include a restrictive Content Security Policy and an explicit `no-referrer` policy. The CSP permits same-origin scripts, styles, and fonts; same-origin, data, and HTTPS images; validated same-origin or HTTPS frames; and outbound connections only to the Open-Meteo weather and geocoding APIs and Aptabase's US and EU event endpoints. Development builds omit the CSP meta tag so Vite hot-module replacement continues to work.
 
 Pushes to `main` run the included GitHub Pages deployment workflow. In the repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions**. Deploying directly from the `main` branch serves the unbuilt Vite source and will not render the widget correctly.
 

@@ -4,6 +4,10 @@ import { readFile } from "node:fs/promises";
 
 const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
 const main = await readFile(new URL("../src/main.js", import.meta.url), "utf8");
+const settingsUi = await readFile(
+  new URL("../src/settings-ui.js", import.meta.url),
+  "utf8",
+);
 const styles = await readFile(
   new URL("../src/style.css", import.meta.url),
   "utf8",
@@ -21,12 +25,17 @@ test("guides an unconfigured user to the gear and README", () => {
 });
 
 test("provides an accessible non-modal settings drawer for every supported content type", () => {
+  const settingsDrawer = html.slice(
+    html.indexOf('<div id="settings-modal"'),
+    html.indexOf("<dialog", html.indexOf('<div id="settings-modal"')),
+  );
+
   assert.match(html, /class="mds-theme-stable-lightWebex"/);
   assert.match(html, /id="settings-button"[\s\S]*aria-expanded="false"/);
   assert.match(html, /id="settings-button"[\s\S]*<svg/);
   assert.match(html, /id="settings-modal" class="settings-drawer"/);
   assert.match(html, /<aside[\s\S]*aria-labelledby="settings-title"/);
-  assert.doesNotMatch(html, /aria-modal="true"/);
+  assert.doesNotMatch(settingsDrawer, /aria-modal="true"|<dialog/);
   assert.match(html, /type="checkbox"/);
   assert.match(html, /Not included/);
   assert.match(html, /Website \/ iframe/);
@@ -35,6 +44,74 @@ test("provides an accessible non-modal settings drawer for every supported conte
   assert.match(html, /id="setting-24hr-time"[\s\S]*name="24hrTime"/);
   assert.match(html, /Use 24-hour time/);
   assert.match(html, /id="setting-hide-settings"/);
+});
+
+test("keeps visible weather coordinates and offers all location methods in one modal", () => {
+  const settingsFormStart = html.indexOf('<form id="settings-form"');
+  const settingsFormEnd = html.indexOf("</form>", settingsFormStart);
+  const locationDialogStart = html.indexOf(
+    '<dialog\n      id="location-search-dialog"',
+  );
+  const weatherSettingsStart = html.indexOf('<div id="weather-settings"');
+  const weatherSettings = html.slice(
+    weatherSettingsStart,
+    html.indexOf("</fieldset>", weatherSettingsStart),
+  );
+  const locationDialog = html.slice(
+    locationDialogStart,
+    html.indexOf('<template id="information-setting-template">'),
+  );
+
+  assert.match(
+    weatherSettings,
+    /id="search-for-location"[\s\S]*Search for a location/,
+  );
+  assert.doesNotMatch(weatherSettings, /id="use-device-location"/);
+  assert.match(
+    locationDialog,
+    /id="use-device-location"[\s\S]*Use this device’s location/,
+  );
+  assert.ok(
+    locationDialog.indexOf('id="use-device-location"') <
+      locationDialog.indexOf('id="location-search-form"'),
+  );
+  assert.match(html, /id="setting-latitude"[\s\S]*id="setting-longitude"/);
+  assert.ok(locationDialogStart > settingsFormEnd);
+  assert.match(
+    html,
+    /<dialog[\s\S]*id="location-search-dialog"[\s\S]*aria-modal="true"[\s\S]*aria-labelledby="location-search-title"/,
+  );
+  assert.match(
+    html,
+    /Search by city, town, village, or postal\/ZIP code\. Exact street addresses are not supported\./,
+  );
+  assert.match(html, /id="location-search-status"[\s\S]*role="status"/);
+  assert.match(
+    html,
+    /id="location-search-results"[\s\S]*aria-label="Location search results"/,
+  );
+  assert.match(html, /id="maps-url-input"/);
+  assert.match(
+    html,
+    /Shortened maps\.app\.goo\.gl links are not supported\./,
+  );
+  assert.match(html, /Open-Meteo[\s\S]*GeoNames/);
+  assert.match(settingsUi, /elements\.locationDialog\.showModal\(\)/);
+  assert.match(settingsUi, /addEventListener\("cancel"/);
+  assert.match(
+    settingsUi,
+    /elements\.locationDialog\.addEventListener\("keydown"[\s\S]*event\.stopPropagation\(\)/,
+  );
+  assert.match(settingsUi, /function applyCoordinates\(/);
+  assert.match(settingsUi, /function setDeviceLocationLoading\(/);
+  assert.match(
+    settingsUi,
+    /function useDeviceLocation\(\)[\s\S]*requestVersion !== locationUiRequestVersion[\s\S]*closeLocationDialog\(\)/,
+  );
+  assert.match(
+    settingsUi,
+    /locationUiRequestVersion \+= 1;[\s\S]*locationSearchClient\.cancel\(\)/,
+  );
 });
 
 test("previews drawer changes without changing the URL until Apply", () => {

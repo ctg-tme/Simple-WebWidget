@@ -1,5 +1,6 @@
 export const APPROVED_CONNECT_ORIGINS = Object.freeze([
   "https://api.open-meteo.com",
+  "https://geocoding-api.open-meteo.com",
   "https://us.aptabase.com",
   "https://eu.aptabase.com",
 ]);

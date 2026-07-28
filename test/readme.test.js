@@ -93,6 +93,11 @@ test("documents settings, strict parameters, automatic weather, and iframe limit
   assert.match(readme, /X-Frame-Options/);
   assert.doesNotMatch(readme, /15-second load timeout/);
   assert.match(readme, /settings gear/i);
+  assert.match(readme, /city or place name or a postal\/ZIP code/i);
+  assert.match(readme, /Exact street-address search is not supported/i);
+  assert.match(readme, /coordinate-bearing Google Maps URL/i);
+  assert.match(readme, /Shortened Google Maps links are not supported/i);
+  assert.match(readme, /latitude and longitude manually/i);
   assert.match(readme, /hideSettings/);
   assert.match(readme, /Legacy names, unknown parameters, duplicate parameters/);
   assert.match(readme, /Scan to learn more about the Simple WebWidget/);
